@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Generate Speech</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/dojo/1.4.0/dojo/dojo.xd.js"></script>
+    <script type="text/javascript">
+      dojo.addOnLoad(function() {
+        var request = {
+          format : 'ogg',
+          utterances : ['foo', 'bar', 'baz']
+        };
+        var args = {
+          handleAs : 'text',
+          postData : dojo.toJson(request),
+          url : 'say.php'
+        };
+        var def = dojo.xhrPost(args);
+        def.addCallback(function(response) {
+          console.log(response);
+        });
+        def.addErrback(function(error) {
+          console.log(error);
+        });
+      });
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
