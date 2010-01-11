@@ -1,13 +1,45 @@
 <?php
+include 'langs.php';
+
 define('BIN', '/home/parente/usr/bin/');
 define('CACHE', 'cache/');
+define('MIN_PITCH', 0);
+define('MAX_PITCH', 99);
+define('MIN_WPM', 80);
+define('MAX_WPM', 390);
 
 $tmp = array();
-function writeWav($utterance, $out) {
+function buildSpeakOptions($request) {
+    global $LANGS;
+    $opts = "";
+    if($request->pitch !== NULL) {
+        $val = (int)$request->pitch;
+        $val = min(max($val, MIN_PITCH), MAX_PITCH);
+        $opts .= " -p$val";
+    }
+    if($request->wpm !== NULL) {
+        $val = (int)$request->wpm;
+        $val = min(max($val, MIN_WPM), MAX_WPM);
+        $opts .= " -s$val";
+    }
+    if($request->lang !== NULL) {
+        $val = $LANGS[$request->lang];
+        if($val !== NULL) {
+            $opts .= " -v$val";
+        }
+    }
+    return $opts;
+}
+
+function buildHash($utterance, $opt) {
+    return sha1($utterance) . '-' . sha1($opt);
+}
+
+function writeWav($utterance, $out, $opts) {
     $rv = 0;
     $temp_file = tempnam(sys_get_temp_dir(), 'tts');
     file_put_contents($temp_file, $utterance);
-    exec(BIN."speak -w $out -f $temp_file", $tmp, $rv);
+    exec(BIN."speak $opts -w $out -f $temp_file", $tmp, $rv);
     unlink($temp_file);
     return $rv;
 }
@@ -37,17 +69,19 @@ if(!is_dir(CACHE)) {
     exit;    
 }
 
-// pull out request params
+// get request
 $json = $_POST['json'];
-// decode json
 $request = json_decode(file_get_contents('php://input'));
+// build options
+$opts = buildSpeakOptions($request);
+
 // determine format function from format request
 if($request->format == 'ogg') {
     $formatFunc = 'writeOgg';
     $ext = '.ogg';
 } else if($request->format == 'mp3') {
     $formatFunc = 'writeMp3';
-    $ext = '.ogg';
+    $ext = '.mp3';
 } else {
     // respond with error
     $response['success'] = false;
@@ -57,8 +91,9 @@ if($request->format == 'ogg') {
 }
 
 // iterate utterances
-foreach($request->utterances as $utterance) {
-    $hash = sha1($utterance);
+$files = array();
+foreach($request->utterances as $id => $utterance) {
+    $hash = buildHash($utterance, $opts);
     $root = CACHE.$hash;
     $out = "${root}${ext}";
     $success = true;
@@ -66,7 +101,7 @@ foreach($request->utterances as $utterance) {
         $wav = "$root.wav";
         if(!is_file($wav)) {
             // synth new speech
-            $success = (writeWav($utterance, $wav) == 0);
+            $success = (writeWav($utterance, $wav, $opts) == 0);
         }
         if($success) {
             // encode to format
@@ -74,12 +109,14 @@ foreach($request->utterances as $utterance) {
         }
     }
     if($success) {
-        $response[$utterance] = $out;
+        $files[$id] = $out;
     } else {
-        $response[$utterance] = NULL;
+        $files[$id] = NULL;
     }
 }
 
+$response['opts'] = $opts;
+$response['files'] = $files;
 $response['success'] = true;
 respond($response);
 exit;

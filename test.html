@@ -6,17 +6,36 @@
     <script type="text/javascript">
       dojo.addOnLoad(function() {
         var request = {
-          format : 'ogg',
-          utterances : ['foo', 'bar', 'baz']
+          format : 'mp3',
+          utterances : {
+            foo : 'The quick brown fox jumps over the lazy dog.', 
+            baz : 'The rain in Spain falls mainly on the plain.'
+          },
+          pitch : 50,
+          wpm : 200,
+          lang : 'en-us'
         };
         var args = {
-          handleAs : 'text',
+          handleAs : 'json',
           postData : dojo.toJson(request),
           url : 'say.php'
         };
         var def = dojo.xhrPost(args);
         def.addCallback(function(response) {
-          console.log(response);
+          if(response['success']) {
+            var files = response['files'];
+            for(var id in files) {
+              var src = files[id];
+              var a = dojo.create('audio', {
+                autobuffer : true,
+                controls : true,
+                src : src,
+                type : 'audio/mpeg'
+              }, dojo.body(), 'last');
+            }
+          } else {
+            throw new Error(response['reason']);
+          }
         });
         def.addErrback(function(error) {
           console.log(error);
