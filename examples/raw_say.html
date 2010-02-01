@@ -21,6 +21,7 @@
         };
         var def = dojo.xhrPost(args);
         def.addCallback(function(response) {
+          console.log(response);
           if(response['success']) {
             var files = response['files'];
             for(var id in files) {
@@ -28,7 +29,7 @@
               var a = dojo.create('audio', {
                 autobuffer : true,
                 controls : true,
-                src : src,
+                src : '../'+src,
                 type : 'audio/mpeg'
               }, dojo.body(), 'last');
             }
