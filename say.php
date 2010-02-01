@@ -52,7 +52,7 @@ function writeOgg($wav, $out) {
 
 function writeMp3($wav, $out) {
     $rv = 0;
-    exec(BIN."lame $wav $out", $tmp, $rv);
+    exec(BIN."lame $wav $out", &$tmp, $rv);
     return $rv;
 }
 
