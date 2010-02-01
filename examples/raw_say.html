@@ -13,12 +13,11 @@
           },
           pitch : 50,
           wpm : 200,
-          lang : 'en-us'
         };
         var args = {
           handleAs : 'json',
           postData : dojo.toJson(request),
-          url : 'say.php'
+          url : '../say.php'
         };
         var def = dojo.xhrPost(args);
         def.addCallback(function(response) {
