@@ -77,7 +77,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
         id = id || 'default';
         var ch = this._channels[id];
         if(ch === undefined) {
-            ch = new info.mindtrove.JSonicChannel({id : id, manager : this});
+            ch = new info.mindtrove.JSonicChannel({id : id});
             this._channels[id] = ch;
         }
         return ch;
@@ -85,17 +85,26 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
 });
 
 dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
-    manager: null,
     postMixInProperties: function() {
         this._kind = null;
         this._name = null;
         this._queue = [];
         this._busy = false;
         this._observers = [];
+        this._ext = '';
     },
     
     postCreate: function() {
         this._audioNode = dojo.create('audio');
+        if(this._audioNode.canPlayType('audio/ogg')) {
+            this._ext = '.ogg';
+        } else if(this._audioNode.canPlayType('audio/mp3')) {
+            this._ext = '.mp3';
+        } else if(this._audioNode.canPlayType('audio/aac')) {
+            this._ext = '.m4a';
+        } else if(this._audioNode.canPlayType('audio/wav')) {
+            this._ext = '.wav';
+        }
         this._audioNode.autobuffer = true;
         this.connect(this._audioNode, 'play', '_onStart');
         this.connect(this._audioNode, 'ended', '_onEnd');
@@ -139,7 +148,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
     _play: function(cmd) {
         this._busy = true;
         this._kind = 'play';
-        this._audioNode.src = cmd.url;
+        this._audioNode.src = cmd.url+this._ext;
         this._audioNode.load();
         this._audioNode.play();
     },

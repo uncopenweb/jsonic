@@ -16,17 +16,17 @@
 dojo.require('info.mindtrove.JSonic');
 var buttonHandlers = {
     singleSound: function(js) {
-        js.play('sounds/9081__tigersound__disappear.mp3');
+        js.play('sounds/9081__tigersound__disappear');
     },
 
     sequentialSound: function(js) {
-        js.play('sounds/9081__tigersound__disappear.mp3');
-        js.play('sounds/18382__inferno__hvylas.mp3');
+        js.play('sounds/9081__tigersound__disappear');
+        js.play('sounds/18382__inferno__hvylas');
     },
     
     simultaneousSound: function(js) {
-        js.play('sounds/9081__tigersound__disappear.mp3');
-        js.play('sounds/18382__inferno__hvylas.mp3', 'second');        
+        js.play('sounds/9081__tigersound__disappear');
+        js.play('sounds/18382__inferno__hvylas', 'second');        
     }
 };
 
