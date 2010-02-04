@@ -27,6 +27,14 @@ var buttonHandlers = {
     simultaneousSound: function(js) {
         js.play('sounds/9081__tigersound__disappear');
         js.play('sounds/18382__inferno__hvylas', 'second');        
+    },
+    
+    propertiesSound: function(js) {
+        js.setProperty('volume', 0.1);
+        js.play('sounds/9081__tigersound__disappear');
+        js.setProperty('volume', 1.0);
+        js.play('sounds/18382__inferno__hvylas');
+        js.reset();
     }
 };
 
