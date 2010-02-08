@@ -15,6 +15,10 @@
 **/
 dojo.require('info.mindtrove.JSonic');
 var buttonHandlers = {
+    singleSay: function(js) {
+        js.say('Hello world!');
+    },
+
     singleSound: function(js) {
         js.play('sounds/9081__tigersound__disappear');
     },

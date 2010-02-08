@@ -17,7 +17,7 @@ dojo.provide('info.mindtrove.JSonic');
 dojo.require('dijit._Widget');
 
 dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
-    sayURI: 'say.php',
+    sayURI: dojo.moduleUrl('', ''),
     postMixInProperties: function() {
         this._channels = {};
     },
@@ -26,8 +26,12 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
         
     },
     
-    say: function(text, channel, name) {
-        
+    say: function(utterance, channel, name) {
+        var cmd = {};
+        cmd.method = '_say';
+        cmd.utterance = utterance;
+        cmd.name = name;
+        this._getChannel(channel).push(cmd);
     },
     
     play: function(url, channel, name) {
@@ -88,7 +92,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
         id = id || 'default';
         var ch = this._channels[id];
         if(ch === undefined) {
-            ch = new info.mindtrove.JSonicChannel({id : id});
+            ch = new info.mindtrove.JSonicChannel({id : id, sayURI: this.sayURI});
             this._channels[id] = ch;
         }
         return ch;
@@ -96,6 +100,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
 });
 
 dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
+    sayURI: null,
     postMixInProperties: function() {
         this._kind = null;
         this._name = null;
@@ -104,6 +109,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         this._observers = [];
         this._properties = null;
         this._ext = '';
+        this._utterances = {};
         // set default properties
         this._reset();
         foobar = this;
@@ -157,9 +163,36 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         }
     },
 
-    _say: function() {
+    _say: function(cmd) {
         this._busy = true;
         this._kind = 'say';
+        // @todo: need to base caching on other props too
+        var response = this._utterances[cmd.utterance];
+        if(response) {
+            this._onSaySynth(cmd.utterance, response);
+        } else {
+            var request = {
+                format : this._ext,
+                utterances : {text : cmd.utterance},
+                wpm: this._properties.rate,
+                voice: this._properties.voice
+            };
+            // @todo: don't hard code say.php
+            var args = {
+                url : this.sayURI.uri+'say.php',
+                handleAs: 'json',
+                postData : dojo.toJson(request)
+            };
+            var def = dojo.xhrPost(args);
+            def.addCallback(dojo.hitch(this, '_onSaySynth', cmd.utterance));
+        }
+    },
+    
+    _onSaySynth: function(utterance, response) {
+        this._utterances[utterance] = response;
+        this._audioNode.src = this.sayURI.uri+response.files.text;
+        this._audioNode.load();
+        this._audioNode.play();
     },
     
     _play: function(cmd) {

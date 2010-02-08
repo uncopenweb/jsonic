@@ -1,7 +1,7 @@
 <?php
 include 'langs.php';
 
-define('BIN', '/home/parente/usr/bin/');
+define('BIN', '/usr/local/bin/');
 define('CACHE', 'cache/');
 define('MIN_PITCH', 0);
 define('MAX_PITCH', 99);
@@ -70,16 +70,15 @@ if(!is_dir(CACHE)) {
 }
 
 // get request
-$json = $_POST['json'];
 $request = json_decode(file_get_contents('php://input'));
 // build options
 $opts = buildSpeakOptions($request);
 
 // determine format function from format request
-if($request->format == 'ogg') {
+if($request->format == '.ogg') {
     $formatFunc = 'writeOgg';
     $ext = '.ogg';
-} else if($request->format == 'mp3') {
+} else if($request->format == '.mp3') {
     $formatFunc = 'writeMp3';
     $ext = '.mp3';
 } else {
