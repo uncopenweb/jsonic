@@ -16,28 +16,28 @@
 dojo.require('info.mindtrove.JSonic');
 var buttonHandlers = {
     singleSay: function(js) {
-        js.say('Hello world!');
+        js.say({text : 'Hello world!'});
     },
 
     singleSound: function(js) {
-        js.play('sounds/9081__tigersound__disappear');
+        js.play({url : 'sounds/9081__tigersound__disappear', cache : true});
     },
 
     sequentialSound: function(js) {
-        js.play('sounds/9081__tigersound__disappear');
-        js.play('sounds/18382__inferno__hvylas');
+        js.play({url : 'sounds/9081__tigersound__disappear', cache : true});
+        js.play({url : 'sounds/18382__inferno__hvylas', cache : true});
     },
     
     simultaneousSound: function(js) {
-        js.play('sounds/9081__tigersound__disappear');
-        js.play('sounds/18382__inferno__hvylas', 'second');        
+        js.play({url : 'sounds/9081__tigersound__disappear', cache : true});
+        js.play({url : 'sounds/18382__inferno__hvylas', cache : true, channel : 'second'});
     },
     
     propertiesSound: function(js) {
-        js.setProperty('volume', 0.1);
-        js.play('sounds/9081__tigersound__disappear');
-        js.setProperty('volume', 1.0);
-        js.play('sounds/18382__inferno__hvylas');
+        js.setProperty({name : 'volume', value : 0.1});
+        js.play({url : 'sounds/9081__tigersound__disappear', cache : true});
+        js.setProperty({name : 'volume', value : 1.0});
+        js.play({url : 'sounds/18382__inferno__hvylas', cache : true});
         js.reset();
     }
 };
