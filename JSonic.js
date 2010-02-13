@@ -22,7 +22,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
         // created audio channels
         this._channels = {};
         // cache of sounds and speech
-        this._cache = new info.mindtrove.JSonicCache();
+        this._cache = new info.mindtrove.JSonicCache({sayURI : this.sayURI});
     },
     
     postCreate: function() {
@@ -100,7 +100,6 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
         if(ch === undefined) {
             ch = new info.mindtrove.JSonicChannel({
                 id : id, 
-                sayURI: this.sayURI,
                 cache : this._cache
             });
             this._channels[id] = ch;
@@ -110,11 +109,16 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
 });
 
 dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
+    sayURI: null,
     postMixInProperties: function() {
         // cache of speech utterances
         this._speechCache = {};
+        // cache of speech filenames
+        this._speechFiles = {};
         // cache of sound utterances
         this._soundCache = {};
+        // cache of requests for speech rendering in progress
+        this._speechRenderings = {};
         // determine extension to use
         var node = dojo.create('audio');
         if(node.canPlayType('audio/ogg')) {
@@ -146,13 +150,55 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
     },
     
     getSpeech: function(args, props) {
-        
+        var audioNode = this._speechCache[args.text];
+        if(audioNode) {
+            return {name : 'audio', value : dojo.clone(audioNode)};
+        }
+        var def = this._speechRenderings[args.text];
+        if(def) {
+            return {name : 'deferred', value : def};
+        }
+        var response = this._speechFiles[args.text];
+        if(response) {
+            audioNode = this._onSpeechSynthed(args.text, response);
+            return {name : 'audio', value : audioNode};
+        }
+        // synth on server
+        var speechParams = {
+            format : this._ext,
+            utterances : {text : args.text},
+            wpm: props.rate,
+            voice: props.voice
+        };
+        // @todo: don't hard code say.php
+        var request = {
+            url : this.sayURI.uri+'say.php',
+            handleAs: 'json',
+            postData : dojo.toJson(speechParams)
+        };
+        def = dojo.xhrPost(request);
+        this._speechRenderings[args.text] = def;
+        def.addCallback(dojo.hitch(this, '_onSpeechSynthed', args));
+        def.addCallback(function() { console.debug('funky'); });
+        return {name : 'deferred', value : def};
+    },
+      
+    _onSpeechSynthed: function(args, response) {
+        delete this._speechRenderings[args.text];
+        var node = dojo.create('audio');
+        node.autobuffer = true;
+        node.src = this.sayURI.uri+response.files.text;
+        if(args.cache) {
+            this._speechCache[args.url] = node;
+        } else {
+            this._speechFiles[args.text] = response;
+        }
+        return node;
     }
 });
 
 dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
     cache: null,
-    sayURI: null,
     postMixInProperties: function() {
         // current output, sound or speech
         this._kind = null;
@@ -179,8 +225,14 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
             // pre-load sound
             args.audio = this.cache.getSound(args);
         } else if(args.method == '_say') {
-            // pre-synth speech
-            args.audio = this.cache.getSpeech(args);
+            // pre-synth speech with any props ahead in the queue
+            var props = dojo.clone(this._properties);
+            var changes = dojo.forEach(this._queue, function(args) {
+                if(args.method == '_setProperty') {
+                    props[args.name] = args.value;
+                }
+            });
+            args.audio = this.cache.getSpeech(args, props);
         }
         this._queue.push(args);
         this._pump();
@@ -228,35 +280,15 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
     },
 
     _say: function(args) {
-        /*this._busy = true;
+        this._busy = true;
         this._kind = 'say';
-        // @todo: need to base caching on other props too
-        var response = this._utterances[args.utterance];
-        if(response) {
-            this._onSaySynth(args.utterance, response);
-        } else {
-            var request = {
-                format : this._ext,
-                utterances : {text : args.utterance},
-                wpm: this._properties.rate,
-                voice: this._properties.voice
-            };
-            // @todo: don't hard code say.php
-            var args = {
-                url : this.sayURI.uri+'say.php',
-                handleAs: 'json',
-                postData : dojo.toJson(request)
-            };
-            var def = dojo.xhrPost(args);
-            def.addCallback(dojo.hitch(this, '_onSaySynth', args.utterance));
-        }*/
-    },
-    
-    _onSaySynth: function(utterance, response) {
-        this._utterances[utterance] = response;
-        this._audioNode.src = this.sayURI.uri+response.files.text;
-        this._audioNode.load();
-        this._audioNode.play();
+        var obj = (args.audio) ? args.audio : this.cache.getSpeech(args);
+        console.log(obj);
+        if(obj.name == 'audio') {
+            this._playAudioNode(obj.value);
+        } else if(obj.name == 'deferred') {
+            obj.value.addCallback(dojo.hitch(this, '_playAudioNode'));
+        }
     },
     
     _play: function(args) {
