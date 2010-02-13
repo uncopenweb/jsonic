@@ -19,63 +19,69 @@ dojo.require('dijit._Widget');
 dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
     sayURI: dojo.moduleUrl('', ''),
     postMixInProperties: function() {
+        // created audio channels
         this._channels = {};
+        // cache of sounds and speech
+        this._cache = new info.mindtrove.JSonicCache();
     },
     
     postCreate: function() {
         
     },
     
-    say: function(utterance, channel, name) {
-        var cmd = {};
-        cmd.method = '_say';
-        cmd.utterance = utterance;
-        cmd.name = name;
-        this._getChannel(channel).push(cmd);
+    /**
+     * text, channel, name, cache
+     */
+    say: function(args) {
+        args.method = '_say';
+        this._getChannel(args.channel).push(args);
     },
     
-    play: function(url, channel, name) {
-        var cmd = {};
-        cmd.method = '_play';
-        cmd.url = url;
-        cmd.name = name;
-        this._getChannel(channel).push(cmd);
+    /**
+     * url, channel, name, cache
+     */
+    play: function(args) {
+        args.method = '_play';
+        this._getChannel(args.channel).push(args);
     },
     
-    stop: function(channel) {
-        var cmd = {};
-        cmd.method = '_stop';
-        this._getChannel(channel).push(cmd);
+    stop: function() {
+        var args = {method: '_stop'};
+        this._getChannel(args.channel).push(args);
     },
     
-    setProperty: function(name, value, channel) {
-        var cmd = {};
-        cmd.method = '_setProperty';
-        cmd.name = name;
-        cmd.value = value;
-        this._getChannel(channel).push(cmd);
+    /**
+     * name, value, channel, now
+     */
+    setProperty: function(args) {
+        args.method = '_setProperty';
+        this._getChannel(args.channel).push(args);
     },
     
-    getProperty: function(name, channel) {
-        var cmd = {};
-        cmd.method = '_getProperty';
-        cmd.name = name;
-        cmd.deferred = new dojo.Deferred();
-        this._getChannel(channel).push(cmd);
-        return cmd.deferred;
+    /**
+     * name, channel, now
+     */
+    getProperty: function(args) {
+        args.method = '_getProperty';
+        args.deferred = new dojo.Deferred();
+        this._getChannel(args.channel).push(args);
+        return args.deferred;
     },
     
-    reset: function(channel) {
-        var cmd = {};
-        cmd.method = '_reset';
-        this._getChannel(channel).push(cmd);
+    /**
+     * channel
+     */
+    reset: function(args) {
+        args = args || {};
+        args.method = '_reset';
+        this._getChannel(args.channel).push(args);
     },
     
-    cacheSpeech: function(text) {
+    cacheSpeech: function(args) {
         
     },
     
-    cacheSound: function(url) {
+    cacheSound: function(args) {
         
     },
     
@@ -92,50 +98,91 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
         id = id || 'default';
         var ch = this._channels[id];
         if(ch === undefined) {
-            ch = new info.mindtrove.JSonicChannel({id : id, sayURI: this.sayURI});
+            ch = new info.mindtrove.JSonicChannel({
+                id : id, 
+                sayURI: this.sayURI,
+                cache : this._cache
+            });
             this._channels[id] = ch;
         }
         return ch;
     }
 });
 
+dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
+    postMixInProperties: function() {
+        // cache of speech utterances
+        this._speechCache = {};
+        // cache of sound utterances
+        this._soundCache = {};
+        // determine extension to use
+        var node = dojo.create('audio');
+        if(node.canPlayType('audio/ogg')) {
+            this._ext = '.ogg';
+        } else if(node.canPlayType('audio/mpeg')) {
+            this._ext = '.mp3';
+        } else if(node.canPlayType('audio/aac')) {
+            this._ext = '.m4a';
+        } else if(node.canPlayType('audio/wav')) {
+            this._ext = '.wav';
+        } else {
+            throw new Error('no known media supported');
+        }
+    },
+    
+    getSound: function(args) {
+        var audioNode = this._soundCache[args.url];
+        if(audioNode) {
+            return dojo.clone(audioNode);
+        } else {
+            var node = dojo.create('audio');
+            node.autobuffer = true;
+            node.src = args.url+this._ext;
+            if(args.cache) {
+                this._soundCache[args.url] = node;
+            }
+            return node;
+        }
+    },
+    
+    getSpeech: function(args, props) {
+        
+    }
+});
+
 dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
+    cache: null,
     sayURI: null,
     postMixInProperties: function() {
+        // current output, sound or speech
         this._kind = null;
+        // optional name associated with current output
         this._name = null;
+        // queue of commands to process
         this._queue = [];
+        // busy processing a command or not
         this._busy = false;
+        // observers of callbacks on this channel
         this._observers = [];
+        // current channel properties
         this._properties = null;
-        this._ext = '';
-        this._utterances = {};
+        // current audio node using the channel
+        this._audioNode = null;
+        // callback tokens for the current audio node
+        this._connects = [];
         // set default properties
         this._reset();
-        foobar = this;
     },
     
-    postCreate: function() {
-        this._audioNode = dojo.create('audio');
-        if(this._audioNode.canPlayType('audio/ogg')) {
-            this._ext = '.ogg';
-        } else if(this._audioNode.canPlayType('audio/mpeg')) {
-            this._ext = '.mp3';
-        } else if(this._audioNode.canPlayType('audio/aac')) {
-            this._ext = '.m4a';
-        } else if(this._audioNode.canPlayType('audio/wav')) {
-            this._ext = '.wav';
+    push: function(args) {
+        if(args.method == '_play') {
+            // pre-load sound
+            args.audio = this.cache.getSound(args);
+        } else if(args.method == '_say') {
+            // pre-synth speech
+            args.audio = this.cache.getSpeech(args);
         }
-        this._audioNode.autobuffer = true;
-        this._audioNode.loop = this._properties.loop;
-        this._audioNode.volume = this._properties.volume;
-        this.connect(this._audioNode, 'play', '_onStart');
-        this.connect(this._audioNode, 'ended', '_onEnd');
-        this.domNode.appendChild(this._audioNode);
-    },
-    
-    push: function(cmd) {
-        this._queue.push(cmd);
+        this._queue.push(args);
         this._pump();
     },
 
@@ -157,23 +204,40 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
     
     _pump: function() {
         while(!this._busy && this._queue.length) {
-            var cmd = this._queue.shift();
-            this._name = cmd.name;
-            this[cmd.method](cmd);
+            var args = this._queue.shift();
+            this._name = args.name;
+            this[args.method](args);
         }
     },
+    
+    _playAudioNode: function(node) {
+        this._audioNode = node;
+        this._audioNode.volume = this._properties.volume;
+        this._audioNode.loop = this._properties.loop;
+        this._connects[0] = dojo.connect(node, 'play', this, '_onStart');
+        this._connects[1] = dojo.connect(node, 'ended', this, '_onEnd');
+        this._audioNode.play();
+    },
+    
+    _stopAudioNode: function() {
+        this._audioNode.pause();
+        dojo.forEach(this._connects, dojo.disconnect);
+        this._connects = [];
+        this._audioNode.loop = false;
+        this._audioNode = null;
+    },
 
-    _say: function(cmd) {
-        this._busy = true;
+    _say: function(args) {
+        /*this._busy = true;
         this._kind = 'say';
         // @todo: need to base caching on other props too
-        var response = this._utterances[cmd.utterance];
+        var response = this._utterances[args.utterance];
         if(response) {
-            this._onSaySynth(cmd.utterance, response);
+            this._onSaySynth(args.utterance, response);
         } else {
             var request = {
                 format : this._ext,
-                utterances : {text : cmd.utterance},
+                utterances : {text : args.utterance},
                 wpm: this._properties.rate,
                 voice: this._properties.voice
             };
@@ -184,8 +248,8 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
                 postData : dojo.toJson(request)
             };
             var def = dojo.xhrPost(args);
-            def.addCallback(dojo.hitch(this, '_onSaySynth', cmd.utterance));
-        }
+            def.addCallback(dojo.hitch(this, '_onSaySynth', args.utterance));
+        }*/
     },
     
     _onSaySynth: function(utterance, response) {
@@ -195,42 +259,39 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         this._audioNode.play();
     },
     
-    _play: function(cmd) {
+    _play: function(args) {
         this._busy = true;
         this._kind = 'play';
-        this._audioNode.src = cmd.url+this._ext;
-        this._audioNode.load();
-        this._audioNode.play();
+        var node = (args.audio) ? args.audio : this.cache.getSound(args);
+        this._playAudioNode(node);
     },
     
-    _stop: function(cmd) {
-        this._audioNode.pause();
+    _stop: function(args) {
+        this._stopAudioNode();
         this._queue = [];
         this._kind = null;
         this._name = null;
         this._busy = false;
     },
     
-    _setProperty: function(cmd) {
-        if(cmd.name == 'volume') {
-            this._properties.volume = cmd.value;
-            this._audioNode.volume = cmd.value;
-        } else if(cmd.name == 'rate') {
-            this._properties.rate = cmd.value;
-        } else if(cmd.name == 'loop') {
-            this._properties.loop = cmd.value;
-            this._audioNode.loop = true;
-        } else if(cmd.name == 'voice') {
-            this._properties.voice = cmd.value;
+    _setProperty: function(args) {
+        if(args.name == 'volume') {
+            this._properties.volume = args.value;
+        } else if(args.name == 'rate') {
+            this._properties.rate = args.value;
+        } else if(args.name == 'loop') {
+            this._properties.loop = args.value;
+        } else if(args.name == 'voice') {
+            this._properties.voice = args.value;
         }
     },
-    
-    _getProperty: function(cmd) {
-        var value = this._properties[cmd.name];
-        cmd.deferred.callback(value);
+
+    _getProperty: function(args) {
+        var value = this._properties[args.name];
+        args.deferred.callback(value);
     },
     
-    _reset: function(cmd) {
+    _reset: function(args) {
         this._properties = {
             rate: 200,
             volume: 1.0,
@@ -261,7 +322,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
             channel : this.id,
             name : this._name
         };
-        this._audioNode.pause();
+        this._stopAudioNode();
         this._notify(notice);
         this._busy = false;
         this._name = null;
