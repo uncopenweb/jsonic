@@ -15,6 +15,7 @@
 **/
 dojo.provide('info.mindtrove.JSonic');
 dojo.require('dijit._Widget');
+dojo.require("dojox.encoding.digests.MD5");
 
 dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
     sayURI: dojo.moduleUrl('', ''),
@@ -26,6 +27,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
     },
     
     postCreate: function() {
+        console.log(this.id)
         
     },
     
@@ -149,18 +151,26 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
         }
     },
     
+    _getSpeechCacheKey: function(text, props) {
+        return text + '.' + props.voice + '.' + props.rate;
+    },
+    
     getSpeech: function(args, props) {
-        var audioNode = this._speechCache[args.text];
+        var key = this._getSpeechCacheKey(args.text, props);
+        var audioNode = this._speechCache[key];
         if(audioNode) {
+            // clone existing audio node in cache
             return {name : 'audio', value : dojo.clone(audioNode)};
         }
-        var def = this._speechRenderings[args.text];
+        var def = this._speechRenderings[key];
         if(def) {
+            // return deferred result for synth already in progress on server
             return {name : 'deferred', value : def};
         }
-        var response = this._speechFiles[args.text];
+        var response = this._speechFiles[key];
         if(response) {
-            audioNode = this._onSpeechSynthed(args.text, response);
+            // build a new audio node for a known speech file url
+            audioNode = this._onSpeechSynthed(args.text, props, response);
             return {name : 'audio', value : audioNode};
         }
         // synth on server
@@ -177,21 +187,25 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
             postData : dojo.toJson(speechParams)
         };
         def = dojo.xhrPost(request);
-        this._speechRenderings[args.text] = def;
-        def.addCallback(dojo.hitch(this, '_onSpeechSynthed', args));
+        this._speechRenderings[key] = def;
+        def.addCallback(dojo.hitch(this, '_onSpeechSynthed', args, 
+            dojo.clone(props)));
         def.addCallback(function() { console.debug('funky'); });
         return {name : 'deferred', value : def};
     },
-      
-    _onSpeechSynthed: function(args, response) {
-        delete this._speechRenderings[args.text];
+
+    _onSpeechSynthed: function(args, props, response) {
+        var key = this._getSpeechCacheKey(args.text, props);
+        delete this._speechRenderings[key];
         var node = dojo.create('audio');
         node.autobuffer = true;
         node.src = this.sayURI.uri+response.files.text;
         if(args.cache) {
-            this._speechCache[args.url] = node;
+            // cache the audio node
+            this._speechCache[key] = node;
         } else {
-            this._speechFiles[args.text] = response;
+            // cache the speech file url
+            this._speechFiles[key] = response;
         }
         return node;
     }
@@ -283,7 +297,6 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         this._busy = true;
         this._kind = 'say';
         var obj = (args.audio) ? args.audio : this.cache.getSpeech(args);
-        console.log(obj);
         if(obj.name == 'audio') {
             this._playAudioNode(obj.value);
         } else if(obj.name == 'deferred') {

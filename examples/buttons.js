@@ -16,7 +16,7 @@
 dojo.require('info.mindtrove.JSonic');
 var buttonHandlers = {
     singleSay: function(js) {
-        js.say({text : 'Hello world!'});
+        js.say({text : 'Hello world!', cache: true});
     },
 
     singleSound: function(js) {
