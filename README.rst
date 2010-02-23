@@ -17,3 +17,16 @@ Copyright (c) 2010, Peter Parente
 All rights reserved.
 
 http://creativecommons.org/licenses/BSD/
+
+Todo
+====
+
+* better error handling
+   * start with no audio in safari?
+   * error loading audio?
+   * error during synth, server and client
+* callback for property change
+* get available engines from server
+* get supported engine/props from server
+* everything deferred?
+* switch to using pyttsx for synth?
