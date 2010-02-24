@@ -51,22 +51,30 @@ class SynthHandler(tornado.web.RequestHandler):
         pool = self.application.settings['pool']
         engine = synthesizer.getClass(args.get('engine', 'espeak'))
         if engine is None:
-            response = {'success' : False, 'description' : 'invalid speech engine'}
-            self.write(json_encode(response))
-            self.finish()
+            self.send_json_error({'description' : 'unknown speech engine'})
             return
         enc = encoder.getClass(args.get('format', '.ogg'))
         if enc is None:
-            response = {'success' : False, 'description' : 'invalid speech format'}
-            self.write(json_encode(response))
-            self.finish()
+            self.send_json_error({'description' : 'unknown encoder format'})
             return
         params = (engine, enc, args['utterances'], args['properties'])
         pool.apply_async(synthesize, params, callback=self.on_synth_complete)
     
     def on_synth_complete(self, response):
-        self.write(json_encode(response))
-        self.finish()
+        if response['success']:
+            self.set_header('Content-Type', 'application/json')
+            self.write(json_encode(response))
+            self.finish()
+        else:
+            self.send_json_error(response)
+    
+    def send_json_error(self, response):
+        self.clear()
+        self.set_status(500)
+        self.set_header('Content-Type', 'application/json')
+        response['success'] = False
+        message = self.write(json_encode(response))
+        self.finish(message)
 
 class FilesHandler(tornado.web.RequestHandler):
     def get(self, id):
