@@ -40,7 +40,6 @@ def synthesize(engineCls, encoderCls, utterances, properties):
     response['files'] = {}
     for key, text in utterances.items():
         hashFn = engine.write_wav(text)
-        print hashFn
         enc.encode_wav(hashFn)
         response['files'][key] = hashFn
     return response
