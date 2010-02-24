@@ -26,7 +26,6 @@ class Mp3Encoder(object):
         self._path = path
 
     def encode_wav(self, hashFn):
-        print 'encode wav'
         wav = os.path.join(self._path, hashFn+'.wav')
         mp3 = os.path.join(self._path, hashFn+'.mp3')
         if not os.path.isfile(mp3):
