@@ -17,9 +17,9 @@ class OggEncoder(object):
     def encode_wav(self, hashFn):
         wav = os.path.join(self._path, hashFn+'.wav')
         ogg = os.path.join(self._path, hashFn+'.ogg')
-        c = iterpipes.cmd('oggenc {} -o {}', wav, ogg)
-        ret = iterpipes.call(c)
-        print 'encoder', ret
+        if not os.path.isfile(ogg):
+            c = iterpipes.cmd('oggenc {} -o {}', wav, ogg)
+            ret = iterpipes.call(c)
 
 class Mp3Encoder(object):
     def __init__(self, path):
@@ -29,12 +29,9 @@ class Mp3Encoder(object):
         print 'encode wav'
         wav = os.path.join(self._path, hashFn+'.wav')
         mp3 = os.path.join(self._path, hashFn+'.mp3')
-        print wav
-        print mp3
-        c = iterpipes.cmd('lame {}  {}', wav, mp3)
-        print c
-        ret = iterpipes.call(c)
-        print 'encoder', ret
+        if not os.path.isfile(mp3):
+            c = iterpipes.cmd('lame {}  {}', wav, mp3)
+            ret = iterpipes.call(c)
 
 def getClass(format):
     if format == '.ogg':

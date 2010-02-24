@@ -55,9 +55,9 @@ class EspeakSynth(object):
         hashFn = '%s-%s' % (utterHash, self._optHash)
         # write wave file into path
         wav = os.path.join(self._path, hashFn+'.wav')
-        c = iterpipes.cmd('speak {} -w {}', ' '.join(self._opts), wav)
-        ret = iterpipes.call(c, utterance)
-        print 'synth', ret
+        if not os.path.isfile(wav):
+            c = iterpipes.cmd('speak {} -w {}', ' '.join(self._opts), wav)
+            ret = iterpipes.call(c, utterance)
         return hashFn
 
 def getClass(engine):
