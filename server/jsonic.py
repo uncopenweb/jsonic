@@ -14,8 +14,12 @@ import tornado.web
 from tornado.escape import json_encode, json_decode
 import pymongo
 import multiprocessing
+import email.utils
+import mimetypes
+import datetime
 import time
 import os
+import stat
 
 # path containing speech files
 CACHE_PATH = os.path.join(os.path.dirname(__file__), 'files')
@@ -76,24 +80,72 @@ class SynthHandler(tornado.web.RequestHandler):
         message = self.write(json_encode(response))
         self.finish(message)
 
-class FilesHandler(tornado.web.RequestHandler):
-    def get(self, id):
-        pass
+class FilesHandler(tornado.web.StaticFileHandler):
+    def get(self, path, include_body=True):
+        abspath = os.path.abspath(os.path.join(self.root, path))
+        if not abspath.startswith(self.root):
+            raise HTTPError(403, "%s is not in root static directory", path)
+        if not os.path.exists(abspath):
+            raise HTTPError(404)
+        if not os.path.isfile(abspath):
+            raise HTTPError(403, "%s is not a file", path)
+ 
+        stat_result = os.stat(abspath)
+        modified = datetime.datetime.fromtimestamp(stat_result[stat.ST_MTIME])
+ 
+        self.set_header("Last-Modified", modified)
+        if "v" in self.request.arguments:
+            self.set_header("Expires", datetime.datetime.utcnow() + \
+                                       datetime.timedelta(days=365*10))
+            self.set_header("Cache-Control", "max-age=" + str(86400*365*10))
+        else:
+            self.set_header("Cache-Control", "public")
+        mime_type, encoding = mimetypes.guess_type(abspath)
+        if mime_type:
+            self.set_header("Content-Type", mime_type)
+ 
+        # Check the If-Modified-Since, and don't send the result if the
+        # content has not been modified
+        ims_value = self.request.headers.get("If-Modified-Since")
+        if ims_value is not None:
+            date_tuple = email.utils.parsedate(ims_value)
+            if_since = datetime.datetime.fromtimestamp(time.mktime(date_tuple))
+            if if_since >= modified:
+                self.set_status(304)
+                return
+ 
+        if not include_body:
+            return
+        
+        # check if there's a range request
+        rng = self.request.headers.get('Range')
+        if rng is None:
+            # send the whole file
+            start = 0
+            size = stat_result[stat.ST_SIZE]
+            self.set_header("Content-Length", str(size))
+        else:
+            self.set_status(206)
+            # send just the requested bytes
+            kind, rng = rng.split('=')
+            start, end = rng.split('-')
+            if not end: end = stat_result[stat.ST_SIZE]-1
+            start = int(start)
+            end = int(end)
+            size = end - start + 1
+            self.set_header("Content-Length", str(size))
+            self.set_header("Content-Range", 'bytes %d-%d/%d' %
+                (start, end, stat_result[stat.ST_SIZE]))
+            file = open(abspath, "rb")
+        try:
+            file.seek(start)
+            self.write(file.read(size))
+        finally:
+            file.close()
 
 class CacheHandler(tornado.web.RequestHandler):
     def get(self, id):
         pass
-
-class DebugHandler(tornado.web.RequestHandler):
-    @tornado.web.asynchronous
-    def get(self, value):
-        pool = self.application.settings['pool']
-        pool.apply_async(worker, (int(value),), callback=self.on_work_complete)
-        self.write('running async')
-    
-    def on_work_complete(self, result):
-        self.write(str(result))
-        self.finish()
 
 def run_server(debug=False):
     kwargs = {}
@@ -103,7 +155,7 @@ def run_server(debug=False):
         kwargs['static_path'] = os.path.join(os.path.dirname(__file__), "../")
     application = tornado.web.Application([
         (r'/synth', SynthHandler),
-        (r'/files/([a-f0-9]+-[a-f0-9]+)', FilesHandler),
+        (r'/files/([a-f0-9]+-[a-f0-9]+\..*)', FilesHandler, {'path' : './files'}),
         (r'/cache/([a-z0-9]+)', CacheHandler)
     ], debug=debug, **kwargs)
     http_server = tornado.httpserver.HTTPServer(application)
