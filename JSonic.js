@@ -58,7 +58,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
         args.method = '_setProperty';
         this._getChannel(args.channel).push(args);
     },
-    
+
     /**
      * name, channel, now
      */
@@ -77,13 +77,13 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
         args.method = '_reset';
         this._getChannel(args.channel).push(args);
     },
-    
-    cacheSpeech: function(args) {
-        
+
+    getEngines: function() {
+        return this._cache.getEngines();
     },
     
-    cacheSound: function(args) {
-        
+    getEngineInfo: function(name) {
+        return this._cache.getEngineInfo(name);
     },
     
     addObserver: function(func, channel, actions) {
@@ -112,6 +112,8 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
 dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
     jsonicURI: null,
     postMixInProperties: function() {
+        // speech engines and their details
+        this._engineCache = null;
         // cache of speech utterances
         this._speechCache = {};
         // cache of speech filenames
@@ -133,6 +135,47 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
         } else {
             throw new Error('no known media supported');
         }
+    },
+    
+    getEngines: function() {
+        var request, def;
+        if(this._engineCache) {
+            def = new dojo.Deferred();
+            var names = [];
+            for(var key in this._engineCache) {
+                names.push(key);
+            }
+            def.callback(names);
+        } else {
+            var request = {
+                url : this.jsonicURI.uri+'engine',
+                handleAs: 'json',
+                load: dojo.hitch(this, function(names) {
+                    this._engineCache = {};
+                    dojo.forEach(names, 'this._engineCache[item] = null;', this);
+                })
+            };
+            def = dojo.xhrGet(request);
+        }
+        return def;
+    },
+    
+    getEngineInfo: function(name) {
+        var request, def;
+        if(this._engineCache[name]) {
+            def = new dojo.Deferred();
+            def.callback(this._engineCache[name]);
+        } else {
+            var request = {
+                url : this.jsonicURI.uri+'engine/'+name,
+                handleAs: 'json',
+                load: dojo.hitch(this, function(info) {
+                    this._engineCache[name] = info;
+                })
+            };
+            def = dojo.xhrGet(request);
+        }
+        return def;
     },
     
     getSound: function(args) {
