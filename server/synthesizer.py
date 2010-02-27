@@ -16,6 +16,7 @@ class EspeakSynth(object):
     MAX_PITCH = 99
     MIN_RATE = 80
     MAX_RATE = 390
+    INFO = None
 
     def __init__(self, path, properties):
         # path where to write the file
@@ -30,7 +31,7 @@ class EspeakSynth(object):
             raise SynthesizerError('invalid rate')
         except KeyError:
             pass
-        
+
         try:
             pitch = int(properties['pitch'])
             pitch = min(max(pitch, self.MIN_PITCH), self.MAX_PITCH)
@@ -59,9 +60,20 @@ class EspeakSynth(object):
             c = iterpipes.cmd('speak {} -w {}', ' '.join(self._opts), wav)
             ret = iterpipes.call(c, utterance)
         return hashFn
+        
+    @classmethod
+    def getInfo(cls):
+        if cls.INFO is None:
+            out = iterpipes.run(iterpipes.linecmd('speak --voices'))
+            # fixed width columns
+            langs = [ln[40:52].strip() for i, ln in enumerate(out) if i > 0]
+            cls.INFO = {
+                'properties' : ['pitch', 'rate', 'language'],
+                'languages' : langs,
+                'voices' : None
+            }
+        return cls.INFO
 
-def getClass(engine):
-    if engine == 'espeak':
-        return EspeakSynth
-    else:
-        return None
+ENGINES = {'espeak' : EspeakSynth}
+def getClass(name):
+    return ENGINES.get(name, None)

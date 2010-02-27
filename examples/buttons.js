@@ -39,6 +39,22 @@ var buttonHandlers = {
         js.setProperty({name : 'volume', value : 1.0});
         js.play({url : 'sounds/18382__inferno__hvylas', cache : true});
         js.reset();
+    },
+    
+    engineInfo: function(js) {
+        console.log('fetching engines')
+        js.getEngines().addCallback(function(names) {
+            console.log('fetched engines');
+            console.log(names);
+            dojo.forEach(names, function(name) {
+                js.getEngineInfo(name).addCallback(function(info) {
+                    console.log('fetched engine info for ' + name);
+                    console.log(info);
+                });
+            });
+        }).addErrback(function(err) {
+            console.error('error fetching engines');
+        });
     }
 };
 

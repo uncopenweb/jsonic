@@ -48,7 +48,16 @@ def synthesize(engineCls, encoderCls, utterances, properties):
         response['files'][key] = hashFn
     return response
 
-class SynthHandler(tornado.web.RequestHandler):
+class JSonicHandler(tornado.web.RequestHandler):
+    def send_json_error(self, response):
+        self.clear()
+        self.set_status(500)
+        #self.set_header('Content-Type', 'application/json')
+        response['success'] = False
+        message = self.write(response)
+        self.finish(message)
+
+class SynthHandler(JSonicHandler):
     @tornado.web.asynchronous
     def post(self):
         args = json_decode(self.request.body)
@@ -66,19 +75,11 @@ class SynthHandler(tornado.web.RequestHandler):
     
     def on_synth_complete(self, response):
         if response['success']:
-            self.set_header('Content-Type', 'application/json')
-            self.write(json_encode(response))
+            #self.set_header('Content-Type', 'application/json')
+            self.write(response)
             self.finish()
         else:
             self.send_json_error(response)
-    
-    def send_json_error(self, response):
-        self.clear()
-        self.set_status(500)
-        self.set_header('Content-Type', 'application/json')
-        response['success'] = False
-        message = self.write(json_encode(response))
-        self.finish(message)
 
 class FilesHandler(tornado.web.StaticFileHandler):
     def get(self, path, include_body=True):
@@ -143,7 +144,20 @@ class FilesHandler(tornado.web.StaticFileHandler):
         finally:
             file.close()
 
-class CacheHandler(tornado.web.RequestHandler):
+class EngineHandler(JSonicHandler):
+    def get(self, name=None):
+        if name is None:
+            names = synthesizer.ENGINES.keys()
+            self.write(json_encode(names))
+        else:
+            cls = synthesizer.getClass(name)
+            if cls is None:
+                self.send_json_error({'description' : 'unknown engine'})
+            else:
+                info = cls.getInfo()
+                self.write(info)
+
+class CacheHandler(JSonicHandler):
     def get(self, id):
         pass
 
@@ -154,6 +168,8 @@ def run_server(debug=False):
         # serve static files for debugging purposes
         kwargs['static_path'] = os.path.join(os.path.dirname(__file__), "../")
     application = tornado.web.Application([
+        (r'/engine', EngineHandler),
+        (r'/engine/([a-zA-Z0-9]+)', EngineHandler),
         (r'/synth', SynthHandler),
         (r'/files/([a-f0-9]+-[a-f0-9]+\..*)', FilesHandler, {'path' : './files'}),
         (r'/cache/([a-z0-9]+)', CacheHandler)
