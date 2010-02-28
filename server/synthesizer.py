@@ -1,17 +1,106 @@
 '''
 Speech synthesizer implementations for JSonic.
 
-:requires: Python 2.6, iterpipes
+:var SYNTHS: Names paired with available ISynthesizer implementations
+:type SYNTHS: dict
+
+:requires: Python 2.6, iterpipes, espeak 1.36.02
 :copyright: Peter Parente 2010
 :license: BSD
 '''
 import iterpipes
 import hashlib
+import itertools
 import os
 
-class SynthesizerError(Exception): pass
+class SynthesizerError(Exception): 
+    '''
+    Exception to throw for any synthesis error, including a human readable
+    description of what went wrong.
+    '''
+    pass
 
-class EspeakSynth(object):
+class ISynthesizer(object):
+    '''
+    All synthesizers must implement this instance and class interface.
+    '''
+    def __init__(self, path, properties):
+        '''
+        Constructor.
+        
+        :param path: Path to where synthesized files are stored
+        :type path: str
+        :param properties: Speech properties for any synthesis performed using
+            this instance of the synthesizer. The supported properties are 
+            dictated by the synthesizer implementation as returned by the
+            get_info class method.
+        :param properties: dict 
+        '''
+        raise NotImplementedError
+    
+    def write_wav(self, utterance):
+        '''
+        Synthesizes an utterance to a WAV file on disk in the cache folder. 
+        The name of the file must be in the following format:
+
+        <sha1 hash of utterance>-<sha1 hash of engine + synth properties>.wav
+        
+        :param utterance: Unicode text to synthesize as speech
+        :type utterance: unicode
+        :return: Root name of the WAV file on disk, sans extension
+        :rtype: str
+        '''
+        raise NotImplementedError
+    
+    @classmethod
+    def get_info(cls):
+        '''
+        Gets information about the speech properties supported by this 
+        synthesizer. Caches this information whenever possible to speed future
+        queries.
+        
+        :return: A dictionary describing the properties supported by this
+            synthesizer. The common properties are defined as follows:
+            
+            {
+                'rate' : { // always in words per minute
+                    'minimum' : <number>,
+                    'maximum' : <number>,
+                    'default' : <number>
+                },
+                'pitch' : {
+                    'minimum' : <number>,
+                    'maximum' : <number>,
+                    'default' : <number>
+                },
+                'voices' : {
+                    'values' : [<str>, <str>, ...],
+                    'default' : <str>
+                }
+            }
+            
+            If any of these properties are not supported, they should be left
+            out of the dictionary. If additional properties are supported they 
+            can be included in dictionary in a similar format.
+        :rtype: dict
+        :raises: RuntimeError if the engine is not available on the server
+        '''
+        raise NotImplementedError
+
+class EspeakSynth(ISynthesizer):
+    '''
+    Synthesizes speech using espeak from the command line.
+    
+    :ivar _path: Output cache path
+    :ivar _opts: Command line options for `speak`
+    :ivar _optHash: Hash of command line options for `speak`
+    :cvar MIN_PITCH: Minimum pitch supported
+    :cvar MAX_PITCH: Maximum pitch supported
+    :cvar MIN_RATE: Minimum rate supported in WPM
+    :cvar MAX_RATE: Maximum rate supported in WPM
+    :cvar INFO: Dictionary of all supported engine properties cached for 
+        fast responses to queries
+    '''
     MIN_PITCH = 0
     MAX_PITCH = 99
     MIN_RATE = 80
@@ -19,6 +108,7 @@ class EspeakSynth(object):
     INFO = None
 
     def __init__(self, path, properties):
+        '''Implements ISynthesizer constructor.'''
         # path where to write the file
         self._path = path
         # construct command line options for this synth instance
@@ -26,54 +116,89 @@ class EspeakSynth(object):
         try:
             rate = int(properties['rate'])
             rate = min(max(rate, self.MIN_RATE), self.MAX_RATE)
-            self._opts.append('-s%d' % rate)
+            self._opts.append(str(rate))
         except TypeError:
             raise SynthesizerError('invalid rate')
         except KeyError:
-            pass
+            self._opts.append('200')
 
         try:
             pitch = int(properties['pitch'])
             pitch = min(max(pitch, self.MIN_PITCH), self.MAX_PITCH)
-            self._opts.append('-p%d' % pitch)
+            self._opts.append(str(pitch))
         except TypeError:
             raise SynthesizerError('invalid pitch')
         except KeyError:
-            pass
+            self._opts.append('50')
 
         try:
-            lang = str(properties['language'])
-            # @todo: confirm valid else going to grow cache for no reason
-            self._opts.append('-v%s' % lang)
+            voice = str(properties['voice'])
+            assert voice in EspeakSynth.get_info()['voices']['values']
+            self._opts.append(voice)
+        except AssertionError:
+            raise SynthesizerError('invalid voice')
         except KeyError:
-            pass
+            self._opts.append('en/en-r')
 
         # store property portion of filename
-        self._optHash = hashlib.sha1(' '.join(self._opts)).hexdigest()
+        self._optHash = hashlib.sha1(str(self._opts)).hexdigest()
 
     def write_wav(self, utterance):
+        '''Implments ISynthesizer.write_wav.'''
         utterHash = hashlib.sha1(utterance).hexdigest()
         hashFn = '%s-%s' % (utterHash, self._optHash)
         # write wave file into path
         wav = os.path.join(self._path, hashFn+'.wav')
         if not os.path.isfile(wav):
-            c = iterpipes.cmd('speak {} -w {}', ' '.join(self._opts), wav)
-            ret = iterpipes.call(c, utterance)
+            args = self._opts + [wav]
+            c = iterpipes.cmd('speak -s{} -p{} -v{} -w{}', *args)
+            ret = iterpipes.call(c, utterance.encode('utf-8'))
+            print ret
         return hashFn
-        
+
     @classmethod
-    def getInfo(cls):
+    def get_info(cls):
+        '''Implements ISynthesizer.get_info.'''
         if cls.INFO is None:
             out = iterpipes.run(iterpipes.linecmd('speak --voices'))
-            # fixed width columns
-            langs = [ln[40:52].strip() for i, ln in enumerate(out) if i > 0]
+            # get voices from fixed width columns
+            voices = [ln[40:52].strip() for i, ln in enumerate(out) if i > 0]
+            # generate all variants for voices
+            variants = ['', '+f1', '+f2', '+f3', '+f4', '+m1', '+m2', '+m3', 
+                '+m4', '+m5', '+m6', '+whisper', '+croak']
+            voices = itertools.chain(*[
+                [voice+variant for voice in voices] 
+                for variant in variants
+            ])
             cls.INFO = {
-                'properties' : ['pitch', 'rate', 'language'],
-                'languages' : langs,
-                'voices' : None
+                'rate' : {
+                    'minimum' : cls.MIN_RATE, 
+                    'maximum' : cls.MAX_RATE,
+                    'default' : 200
+                },
+                'pitch' : {
+                    'minimum' : cls.MIN_PITCH, 
+                    'maximum' : cls.MAX_PITCH,
+                    'default' : 50
+                }, 
+                'voices' : {
+                    'values' : list(voices),
+                    'default' : 'en/en-r'
+                }
             }
         return cls.INFO
 
-ENGINES = {'espeak' : EspeakSynth}
-def getClass(name):
-    return ENGINES.get(name, None)
+# global list of available synth implementations
+# @todo: add these dynamically if the synths actually work on the platform
+SYNTHS = {'espeak' : EspeakSynth}
+
+def get_class(name):
+    '''
+    Gets the synthesizer class associated with the given synth engine name.
+    
+    :param name: Name of the synthesizer
+    :type name: str
+    :return: ISynthesizer class or None if the name is unknown
+    :rtype: cls
+    '''
+    return SYNTHS.get(name, None)

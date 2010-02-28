@@ -32,7 +32,7 @@ def synthesize(engineCls, encoderCls, utterances, properties):
     response = {'success' : False}
     try:
         engine = engineCls(CACHE_PATH, properties)
-    except synthesize.SynthesizerError, e:
+    except synthesizer.SynthesizerError, e:
         response['description'] = str(e)
         return response
     try:
@@ -62,16 +62,18 @@ class SynthHandler(JSonicHandler):
     def post(self):
         args = json_decode(self.request.body)
         pool = self.application.settings['pool']
-        engine = synthesizer.getClass(args.get('engine', 'espeak'))
+        engine = synthesizer.get_class(args.get('engine', 'espeak'))
         if engine is None:
             self.send_json_error({'description' : 'unknown speech engine'})
             return
-        enc = encoder.getClass(args.get('format', '.ogg'))
+        enc = encoder.get_class(args.get('format', '.ogg'))
         if enc is None:
             self.send_json_error({'description' : 'unknown encoder format'})
             return
         params = (engine, enc, args['utterances'], args['properties'])
-        pool.apply_async(synthesize, params, callback=self.on_synth_complete)
+        #pool.apply_async(synthesize, params, callback=self.on_synth_complete)
+        self.on_synth_complete(synthesize(*params))
+        
     
     def on_synth_complete(self, response):
         if response['success']:
@@ -147,14 +149,14 @@ class FilesHandler(tornado.web.StaticFileHandler):
 class EngineHandler(JSonicHandler):
     def get(self, name=None):
         if name is None:
-            names = synthesizer.ENGINES.keys()
+            names = synthesizer.SYNTHS.keys()
             self.write(json_encode(names))
         else:
-            cls = synthesizer.getClass(name)
+            cls = synthesizer.get_class(name)
             if cls is None:
                 self.send_json_error({'description' : 'unknown engine'})
             else:
-                info = cls.getInfo()
+                info = cls.get_info()
                 self.write(info)
 
 class CacheHandler(JSonicHandler):
