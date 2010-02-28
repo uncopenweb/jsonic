@@ -150,9 +150,9 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
             var request = {
                 url : this.jsonicURI.uri+'engine',
                 handleAs: 'json',
-                load: dojo.hitch(this, function(names) {
+                load: dojo.hitch(this, function(response) {
                     this._engineCache = {};
-                    dojo.forEach(names, 'this._engineCache[item] = null;', this);
+                    dojo.forEach(response.result, 'this._engineCache[item] = null;', this);
                 })
             };
             def = dojo.xhrGet(request);
@@ -169,8 +169,8 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
             var request = {
                 url : this.jsonicURI.uri+'engine/'+name,
                 handleAs: 'json',
-                load: dojo.hitch(this, function(info) {
-                    this._engineCache[name] = info;
+                load: dojo.hitch(this, function(response) {
+                    this._engineCache[name] = response.result;
                 })
             };
             def = dojo.xhrGet(request);
@@ -249,7 +249,7 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
         delete this._speechRenderings[key];
         var node = dojo.create('audio');
         node.autobuffer = true;
-        node.src = this.jsonicURI.uri+'files/'+response.files.text+this._ext;
+        node.src = this.jsonicURI.uri+'files/'+response.result.text+this._ext;
         if(args.cache) {
             // cache the audio node
             this._speechCache[key] = node;
