@@ -236,6 +236,10 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
     },
     
     _onSynthError: function(resultDef, err, ioargs) {
+        // clear request deferred
+        var key = this._getSpeechCacheKey(args.text, props);
+        delete this._speechRenderings[key];
+        
         var response = dojo.fromJson(ioargs.xhr.responseText);
         resultDef.errback(response.description);
     },
@@ -382,8 +386,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
             volume: 1.0,
             loop: false,
             engine : 'espeak',
-            voice: '',
-            language : 'en-us'
+            voice: 'en/en-r+f1'
         };
     },
 
