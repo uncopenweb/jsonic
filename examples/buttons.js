@@ -43,13 +43,13 @@ var buttonHandlers = {
     
     engineInfo: function(js) {
         console.log('fetching engines')
-        js.getEngines().addCallback(function(names) {
+        js.getEngines().addCallback(function(response) {
             console.log('fetched engines');
-            console.log(names);
-            dojo.forEach(names, function(name) {
-                js.getEngineInfo(name).addCallback(function(info) {
+            console.log(response.result);
+            dojo.forEach(response.result, function(name) {
+                js.getEngineInfo(name).addCallback(function(response) {
                     console.log('fetched engine info for ' + name);
-                    console.log(info);
+                    console.log(response.result);
                 });
             });
         }).addErrback(function(err) {
