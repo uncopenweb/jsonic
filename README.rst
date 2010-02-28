@@ -21,12 +21,13 @@ http://creativecommons.org/licenses/BSD/
 Todo
 ====
 
-* better error handling
-   * start with no audio in safari?
-   * error loading audio?
-   * error during synth, server and client
+Not necessarily in this order:
+
+* docstrings everywhere
+* sphinx doc
+* server tracking of app utterances
+* cache warming on app start
+* server cache flags on every utterace (privacy)
 * callback for property change
-* get available engines from server
-* get supported engine/props from server
 * everything deferred?
 * switch to using pyttsx for synth?
