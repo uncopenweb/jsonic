@@ -1,37 +1,41 @@
 /*
- * Copyright (c) 2010 Peter Parente based on Outfox
+ * JSonic client-side API implemented using Dojo.
  *
- * Permission to use, copy, modify, and distribute this software for any
- * purpose with or without fee is hereby granted, provided that the above
- * copyright notice and this permission notice appear in all copies.
- *
- * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
- * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
- * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
- * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
- * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
- * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ * :requires: Dojo 1.4, JSonic REST API on server
+ * :copyright: Peter Parente 2010
+ * :license: BSD
 **/
 dojo.provide('info.mindtrove.JSonic');
 dojo.require('dijit._Widget');
 dojo.require("dojox.encoding.digests.MD5");
 
+/**
+ * JSonic widget for application use.
+ */
 dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
+    // root of the JSonic server REST API, defaults to the current uri 
     jsonicURI: dojo.moduleUrl('', '../'),
     postMixInProperties: function() {
         // created audio channels
         this._channels = {};
-        // cache of sounds and speech
-        this._cache = new info.mindtrove.JSonicCache({jsonicURI : this.jsonicURI});
-    },
-    
-    postCreate: function() {
-
+        // channel-shared cache of sounds and speech
+        this._cache = new info.mindtrove.JSonicCache({
+            jsonicURI : this.jsonicURI
+        });
     },
     
     /**
-     * text, channel, name, cache
+     * Queues speech on a channel. The args parameter supports the following
+     * name / value pairs.
+     *
+     * :param text: 
+     * :type text: string
+     * :param channel:
+     * :type channel: string
+     * :param name:
+     * :type name: string
+     * :param cache:
+     * :type cache: boolean
      */
     say: function(args) {
         args.method = '_say';
@@ -39,20 +43,57 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
     },
     
     /**
-     * url, channel, name, cache
+     * Queues speech on a channel. The args parameter supports the following
+     * name / value pairs.
+     *
+     * :param url: 
+     * :type url: string
+     * :param channel:
+     * :type channel: string
+     * :param name:
+     * :type name: string
+     * :param cache:
+     * :type cache: boolean
      */
     play: function(args) {
         args.method = '_play';
         this._getChannel(args.channel).push(args);
     },
     
-    stop: function() {
+    /**
+     * Immediately stops output on a channel and clears the channel queue.
+     * The args parameter supports the following name / value pairs.
+     *
+     * :param channel:
+     * :type channel: string
+     */
+    stop: function(args) {
         var args = {method: '_stop'};
         this._getChannel(args.channel).push(args);
     },
     
     /**
-     * name, value, channel, now
+     * Queues a change in channel property that affects all speech and sound
+     * output following it in the queue. All channels support the following
+     * properties:
+     *
+     * :rate: Speech rate in words per minute (default: 200)
+     * :volume: Speech and sound volume beteween [0.0, 1.0] (default: 1.0)
+     * :loop: Audio looping (default: false)
+     * :engine: Speech engine to use (default: espeak)
+     * :voice: Speech engine voice to use (default: en/en-r+f1)
+     *
+     * A channel may support additional speech properties if they are named
+     * in the response from getEngineInfo.
+     *
+     * The args parameter supports the following name / value pairs.
+     *
+     * :param name:
+     * :type name: string
+     * :param value:
+     * :type value: any
+     * :param channel:
+     * :type channel: string
      */
     setProperty: function(args) {
         args.method = '_setProperty';
@@ -60,7 +101,17 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
     },
 
     /**
-     * name, channel, now
+     * Queues a request for the value of a channel property. If the property is
+     * unknown, undefined is returned.
+     *
+     * The args parameter supports the following name / value pairs.
+     *
+     * :param name:
+     * :type name: string
+     * :param channel:
+     * :type channel: string
+     * :return: Deferred with a callback to get the property value
+     * :rtype: dojo.Deferred
      */
     getProperty: function(args) {
         args.method = '_getProperty';
@@ -70,7 +121,11 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
     },
     
     /**
-     * channel
+     * Queues a reset of all channel property values to their default values.
+     * The args parameter supports the following name / value pairs.
+     *
+     * :param channel:
+     * :type channel: string
      */
     reset: function(args) {
         args = args || {};
@@ -78,19 +133,50 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
         this._getChannel(args.channel).push(args);
     },
 
+    /**
+     * Gets the list of speech engine names available on the server.
+     *
+     * :return: Deferred with a callback to get the engine list
+     * :rtype: dojo.Deferred
+     */
     getEngines: function() {
         return this._cache.getEngines();
     },
     
+    /**
+     * Gets a description of the properties supported by a single speech engine
+     * available on the server.
+     *
+     * :return: Deferred with a callback to get the engine properties
+     * :rtype: dojo.Deferred
+     */
     getEngineInfo: function(name) {
         return this._cache.getEngineInfo(name);
     },
     
+    /**
+     * Adds an observer for channel events.
+     *
+     * :param func:
+     * :type func: function
+     * :param channel: 
+     * :type channel: string
+     * :param actions:
+     * :type actions: array
+     * :return: Token to use when removing the observer
+     * :rtype: object
+     */
     addObserver: function(func, channel, actions) {
         var ob = this._getChannel(channel).addObserver(func, actions);
         return [ob, channel];
     },
     
+    /**
+     * Removes an observer of channel events.
+     *
+     * :param token:
+     * :type token: object
+     */
     removeObserver: function(token) {
         this._getChannel(token[1]).removeObserver(token[0]);
     },
@@ -285,7 +371,11 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
     },
     
     push: function(args) {
-        if(args.method == '_play') {
+        if(args.method == '_stop') {
+            // stop immediately
+            this._stop();
+            return;
+        } else if(args.method == '_play') {
             // pre-load sound
             args.audio = this.cache.getSound(args);
         } else if(args.method == '_say') {
@@ -363,7 +453,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         this._playAudioNode(node);
     },
     
-    _stop: function(args) {
+    _stop: function() {
         this._stopAudioNode();
         this._queue = [];
         this._kind = null;
