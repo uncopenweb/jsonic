@@ -7,7 +7,6 @@
 **/
 dojo.provide('info.mindtrove.JSonic');
 dojo.require('dijit._Widget');
-dojo.require("dojox.encoding.digests.MD5");
 
 /**
  * JSonic widget for application use.
