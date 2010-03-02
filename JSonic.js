@@ -28,16 +28,21 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
      * Queues speech on a channel. The args parameter supports the following
      * name / value pairs.
      *
-     * :param text: 
+     * :param text: Text to speak.
      * :type text: string
-     * :param channel:
+     * :param channel: Channel name on which to queue the speech. Defaults to
+     *   'default'.
      * :type channel: string
-     * :param name:
+     * :param name: Name to associate with the utterance. Included in any
+     *   callbacks. Defaults to null.
      * :type name: string
-     * :param cache:
+     * :param cache: True to cache the utterance locally and track its 
+     *   frequency. False to avoid caching for privacy or other reasons.
+     *   Defaults to false.
      * :type cache: boolean
      */
     say: function(args) {
+        if(!args || !args.text) throw new Error('args.text required');
         args.method = '_say';
         this._getChannel(args.channel).push(args);
     },
@@ -46,16 +51,21 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
      * Queues speech on a channel. The args parameter supports the following
      * name / value pairs.
      *
-     * :param url: 
+     * :param url: URL of the sound to play.
      * :type url: string
-     * :param channel:
+     * :param channel: Channel name on which to queue the sound. Defaults to
+     *   'default'.
      * :type channel: string
-     * :param name:
+     * :param name: Name to associate with the sound. Included in any
+     *   callbacks. Defaults to null.
      * :type name: string
-     * :param cache:
+     * :param cache: True to cache the utterance locally and track its 
+     *   frequency. False to avoid caching for privacy or other reasons.
+     *   Defaults to false.
      * :type cache: boolean
      */
     play: function(args) {
+        if(!args || !args.url) throw new Error('args.url required');
         args.method = '_play';
         this._getChannel(args.channel).push(args);
     },
@@ -64,11 +74,12 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
      * Immediately stops output on a channel and clears the channel queue.
      * The args parameter supports the following name / value pairs.
      *
-     * :param channel:
+     * :param channel: Channel name to stop. Defaults to 'default.
      * :type channel: string
      */
     stop: function(args) {
-        var args = {method: '_stop'};
+        args = args || {};
+        args.method = '_stop';
         this._getChannel(args.channel).push(args);
     },
     
@@ -88,14 +99,16 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
      *
      * The args parameter supports the following name / value pairs.
      *
-     * :param name:
+     * :param name: Name of the property to change.
      * :type name: string
-     * :param value:
+     * :param value: Value to set for the property
      * :type value: any
-     * :param channel:
+     * :param channel: Channel name on which to queue the change. Defaults to
+     *   'default'.
      * :type channel: string
      */
     setProperty: function(args) {
+        if(!args || !args.name) throw new Error('args.name required');
         args.method = '_setProperty';
         this._getChannel(args.channel).push(args);
     },
@@ -106,14 +119,17 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
      *
      * The args parameter supports the following name / value pairs.
      *
-     * :param name:
+     * :param name: Name of the property value to fetch.
      * :type name: string
-     * :param channel:
+     * :param channel: Channel name on which to queue the fetch. Defaults to
+     *   'default'.
+     * :type channel: string
      * :type channel: string
      * :return: Deferred with a callback to get the property value
      * :rtype: dojo.Deferred
      */
     getProperty: function(args) {
+        if(!args || !args.name) throw new Error('args.name required');
         args.method = '_getProperty';
         args.deferred = new dojo.Deferred();
         this._getChannel(args.channel).push(args);
@@ -124,7 +140,8 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
      * Queues a reset of all channel property values to their default values.
      * The args parameter supports the following name / value pairs.
      *
-     * :param channel:
+     * :param channel: Channel name on which to queue the reset. Defaults to
+     *   'default'.
      * :type channel: string
      */
     reset: function(args) {
@@ -157,11 +174,12 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
     /**
      * Adds an observer for channel events.
      *
-     * :param func:
+     * :param func: Callback function to invoke on channel events.
      * :type func: function
-     * :param channel: 
+     * :param channel: Channel name to observe. Defaults to 'default'.
      * :type channel: string
-     * :param actions:
+     * :param actions: Event names to observe. Defaults to all events if
+     *   undefined.
      * :type actions: array
      * :return: Token to use when removing the observer
      * :rtype: object
@@ -174,7 +192,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
     /**
      * Removes an observer of channel events.
      *
-     * :param token:
+     * :param token: Token returned when registering the observer
      * :type token: object
      */
     removeObserver: function(token) {
@@ -195,6 +213,14 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
     }
 });
 
+/**
+ * Private. Shared cache implementation for JSonic. The cache maintains three 
+ * pieces of information to reduce speech/sound output latency:
+ *
+ * 1. <audio> nodes pointing to speech/sound URLs cloned for reused by channels 
+ * 2. Filenames of speech utterances already synthesized on the server
+ * 3. Utterance / sound frequency tracking for cache warming
+ */
 dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
     jsonicURI: null,
     postMixInProperties: function() {
@@ -347,6 +373,9 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
     }
 });
 
+/**
+ * Private. Independent speech / sound channel implementation for JSonic.
+ */
 dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
     cache: null,
     postMixInProperties: function() {
@@ -476,7 +505,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
             volume: 1.0,
             loop: false,
             engine : 'espeak',
-            voice: 'en/en-r+f1'
+            voice: 'en/en-r'
         };
     },
 
