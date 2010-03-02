@@ -15,34 +15,50 @@
   </head>
   <body>
     <h1>JSonic Audio Examples</h1>
+    <button id="stop" style="position: fixed; right: 5px; top: 5px;">Stop</button>
     <div>
       <h2>Single Say</h2>
-      <p>Speaks the text "Hello world"</p>
+      <p>Speaks the text "The rain in Spain falls mainly on the plain."</p>
       <button id="singleSay">Say</button>
     </div>
     <div>
+      <h2>Sequential Say</h2>
+      <p>Speaks one utterance followed by another.</p>
+      <button id="sequentialSay">Say</button>
+    </div>
+    <div>
+      <h2>Simultaneous Say</h2>
+      <p>Speaks two utterances at the same time in different voices.</p>
+      <button id="simultaneousSay">Say</button>
+    </div>
+    <div>
+      <h2>Speech Properties</h2>
+      <p>Speaks an utterance quickly, then one slowly.</p>
+      <button id="propertiesSay">Say</button>
+    </div>
+    <div>
       <h2>Single Sound</h2>
-      <p>Plays a single sound</p>
+      <p>Plays a single sound.</p>
       <button id="singleSound">Play</button>
     </div>
     <div>
       <h2>Sequential Sound</h2>
-      <p>Plays one sound and then another</p>
+      <p>Plays one sound and then another.</p>
       <button id="sequentialSound">Play</button>
     </div>
     <div>
       <h2>Simultaneous Sound</h2>
-      <p>Plays two sounds at once</p>
+      <p>Plays two sounds at once.</p>
       <button id="simultaneousSound">Play</button>
     </div>
     <div>
       <h2>Sound Properties</h2>
-      <p>Plays one sound softly and then another at full volume</p>
+      <p>Plays one sound softly and then another at full volume.</p>
       <button id="propertiesSound">Play</button>
     </div>
     <div>
       <h2>Get engines and info</h2>
-      <p>Logs information about the available speech engines to the browser JS console</p>
+      <p>Logs information about the available speech engines to the browser JS console.</p>
       <button id="engineInfo">Fetch</button>
     </div>
   </body>
