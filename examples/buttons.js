@@ -5,7 +5,6 @@
  * :copyright: Peter Parente 2010
  * :license: BSD
 **/
-dojo.prov
 dojo.require('info.mindtrove.JSonic');
 var buttonHandlers = {
     stop: function(js) {
