@@ -1,38 +1,50 @@
 /*
- * Copyright (c) 2010 Peter Parente based on Outfox
+ * Simple examples of JSonic. Click buttons to hear speech and sound.
  *
- * Permission to use, copy, modify, and distribute this software for any
- * purpose with or without fee is hereby granted, provided that the above
- * copyright notice and this permission notice appear in all copies.
- *
- * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
- * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
- * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
- * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
- * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
- * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ * :requires: Dojo 1.4, JSonic REST API on server
+ * :copyright: Peter Parente 2010
+ * :license: BSD
 **/
+dojo.prov
 dojo.require('info.mindtrove.JSonic');
 var buttonHandlers = {
-    singleSay: function(js) {
-        js.say({text : 'Hello world!', cache: true});
+    stop: function(js) {
+        js.stop({channel : 'default'});
+        js.stop({channel : 'second'});
+        js.reset({channel : 'default'});
+        js.reset({channel : 'second'});
     },
-
+    singleSay: function(js) {
+        js.say({text : 'The rain in Spain falls mainly on the plain.', cache: true});
+    },
+    sequentialSay: function(js) {
+        js.say({text : 'The rain in Spain falls mainly on the plain.', cache: true});
+        js.say({text : 'The quick brown fox jumps over the lazy dog.', cache: true});
+    },
+    simultaneousSay: function(js) {
+        js.say({text : 'The rain in Spain falls mainly on the plain.', cache : true});
+        js.setProperty({name : 'voice', value : 'en/en-r+f1', channel : 'second'});
+        js.say({text : 'The quick brown fox jumps over the lazy dog.', cache : true, channel : 'second'});
+        js.reset({channel : 'second'});
+    },
+    propertiesSay: function(js) {
+        js.setProperty({name : 'rate', value : 350});
+        js.say({text : 'The rain in Spain falls mainly on the plain.', cache : true});
+        js.setProperty({name : 'rate', value : 150});
+        js.say({text : 'The quick brown fox jumps over the lazy dog.', cache : true});
+        js.reset();
+    },
     singleSound: function(js) {
         js.play({url : 'sounds/9081__tigersound__disappear', cache : true});
     },
-
     sequentialSound: function(js) {
         js.play({url : 'sounds/9081__tigersound__disappear', cache : true});
         js.play({url : 'sounds/18382__inferno__hvylas', cache : true});
-    },
-    
+    },    
     simultaneousSound: function(js) {
         js.play({url : 'sounds/9081__tigersound__disappear', cache : true});
         js.play({url : 'sounds/18382__inferno__hvylas', cache : true, channel : 'second'});
     },
-    
     propertiesSound: function(js) {
         js.setProperty({name : 'volume', value : 0.1});
         js.play({url : 'sounds/9081__tigersound__disappear', cache : true});
