@@ -4,7 +4,7 @@ Speech synthesizer implementations for JSonic.
 :var SYNTHS: Names paired with available ISynthesizer implementations
 :type SYNTHS: dict
 
-:requires: Python 2.6, iterpipes, espeak 1.36.02
+:requires: Python 2.6, iterpipes 0.3, espeak 1.36.02
 :copyright: Peter Parente 2010
 :license: BSD
 '''

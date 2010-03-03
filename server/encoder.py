@@ -4,7 +4,7 @@ Audio encoder implementations for JSonic.
 :var ENCODERS: Names paired with available IEncoder implementations
 :type ENCODERS: dict
 
-:requires: Python 2.6, iterpipes, lame 3.98.2, oggenc 1.2.0
+:requires: Python 2.6, iterpipes 0.3, lame 3.98.2, oggenc 1.2.0
 :copyright: Peter Parente 2010
 :license: BSD
 '''
