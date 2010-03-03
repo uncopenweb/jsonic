@@ -5,10 +5,26 @@ JSonic
 :Author: Peter Parente
 :Description: JavaScript API for speech and sound using HTML5 audio.
 
-Status
-======
+Requirements
+============
 
-My focus is currently on implementing the client-side API using Dojo and HTML5 audio. I will then concentrate on a server-side speech synthesis REST API using Tornado and Mongo.
+The client JS code requires:
+
+1. Dojo 1.4.1 (from a CDN is fine)
+2. A browser supporting the HTML5 <audio> node
+3. JSonic.js
+
+The server Python code requires these minimum versions:
+
+1. Twisted 0.2
+2. iterpipes 0.3
+3. espeak 1.36.02
+4. lame lame 3.98.2
+5. oggenc 1.2.0
+6. Mongo 1.2.4 (optional)
+7. PyMongo 1.4 (optional)
+
+Execute `python jsonic.py` to start the server. The see the demos under `examples/` for how to use the JS API.
 
 License
 =======
@@ -23,11 +39,8 @@ Todo
 
 Not necessarily in this order:
 
-* docstrings everywhere
 * sphinx doc
 * server tracking of app utterances
 * cache warming on app start
-* server cache flags on every utterace (privacy)
 * callback for property change
 * everything deferred?
-* switch to using pyttsx for synth?
