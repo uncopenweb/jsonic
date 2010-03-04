@@ -141,10 +141,10 @@ class EspeakSynth(ISynthesizer):
             self._opts.append('en/en-r')
 
         # store property portion of filename
-        self._optHash = hashlib.sha1(str(self._opts)).hexdigest()
+        self._optHash = hashlib.sha1('espeak' + str(self._opts)).hexdigest()
 
     def write_wav(self, utterance):
-        '''Implments ISynthesizer.write_wav.'''
+        '''Implements ISynthesizer.write_wav.'''
         utterHash = hashlib.sha1(utterance).hexdigest()
         hashFn = '%s-%s' % (utterHash, self._optHash)
         # write wave file into path
