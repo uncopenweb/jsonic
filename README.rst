@@ -16,7 +16,7 @@ The client JS code requires:
 
 The server Python code requires these minimum versions:
 
-1. Twisted 0.2
+1. Tornado 0.2
 2. iterpipes 0.3
 3. espeak 1.36.02
 4. lame lame 3.98.2
@@ -42,5 +42,3 @@ Not necessarily in this order:
 * sphinx doc
 * server tracking of app utterances
 * cache warming on app start
-* callback for property change
-* everything deferred?
