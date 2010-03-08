@@ -39,11 +39,17 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
      *   frequency. False to avoid caching for privacy or other reasons.
      *   Defaults to false.
      * :type cache: boolean
+     * :return: Object with 'before' and 'after' deferreds invoked just before
+     *   speech starts and when it finishes (parameter: true) or is stopped 
+     *   (parameter: false).
+     * :rtype: object
      */
     say: function(args) {
         if(!args || !args.text) throw new Error('args.text required');
         args.method = '_say';
+        args.defs = new info.mindtrove.JSonicDeferred();
         this._getChannel(args.channel).push(args);
+        return args.defs;
     },
     
     /**
@@ -62,11 +68,17 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
      *   frequency. False to avoid caching for privacy or other reasons.
      *   Defaults to false.
      * :type cache: boolean
+     * :return: Object with 'before' and 'after' deferreds invoked just before
+     *   sound starts and when it finishes (parameter: true) or is stopped 
+     *   (parameter: false).
+     * :rtype: object
      */
     play: function(args) {
         if(!args || !args.url) throw new Error('args.url required');
         args.method = '_play';
+        args.defs = new info.mindtrove.JSonicDeferred();
         this._getChannel(args.channel).push(args);
+        return args.defs;
     },
     
     /**
@@ -75,11 +87,16 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
      *
      * :param channel: Channel name to stop. Defaults to 'default.
      * :type channel: string
+     * :return: Object with 'before' and 'after' deferreds invoked just before
+     *   audio stops and right after.
+     * :rtype: object
      */
     stop: function(args) {
         args = args || {};
         args.method = '_stop';
+        args.defs = new info.mindtrove.JSonicDeferred();
         this._getChannel(args.channel).push(args);
+        return args.defs;
     },
     
     /**
@@ -105,11 +122,17 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
      * :param channel: Channel name on which to queue the change. Defaults to
      *   'default'.
      * :type channel: string
+     * :return: Object with 'before' and 'after' deferreds invoked just before
+     *   speech the property is set (parameter: old property value) and right 
+     *   after (parameter: new property value).
+     * :rtype: object
      */
     setProperty: function(args) {
         if(!args || !args.name) throw new Error('args.name required');
         args.method = '_setProperty';
+        args.defs = new info.mindtrove.JSonicDeferred();
         this._getChannel(args.channel).push(args);
+        return args.defs;
     },
 
     /**
@@ -123,16 +146,17 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
      * :param channel: Channel name on which to queue the fetch. Defaults to
      *   'default'.
      * :type channel: string
-     * :type channel: string
-     * :return: Deferred with a callback to get the property value
-     * :rtype: dojo.Deferred
+     * :return: Object with 'before' and 'after' deferreds invoked immediately
+     *   when the request is queued (parameter: current value) and after the
+     *   request is processed (parameter: current value).
+     * :rtype: object
      */
     getProperty: function(args) {
         if(!args || !args.name) throw new Error('args.name required');
         args.method = '_getProperty';
-        args.deferred = new dojo.Deferred();
+        args.defs = new info.mindtrove.JSonicDeferred();
         this._getChannel(args.channel).push(args);
-        return args.deferred;
+        return args.defs;
     },
     
     /**
@@ -142,11 +166,17 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
      * :param channel: Channel name on which to queue the reset. Defaults to
      *   'default'.
      * :type channel: string
+     * :return: Object with 'before' and 'after' deferreds invoked just before
+     *   the property reset (parameter: all old properties) and after the reset
+     *   (parameter: reset property values).
+     * :rtype: object
      */
     reset: function(args) {
         args = args || {};
         args.method = '_reset';
+        args.defs = new info.mindtrove.JSonicDeferred();
         this._getChannel(args.channel).push(args);
+        return args.defs;
     },
 
     /**
@@ -209,6 +239,78 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
             this._channels[id] = ch;
         }
         return ch;
+    }
+});
+
+/**
+ * Helper class. Contains two dojo.Deferreds for callbacks and errbacks before 
+ * and after a command is processed. Instances returned by many methods in 
+ * info.mindtrove.JSonic.
+ */
+dojo.declare('info.mindtrove.JSonicDeferred', dojo.Deferred, {
+    constructor: function() {
+        this.before = new dojo.Deferred();
+        this.after = new dojo.Deferred();
+    },
+    
+    /**
+     * Shortcut for this.before.addCallback.
+     *
+     * :return: This instance for call chaining.
+     */
+    callBefore: function(callback) {
+        this.before.addCallback(callback);
+        return this;
+    },
+
+    /**
+     * Shortcut for this.after.addCallback.
+     *
+     * :return: This instance for call chaining.
+     */    
+    callAfter: function(callback) {
+        this.after.addCallback(callback)
+        return this;
+    },
+    
+    /**
+     * Shortcut for this.before.addErrback.
+     *
+     * :return: This instance for call chaining.
+     */
+    errBefore: function(callback) {
+        this.before.addErrback(callback);
+        return this;
+    },
+    
+    /**
+     * Shortcut for this.after.addErrback.
+     *
+     * :return: This instance for call chaining.
+     */
+    errAfter: function(callback) {
+        this.after.addErrback(callback);
+        return this;
+    },
+    
+    /**
+     * Shortcut for this.before.addBoth.
+     *
+     * :return: This instance for call chaining.
+     */
+    anyBefore: function(callback) {
+        this.before.addErrback(callback);
+        return this;
+    },
+    
+    /**
+     * Shortcut for this.after.addBoth.
+     *
+     * :return: This instance for call chaining.
+     */
+    anyAfter: function(callback) {
+        this.after.addErrback(callback);
+        return this;
     }
 });
 
@@ -402,6 +504,8 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         this._queue = [];
         // busy processing a command or not
         this._busy = false;
+        // arguments for the current audio
+        this._args = null;
         // observers of callbacks on this channel
         this._observers = [];
         // current channel properties
@@ -417,7 +521,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
     push: function(args) {
         if(args.method == '_stop') {
             // stop immediately
-            this._stop();
+            this._stop(args);
             return;
         } else if(args.method == '_play') {
             // pre-load sound
@@ -431,6 +535,8 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
                 }
             });
             args.audio = this.cache.getSpeech(args, props);
+        } else if(args.method == '_getProperty') {
+            args.defs.before.callback(this._properties[args.name]);
         }
         this._queue.push(args);
         this._pump();
@@ -483,6 +589,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
     _say: function(args) {
         this._busy = true;
         this._kind = 'say';
+        this._args = args;
         var obj = (args.audio) ? args.audio : this.cache.getSpeech(args);
         if(obj.name == 'audio') {
             this._playAudioNode(obj.value);
@@ -495,12 +602,19 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
     _play: function(args) {
         this._busy = true;
         this._kind = 'play';
+        this._args = args;
         var node = (args.audio) ? args.audio : this.cache.getSound(args);
         this._playAudioNode(node);
     },
     
-    _stop: function() {
+    _stop: function(args) {
+        args.defs.before.callback();
         this._stopAudioNode();
+        args.defs.after.callback();
+        if(this._args) {
+            this._args.defs.after.callback(false);
+        }
+        this._args = null;
         this._queue = [];
         this._kind = null;
         this._name = null;
@@ -508,15 +622,18 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
     },
     
     _setProperty: function(args) {
+        args.defs.before.callback(this._properties[args.name]);
         this._properties[args.name] = args.value;
+        args.defs.after.callback(args.value);
     },
 
     _getProperty: function(args) {
         var value = this._properties[args.name];
-        args.deferred.callback(value);
+        args.defs.after.callback(value);
     },
     
     _reset: function(args) {
+        if(args) args.defs.before.callback(this._properties);
         this._properties = {
             pitch : 50,
             rate: 200,
@@ -525,6 +642,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
             engine : 'espeak',
             voice: 'en/en-r'
         };
+        if(args) args.defs.after.callback(this._properties);
     },
 
     _notify: function(notice) {
@@ -549,7 +667,10 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
             name : this._name,
             description: event.target.error
         };
+        this._args.defs.before.errback();
+        this._args.defs.after.errback();
         this._notify(notice);
+        this._args = null;
         this._busy = false;
         this._name = null;
         this._pump();        
@@ -562,7 +683,10 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
             name : this._name,
             description: error.message
         };
+        this._args.defs.before.errback();
+        this._args.defs.after.errback();
         this._notify(notice);
+        this._args = null;
         this._busy = false;
         this._name = null;
         this._pump();
@@ -576,7 +700,9 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
             name : this._name
         };
         this._stopAudioNode();
+        this._args.defs.after.callback(true);
         this._notify(notice);
+        this._args = null;
         this._busy = false;
         this._name = null;
         this._pump();
@@ -589,6 +715,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
             channel : this.id,
             name : this._name
         };
+        this._args.defs.before.callback();
         this._notify(notice);
     }
 });

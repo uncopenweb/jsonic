@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>JSonic Deferreds Example</title>
+    <style type="text/css">
+      p { display : none;}
+      div { height: 2em;}
+      .highlight { color: red; }
+    </style>
+    <script type="text/javascript">
+        var djConfig = {
+            isDebug: false, 
+            parseOnLoad: false,
+            baseUrl: './',
+            modulePaths: {'info.mindtrove' : '..'}
+        };
+    </script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/dojo/1.4.0/dojo/dojo.xd.js"></script>
+    <script type="text/javascript">
+    // show this the code in the next script block in the page for highlighting
+    dojo.ready(function() {
+      var code = dojo.query('script')[3].innerHTML;
+      var lines = code.split('\n');
+      var node = dojo.byId('code');
+      dojo.forEach(lines, function(line, i) {
+        if(!line) return;
+        dojo.create('span', {
+          innerHTML : i + ' ' + line+'\n',
+          id : i
+        }, node);
+      });
+    });
+    </script>
+    <script type="text/javascript">
+    dojo.require('info.mindtrove.JSonic');
+    var js;
+    dojo.ready(function() {
+      js = new info.mindtrove.JSonic();
+      // find all the p elements
+      dojo.query('p').forEach(function(item) {
+        var line = dojo.byId(item.getAttribute('data-line'));
+        // speak the text of each p element
+        js.say({text : item.textContent, cache : true}).callBefore(function() {
+          // before speaking each utterance, show its p
+          dojo.style(item, 'display', 'block');
+          if(line) dojo.addClass(line, 'highlight');
+        }).callAfter(function() {
+          // after speaking each utterance, hide its p
+          dojo.style(item, 'display', 'none');
+          if(line) dojo.removeClass(line, 'highlight');
+        });
+      });
+    });
+    </script>
+  </head>
+  <body>
+    <h1>JSonic Deferreds</h1>
+    <div>
+      <p>Greetings!</p>
+      <p>Welcome to yet another JSonic example.</p>
+      <p>This page uses JSonicDeferreds to sync speech with other actions.</p>
+      <p>Let's review its code below.</p>
+      <p data-line="1">We first import the JSonic module.</p>
+      <p data-line="3">After the page finishes loading,</p>
+      <p data-line="4">we create a JSonic instance.</p>
+      <p data-line="6">Using dojo.query, we find all the paragraphs on the page</p>
+      <p data-line="6">containing all of the text shown and spoken.</p>
+      <p data-line="7">For each paragraph, we read the data-line attribute</p>
+      <p data-line="7">which points to a line in the code to highlight.</p>
+      <p data-line="9">We then queue up the paragraph text to speak.</p>
+      <p data-line="9">The return value from say is a JSonicDeferred object.</p>
+      <p data-line="9">We register a deferred callback to invoke just before this paragraph speech starts</p>
+      <p data-line="13">and another to invoke just after the speech finishes.</p>
+      <p data-line="11">In the before callback, we show the paragraph</p>
+      <p data-line="12">and highlight its associated line of code.</p>
+      <p data-line="15">In the after callback, we hide the paragraph</p>
+      <p data-line="16">and cease highlighting any code lines.</p>
+      <p>All of this could be accomplished with a global observer callback</p>
+      <p>but deferreds make the code appear much more sequential.</p> 
+    </div>
+    <hr>
+    <pre id="code"></pre>
+  </body>
+</html>
