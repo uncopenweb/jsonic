@@ -331,7 +331,7 @@ class FilesHandler(tornado.web.StaticFileHandler):
             self.set_header("Content-Length", str(size))
             self.set_header("Content-Range", 'bytes %d-%d/%d' %
                 (start, end, stat_result[stat.ST_SIZE]))
-            file = open(abspath, "rb")
+        file = open(abspath, "rb")
         try:
             file.seek(start)
             self.write(file.read(size))
