@@ -299,7 +299,7 @@ dojo.declare('info.mindtrove.JSonicDeferred', dojo.Deferred, {
      * :return: This instance for call chaining.
      */
     anyBefore: function(callback) {
-        this.before.addErrback(callback);
+        this.before.addBoth(callback);
         return this;
     },
     
@@ -309,7 +309,7 @@ dojo.declare('info.mindtrove.JSonicDeferred', dojo.Deferred, {
      * :return: This instance for call chaining.
      */
     anyAfter: function(callback) {
-        this.after.addErrback(callback);
+        this.after.addBoth(callback);
         return this;
     }
 });
@@ -667,7 +667,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
             name : this._name,
             description: event.target.error
         };
-        this._args.defs.before.errback();
+        //this._args.defs.before.errback();
         this._args.defs.after.errback();
         this._notify(notice);
         this._args = null;
