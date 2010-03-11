@@ -44,7 +44,7 @@
           // before speaking each utterance, show its p
           dojo.style(item, 'display', 'block');
           if(line) dojo.addClass(line, 'highlight');
-        }).callAfter(function() {
+        }).anyAfter(function() {
           // after speaking each utterance, hide its p
           dojo.style(item, 'display', 'none');
           if(line) dojo.removeClass(line, 'highlight');
