@@ -138,7 +138,7 @@ class EspeakSynth(ISynthesizer):
         except AssertionError:
             raise SynthesizerError('invalid voice')
         except KeyError:
-            self._opts.append('en/en-r')
+            self._opts.append('default')
 
         # store property portion of filename
         self._optHash = hashlib.sha1('espeak' + str(self._opts)).hexdigest()

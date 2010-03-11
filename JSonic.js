@@ -108,7 +108,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
      * :volume: Speech and sound volume beteween [0.0, 1.0] (default: 1.0)
      * :loop: Audio looping (default: false)
      * :engine: Speech engine to use (default: espeak)
-     * :voice: Speech engine voice to use (default: en/en-r+f1)
+     * :voice: Speech engine voice to use (default: default)
      *
      * A channel may support additional speech properties if they are named
      * in the response from getEngineInfo.
@@ -640,7 +640,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
             volume: 1.0,
             loop: false,
             engine : 'espeak',
-            voice: 'en/en-r'
+            voice: 'default'
         };
         if(args) args.defs.after.callback(this._properties);
     },
