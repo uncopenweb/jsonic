@@ -331,12 +331,12 @@ class FilesHandler(tornado.web.StaticFileHandler):
             self.set_header("Content-Length", str(size))
             self.set_header("Content-Range", 'bytes %d-%d/%d' %
                 (start, end, stat_result[stat.ST_SIZE]))
-        file = open(abspath, "rb")
+        fh = open(abspath, "rb")
         try:
-            file.seek(start)
-            self.write(file.read(size))
+            fh.seek(start)
+            self.write(fh.read(size))
         finally:
-            file.close()
+            fh.close()
 
 def run_server(processes=4, debug=False):
     '''
