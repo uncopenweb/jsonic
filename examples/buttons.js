@@ -22,7 +22,7 @@ var buttonHandlers = {
     },
     simultaneousSay: function(js) {
         js.say({text : 'The rain in Spain falls mainly on the plain.', cache : true});
-        js.setProperty({name : 'voice', value : 'en/en-r+f1', channel : 'second'});
+        js.setProperty({name : 'voice', value : 'default+f1', channel : 'second'});
         js.say({text : 'The quick brown fox jumps over the lazy dog.', cache : true, channel : 'second'});
         js.reset({channel : 'second'});
     },
