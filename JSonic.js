@@ -330,7 +330,11 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
         // cache of speech utterances
         this._speechCache = {};
         // cache of speech filenames
-        this._speechFiles = {};
+        try {
+            this._speechFiles = localStorage;
+        } catch(e) {
+            this._speechFiles = {};
+        }
         // cache of sound utterances
         this._soundCache = {};
         // cache of requests for speech rendering in progress
@@ -435,6 +439,7 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
         }
         var response = this._speechFiles[key];
         if(response) {
+            response = dojo.fromJson(response);
             // build a new audio node for a known speech file url
             audioNode = this._onSpeechSynthed(null, args, response);
             return {name : 'audio', value : audioNode};
@@ -453,7 +458,7 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
             load: dojo.hitch(this, '_onSpeechSynthed', resultDef, args),
             error: dojo.hitch(this, '_onSynthError', resultDef, args)
         };
-        var xhrDef = dojo.xhrPost(request);
+        dojo.xhrPost(request);
         this._speechRenderings[key] = resultDef;
         return {name : 'deferred', value : resultDef};
     },
@@ -483,10 +488,10 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
             // cache the audio node
             this._speechCache[args.key] = node;
             // cache the speech file url and properties for server caching
-            this._speechFiles[args.key] = response;
+            this._speechFiles[args.key] = dojo.toJson(response);
         }
         if(resultDef) resultDef.callback(node);
-        return response;
+        return node;
     }
 });
 
