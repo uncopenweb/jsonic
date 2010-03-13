@@ -640,7 +640,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
     _reset: function(args) {
         if(args) args.defs.before.callback(this._properties);
         this._properties = {
-            pitch : 50,
+            pitch : 0.5,
             rate: 200,
             volume: 1.0,
             loop: false,

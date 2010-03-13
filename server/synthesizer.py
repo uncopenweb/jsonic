@@ -123,7 +123,7 @@ class EspeakSynth(ISynthesizer):
             self._opts.append('200')
 
         try:
-            pitch = int(properties['pitch'])
+            pitch = int(properties['pitch'] * 100)
             pitch = min(max(pitch, self.MIN_PITCH), self.MAX_PITCH)
             self._opts.append(str(pitch))
         except TypeError:
