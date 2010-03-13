@@ -574,7 +574,8 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
     _playAudioNode: function(node) {
         this._audioNode = node;
         this._audioNode.volume = this._properties.volume;
-        this._audioNode.loop = this._properties.loop;
+        // @todo: not yet supported well in browsers, do our own
+        //this._audioNode.loop = this._properties.loop;
         this._connects[0] = dojo.connect(node, 'play', this, '_onStart');
         this._connects[1] = dojo.connect(node, 'ended', this, '_onEnd');
         this._connects[2] = dojo.connect(node, 'error', this, '_onMediaError');
@@ -617,6 +618,15 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         this._stopAudioNode();
         args.defs.after.callback();
         if(this._args) {
+            // notify of end if currently playing
+            var notice = {
+                url : this._args.url,
+                action : 'finished-'+this._kind, 
+                completed: false,
+                channel : this.id,
+                name : this._name
+            };
+            this._notify(notice);
             this._args.defs.after.callback(false);
         }
         this._args = null;
@@ -672,7 +682,6 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
             name : this._name,
             description: event.target.error
         };
-        //this._args.defs.before.errback();
         this._args.defs.after.errback();
         this._notify(notice);
         this._args = null;
@@ -702,8 +711,17 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
             url : event.target.src,
             action : 'finished-'+this._kind, 
             channel : this.id,
-            name : this._name
+            name : this._name,
+            completed: true
         };
+        if(this._properties.loop) {
+            // start playing again, loop attr not implemented well in browsers
+            this._audioNode.load();
+            this._audioNode.play();
+            // don't listen to start events anymore for this sound
+            dojo.disconnect(this._connects[0]);
+            return;
+        }
         this._stopAudioNode();
         this._args.defs.after.callback(true);
         this._notify(notice);

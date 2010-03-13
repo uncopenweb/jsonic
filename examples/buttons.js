@@ -51,7 +51,11 @@ var buttonHandlers = {
         js.play({url : 'sounds/18382__inferno__hvylas', cache : true});
         js.reset();
     },
-    
+    loopingSound: function(js) {
+        js.setProperty({name : 'loop', value : true});
+        js.play({url : 'sounds/9081__tigersound__disappear', cache : true});
+        js.reset();
+    },
     engineInfo: function(js) {
         console.log('fetching engines')
         js.getEngines().addCallback(function(response) {
