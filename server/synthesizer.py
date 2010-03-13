@@ -179,11 +179,11 @@ class EspeakSynth(ISynthesizer):
                 'pitch' : {
                     'minimum' : cls.MIN_PITCH, 
                     'maximum' : cls.MAX_PITCH,
-                    'default' : 50
+                    'default' : 0.5
                 }, 
                 'voices' : {
                     'values' : list(voices),
-                    'default' : 'en/en-r'
+                    'default' : 'default'
                 }
             }
         return cls.INFO
