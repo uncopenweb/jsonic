@@ -105,6 +105,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
      * properties:
      *
      * :rate: Speech rate in words per minute (default: 200)
+     * :pitch: Speech pitch between [0.0, 1.0] (default: 0.5)
      * :volume: Speech and sound volume beteween [0.0, 1.0] (default: 1.0)
      * :loop: Audio looping (default: false)
      * :engine: Speech engine to use (default: espeak)
