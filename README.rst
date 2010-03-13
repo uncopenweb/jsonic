@@ -13,6 +13,7 @@ The client JS code requires:
 1. Dojo 1.4.1 (from a CDN is fine)
 2. A browser supporting the HTML5 <audio> node
 3. JSonic.js
+4. A browser supporting HTML5 localStorage (optional)
 
 The server Python code requires these minimum versions:
 
@@ -21,8 +22,6 @@ The server Python code requires these minimum versions:
 3. espeak 1.36.02
 4. lame lame 3.98.2
 5. oggenc 1.2.0
-6. Mongo 1.2.4 (optional)
-7. PyMongo 1.4 (optional)
 
 Execute `python jsonic.py` to start the server. The see the demos under `examples/` for how to use the JS API.
 
@@ -40,5 +39,5 @@ Todo
 Not necessarily in this order:
 
 * sphinx doc
+* dynamic server engines, encoders
 * server tracking of app utterances
-* cache warming on app start
