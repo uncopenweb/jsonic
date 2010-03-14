@@ -12,8 +12,8 @@ dojo.require('dijit._Widget');
  * JSonic widget for application use.
  */
 dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
-    // root of the JSonic server REST API, defaults to the current uri 
-    jsonicURI: dojo.moduleUrl('', '../'),
+    // root of the JSonic server REST API, defaults to /
+    jsonicURI: '/',
     postMixInProperties: function() {
         // created audio channels
         this._channels = {};
@@ -362,7 +362,7 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
             def.callback(names);
         } else {
             var request = {
-                url : this.jsonicURI.uri+'engine',
+                url : this.jsonicURI+'engine',
                 handleAs: 'json',
                 load: dojo.hitch(this, function(response) {
                     this._engineCache = {};
@@ -381,7 +381,7 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
             def.callback(this._engineCache[name]);
         } else {
             var request = {
-                url : this.jsonicURI.uri+'engine/'+name,
+                url : this.jsonicURI+'engine/'+name,
                 handleAs: 'json',
                 load: dojo.hitch(this, function(response) {
                     this._engineCache[name] = response.result;
@@ -453,7 +453,7 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
         };
         resultDef = new dojo.Deferred();
         var request = {
-            url : this.jsonicURI.uri+'synth',
+            url : this.jsonicURI+'synth',
             handleAs: 'json',
             postData : dojo.toJson(speechParams),
             load: dojo.hitch(this, '_onSpeechSynthed', resultDef, args),
@@ -482,7 +482,7 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
         delete this._speechRenderings[args.key];
         var node = dojo.create('audio');
         node.autobuffer = true;
-        node.src = this.jsonicURI.uri+'files/'+response.result.text+this._ext;
+        node.src = this.jsonicURI+'files/'+response.result.text+this._ext;
         // @todo: don't let caches grow unbounded
         // @todo: distinguish server caching from audio node caching
         if(args.cache) {
