@@ -177,8 +177,8 @@ class EspeakSynth(ISynthesizer):
                     'default' : 200
                 },
                 'pitch' : {
-                    'minimum' : cls.MIN_PITCH, 
-                    'maximum' : cls.MAX_PITCH,
+                    'minimum' : 0.0, 
+                    'maximum' : 1.0,
                     'default' : 0.5
                 }, 
                 'voices' : {
