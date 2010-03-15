@@ -14,46 +14,46 @@ var buttonHandlers = {
         js.reset({channel : 'second'});
     },
     singleSay: function(js) {
-        js.say({text : 'The rain in Spain falls mainly on the plain.', cache: true});
+        js.say({text : 'The rain in Spain falls mainly on the plain.'});
     },
     sequentialSay: function(js) {
         js.say({text : 'The rain in Spain falls mainly on the plain.', cache: true});
         js.say({text : 'The quick brown fox jumps over the lazy dog.', cache: true});
     },
     simultaneousSay: function(js) {
-        js.say({text : 'The rain in Spain falls mainly on the plain.', cache : true});
+        js.say({text : 'The rain in Spain falls mainly on the plain.'});
         js.setProperty({name : 'voice', value : 'default+f1', channel : 'second'});
-        js.say({text : 'The quick brown fox jumps over the lazy dog.', cache : true, channel : 'second'});
+        js.say({text : 'The quick brown fox jumps over the lazy dog.', channel : 'second'});
         js.reset({channel : 'second'});
     },
     propertiesSay: function(js) {
         js.setProperty({name : 'rate', value : 350});
-        js.say({text : 'The rain in Spain falls mainly on the plain.', cache : true});
+        js.say({text : 'The rain in Spain falls mainly on the plain.'});
         js.setProperty({name : 'rate', value : 150});
-        js.say({text : 'The quick brown fox jumps over the lazy dog.', cache : true});
+        js.say({text : 'The quick brown fox jumps over the lazy dog.'});
         js.reset();
     },
     singleSound: function(js) {
-        js.play({url : 'sounds/9081__tigersound__disappear', cache : true});
+        js.play({url : 'sounds/9081__tigersound__disappear'});
     },
     sequentialSound: function(js) {
-        js.play({url : 'sounds/9081__tigersound__disappear', cache : true});
-        js.play({url : 'sounds/18382__inferno__hvylas', cache : true});
+        js.play({url : 'sounds/9081__tigersound__disappear'});
+        js.play({url : 'sounds/18382__inferno__hvylas'});
     },    
     simultaneousSound: function(js) {
-        js.play({url : 'sounds/9081__tigersound__disappear', cache : true});
-        js.play({url : 'sounds/18382__inferno__hvylas', cache : true, channel : 'second'});
+        js.play({url : 'sounds/9081__tigersound__disappear'});
+        js.play({url : 'sounds/18382__inferno__hvylas', channel : 'second'});
     },
     propertiesSound: function(js) {
         js.setProperty({name : 'volume', value : 0.1});
-        js.play({url : 'sounds/9081__tigersound__disappear', cache : true});
+        js.play({url : 'sounds/9081__tigersound__disappear'});
         js.setProperty({name : 'volume', value : 1.0});
-        js.play({url : 'sounds/18382__inferno__hvylas', cache : true});
+        js.play({url : 'sounds/18382__inferno__hvylas'});
         js.reset();
     },
     loopingSound: function(js) {
         js.setProperty({name : 'loop', value : true});
-        js.play({url : 'sounds/9081__tigersound__disappear', cache : true});
+        js.play({url : 'sounds/9081__tigersound__disappear'});
         js.reset();
     },
     engineInfo: function(js) {
@@ -84,7 +84,7 @@ function onEnd(notice) {
 }
 
 dojo.ready(function() {
-    var js = new info.mindtrove.JSonic();
+    var js = new info.mindtrove.JSonic({defaultCaching : true});
     js.addObserver(onStart)
     dojo.query('button').forEach(function(node) {
         dojo.connect(node, 'onclick', dojo.partial(buttonHandlers[node.id], js));

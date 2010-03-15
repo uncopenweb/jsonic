@@ -14,6 +14,8 @@ dojo.require('dijit._Widget');
 dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
     // root of the JSonic server REST API, defaults to /
     jsonicURI: '/',
+    // cache speech / sounds by default or not? defaults to false for privacy
+    defaultCaching: false,
     postMixInProperties: function() {
         // created audio channels
         this._channels = {};
@@ -37,7 +39,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
      * :type name: string
      * :param cache: True to cache the utterance locally and track its 
      *   frequency. False to avoid caching for privacy or other reasons.
-     *   Defaults to false.
+     *   Defaults to the instance variable defaultCaching.
      * :type cache: boolean
      * :return: Object with 'before' and 'after' deferreds invoked just before
      *   speech starts and when it finishes (parameter: true) or is stopped 
@@ -46,6 +48,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
      */
     say: function(args) {
         if(!args || !args.text) throw new Error('args.text required');
+        args.cache = (args.cache == undefined) ? this.defaultCaching : args.cache;
         args.method = '_say';
         args.defs = new info.mindtrove.JSonicDeferred();
         this._getChannel(args.channel).push(args);
@@ -56,7 +59,9 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
      * Queues speech on a channel. The args parameter supports the following
      * name / value pairs.
      *
-     * :param url: URL of the sound to play.
+     * :param url: URL of the sound to play minus the extension. The extension
+     *   is added properly based on the media type supported by the browser.
+     *   (currently: .ogg or .mp3)
      * :type url: string
      * :param channel: Channel name on which to queue the sound. Defaults to
      *   'default'.
@@ -66,7 +71,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
      * :type name: string
      * :param cache: True to cache the utterance locally and track its 
      *   frequency. False to avoid caching for privacy or other reasons.
-     *   Defaults to false.
+     *   Defaults to the instance variable defaultCaching.
      * :type cache: boolean
      * :return: Object with 'before' and 'after' deferreds invoked just before
      *   sound starts and when it finishes (parameter: true) or is stopped 
@@ -75,6 +80,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
      */
     play: function(args) {
         if(!args || !args.url) throw new Error('args.url required');
+        args.cache = (args.cache == undefined) ? this.defaultCaching : args.cache;
         args.method = '_play';
         args.defs = new info.mindtrove.JSonicDeferred();
         this._getChannel(args.channel).push(args);
