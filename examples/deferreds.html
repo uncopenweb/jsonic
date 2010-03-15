@@ -35,12 +35,12 @@
     dojo.require('info.mindtrove.JSonic');
     var js;
     dojo.ready(function() {
-      js = new info.mindtrove.JSonic();
+      js = new info.mindtrove.JSonic({defaultCaching : true});
       // find all the p elements
       dojo.query('p').forEach(function(item) {
         var line = dojo.byId(item.getAttribute('data-line'));
         // speak the text of each p element
-        js.say({text : item.textContent, cache : true}).callBefore(function() {
+        js.say({text : item.textContent}).callBefore(function() {
           // before speaking each utterance, show its p
           dojo.style(item, 'display', 'block');
           if(line) dojo.addClass(line, 'highlight');
