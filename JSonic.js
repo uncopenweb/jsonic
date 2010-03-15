@@ -679,6 +679,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
     _onMediaError: function(event) {
         var notice = {
             action : 'error',
+            url : event.target.src,
             channel : this.id,
             name : this._name,
             description: event.target.error
