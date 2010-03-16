@@ -578,7 +578,9 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         }
     },
 
-    _playAudioNode: function(node) {
+    _playAudioNode: function(args, node) {
+        // don't play if we've stopped in the meantime
+        if(this._args != args) return;
         this._audioNode = node;
         this._audioNode.volume = this._properties.volume;
         // @todo: not yet supported well in browsers, do our own
@@ -605,10 +607,10 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         this._args = args;
         var obj = (args.audio) ? args.audio : this.cache.getSpeech(args);
         if(obj.name == 'audio') {
-            this._playAudioNode(obj.value);
+            this._playAudioNode(args, obj.value);
         } else if(obj.name == 'deferred') {
-            obj.value.addCallback(dojo.hitch(this, '_playAudioNode'));
-            obj.value.addErrback(dojo.hitch(this, '_onSynthError'));
+            obj.value.addCallback(dojo.hitch(this, '_playAudioNode', this._args));
+            obj.value.addErrback(dojo.hitch(this, '_onSynthError', this._args));
         }
     },
     
@@ -617,7 +619,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         this._kind = 'play';
         this._args = args;
         var node = (args.audio) ? args.audio : this.cache.getSound(args);
-        this._playAudioNode(node);
+        this._playAudioNode(args, node);
     },
     
     _stop: function(args) {
@@ -698,15 +700,15 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         this._pump();        
     },
     
-    _onSynthError: function(error) {
+    _onSynthError: function(args, error) {
         var notice = {
             action : 'error',
             channel : this.id,
             name : this._name,
             description: error.message
         };
-        this._args.defs.before.errback();
-        this._args.defs.after.errback();
+        args.defs.before.errback();
+        args.defs.after.errback();
         this._notify(notice);
         this._args = null;
         this._busy = false;
