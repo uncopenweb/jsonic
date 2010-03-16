@@ -673,7 +673,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         var obs = this._observers;
         for(var i=0; i < obs.length; i++) {
             var ob = obs[i];
-            if(!ob.actions || dojo.indexOf(ob.actions, notice.action)) {
+            if(!ob.actions || dojo.indexOf(ob.actions, notice.action) != -1) {
                 try {
                     ob.func(notice);
                 } catch(e) {
