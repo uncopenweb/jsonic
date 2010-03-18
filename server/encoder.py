@@ -58,7 +58,7 @@ class OggEncoder(IEncoder):
         wav = os.path.join(self._path, hashFn+'.wav')
         ogg = os.path.join(self._path, hashFn+'.ogg')
         if not os.path.isfile(ogg):
-            c = iterpipes.cmd('oggenc {} -o {}', wav, ogg)
+            c = iterpipes.cmd('oggenc --quiet {} -o {}', wav, ogg)
             ret = iterpipes.call(c)
 
 class Mp3Encoder(IEncoder):
@@ -74,7 +74,7 @@ class Mp3Encoder(IEncoder):
         wav = os.path.join(self._path, hashFn+'.wav')
         mp3 = os.path.join(self._path, hashFn+'.mp3')
         if not os.path.isfile(mp3):
-            c = iterpipes.cmd('lame {}  {}', wav, mp3)
+            c = iterpipes.cmd('lame --quiet {}  {}', wav, mp3)
             ret = iterpipes.call(c)
 
 # global list of available synth implementations
