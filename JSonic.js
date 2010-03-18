@@ -106,8 +106,8 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
     },
     
     /**
-     * Queues a change in channel property that affects all speech and sound
-     * output following it in the queue. All channels support the following
+     * Executes or queues a change in channel property that affects all speech 
+     * and sound output following it. All channels support the following
      * properties:
      *
      * :rate: Speech rate in words per minute (default: 200)
@@ -126,6 +126,9 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
      * :type name: string
      * :param value: Value to set for the property
      * :type value: any
+     * :param immediate: Set properties immediately or when processed in the
+     *   channel queue. (default: false)
+     * :type immediate: bool
      * :param channel: Channel name on which to queue the change. Defaults to
      *   'default'.
      * :type channel: string
@@ -531,7 +534,11 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
     },
     
     push: function(args) {
-        if(args.method == '_stop') {
+        if(args.method == '_setProperty' && args.immediate) {
+            // set property now
+            this._setProperty(args);
+            return;
+        } else if(args.method == '_stop') {
             // stop immediately
             this._stop(args);
             return;
@@ -648,6 +655,10 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
     _setProperty: function(args) {
         args.defs.before.callback(this._properties[args.name]);
         this._properties[args.name] = args.value;
+        // set local properties now
+        if(this._audioNode && args.name == 'volume') {
+            this._audioNode.volume = args.value;
+        }
         args.defs.after.callback(args.value);
     },
 
