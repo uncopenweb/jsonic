@@ -630,26 +630,30 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
     },
     
     _stop: function(args) {
+        var cargs = this._args;
+        var cname = this._name;
+        var ckind = this._kind;
         args.defs.before.callback();
         this._stopAudioNode();
-        args.defs.after.callback();
-        if(this._args) {
-            // notify of end if currently playing
-            var notice = {
-                url : this._args.url,
-                action : 'finished-'+this._kind, 
-                completed: false,
-                channel : this.id,
-                name : this._name
-            };
-            this._notify(notice);
-            this._args.defs.after.callback(false);
-        }
+        // clear everything before giving after callbacks
         this._args = null;
         this._queue = [];
         this._kind = null;
         this._name = null;
         this._busy = false;
+        args.defs.after.callback();
+        if(cargs) {
+            // notify of end if currently playing
+            var notice = {
+                url : cargs.url,
+                action : 'finished-'+ckind, 
+                completed: false,
+                channel : this.id,
+                name : cname
+            };
+            cargs.defs.after.callback(false);
+            this._notify(notice);
+        }
     },
     
     _setProperty: function(args) {
@@ -703,11 +707,13 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
             name : this._name,
             description: event.target.error
         };
-        this._args.defs.after.errback();
-        this._notify(notice);
+        // clear everything before after callback
+        var cargs = this._args;
         this._args = null;
         this._busy = false;
         this._name = null;
+        cargs.defs.after.errback();
+        this._notify(notice);
         this._pump();        
     },
     
@@ -718,12 +724,13 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
             name : this._name,
             description: error.message
         };
-        args.defs.before.errback();
-        args.defs.after.errback();
-        this._notify(notice);
+        // clear everything before after callback
         this._args = null;
         this._busy = false;
         this._name = null;
+        args.defs.before.errback();
+        args.defs.after.errback();
+        this._notify(notice);
         this._pump();
     },
 
@@ -744,11 +751,13 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
             return;
         }
         this._stopAudioNode();
-        this._args.defs.after.callback(true);
-        this._notify(notice);
+        // clear everything before after callback
+        var cargs = this._args;
         this._args = null;
         this._busy = false;
         this._name = null;
+        cargs.defs.after.callback(true);
+        this._notify(notice);
         this._pump();
     },
     
