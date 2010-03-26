@@ -278,12 +278,12 @@ class FilesHandler(tornado.web.StaticFileHandler):
         '''
         abspath = os.path.abspath(os.path.join(self.root, path))
         if not abspath.startswith(self.root):
-            raise HTTPError(403, "%s is not in root static directory", path)
+            raise tornado.web.HTTPError(403, "%s is not in root static directory", path)
         if not os.path.exists(abspath):
-            raise HTTPError(404)
+            raise tornado.web.HTTPError(404)
         if not os.path.isfile(abspath):
-            raise HTTPError(403, "%s is not a file", path)
- 
+            raise tornado.web.HTTPError(403, "%s is not a file", path)
+
         stat_result = os.stat(abspath)
         modified = datetime.datetime.fromtimestamp(stat_result[stat.ST_MTIME])
  
