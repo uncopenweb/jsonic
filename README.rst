@@ -39,5 +39,7 @@ Todo
 Not necessarily in this order:
 
 * sphinx doc
+* local storage utterance tracking
+* smarter LRU node vs filename caching
 * dynamic server engines, encoders
-* server tracking of app utterances
+* server tracking of app utterances?
