@@ -360,6 +360,15 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
         }
     },
     
+    resetCache: function(args) {
+        try {
+            this._speechFiles.clear()
+        } catch(e) {
+            this._speechFiles = {};
+        }
+        delete this._speechCache[args.key];
+    },
+    
     getEngines: function() {
         var request, def;
         if(this._engineCache) {
@@ -707,7 +716,12 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
             name : this._name,
             description: event.target.error
         };
-        // clear everything before after callback
+        if(this._kind == 'say') {
+            // if speech, dump the entire local cache assuming we need a
+            // resynth of everything
+            this.cache.resetCache(this._args);
+        }
+        // clear everything before the callback
         var cargs = this._args;
         this._args = null;
         this._busy = false;
