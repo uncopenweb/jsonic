@@ -153,7 +153,6 @@ class EspeakSynth(ISynthesizer):
             args = self._opts + [wav]
             c = iterpipes.cmd('speak -s{} -p{} -v{} -w{}', *args)
             ret = iterpipes.call(c, utterance.encode('utf-8'))
-            print ret
         return hashFn
 
     @classmethod
