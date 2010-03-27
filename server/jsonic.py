@@ -244,19 +244,6 @@ class EngineHandler(JSonicHandler):
                 ret = {'success' : True, 'result' : info}
                 self.write(ret)
 
-# @todo: implement using mongo + worker pool for 
-class CacheHandler(JSonicHandler):
-    '''
-    Stores and retrieves utterance caching metrics on behalf of an application.
-    Used by an application to warm its client-side cache at load time to 
-    reduce speech and sound output latency.
-    '''
-    def get(self, app):
-        pass
-    
-    def post(self, app):
-        pass
-
 class FilesHandler(tornado.web.StaticFileHandler):
     '''
     Retrieves cached speech files. Overrides the base class implementation to
@@ -357,8 +344,7 @@ def run_server(processes=4, debug=False):
         (r'/engine', EngineHandler),
         (r'/engine/([a-zA-Z0-9]+)', EngineHandler),
         (r'/synth', SynthHandler),
-        (r'/files/([a-f0-9]+-[a-f0-9]+\..*)', FilesHandler, {'path' : './files'}),
-        (r'/cache/([a-z0-9]+)', CacheHandler)
+        (r'/files/([a-f0-9]+-[a-f0-9]+\..*)', FilesHandler, {'path' : './files'})
     ], debug=debug, **kwargs)
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(8888)
