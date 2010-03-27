@@ -19,6 +19,7 @@ import datetime
 import time
 import os
 import stat
+import optparse
 
 # path containing synthed and encoded speech files
 CACHE_PATH = os.path.join(os.path.dirname(__file__), 'files')
@@ -324,20 +325,27 @@ class FilesHandler(tornado.web.StaticFileHandler):
         finally:
             fh.close()
 
-def run_server(processes=4, debug=False):
+def run(port=8888, processes=4, debug=False, static=False):
     '''
     Runs an instance of the JSonic server.
     
-    :param debug: True to enable automatic server reloading for debugging.
-        Defaults to False.
-    :type debug: bool
+    :param port: Server port
+    :type port: int
     :param processes: Number of worker processes for synthesis and caching
         operations. Defaults to 4.
     :type processes: int
+    :param debug: True to enable automatic server reloading for debugging.
+        Defaults to False.
+    :type debug: bool
+    :param static: True to serve ../ as static files to allow running of the
+        example code and downloading of the JS directly from this server. 
+        False to disable static file sharing when this server should handle the
+        JSonic REST API only.
+    :type static: bool
     '''
     kwargs = {}
     kwargs['pool'] = pool = multiprocessing.Pool(processes=processes)
-    if debug:
+    if static:
         # serve static files for debugging purposes
         kwargs['static_path'] = os.path.join(os.path.dirname(__file__), "../")
     application = tornado.web.Application([
@@ -347,9 +355,27 @@ def run_server(processes=4, debug=False):
         (r'/files/([a-f0-9]+-[a-f0-9]+\..*)', FilesHandler, {'path' : './files'})
     ], debug=debug, **kwargs)
     http_server = tornado.httpserver.HTTPServer(application)
-    http_server.listen(8888)
+    http_server.listen(port)
     ioloop = tornado.ioloop.IOLoop.instance()
     ioloop.start()
 
+def run_from_args():
+    '''
+    Runs an instance of the JSonic server with options pulled from the command
+    line.
+    '''
+    parser = optparse.OptionParser()
+    parser.add_option("-p", "--port", dest="port", default=8888,
+        help="server port number", type="int")
+    parser.add_option("-w", "--workers", dest="workers", default=4,
+        help="size of the worker pool", type="int")
+    parser.add_option("--debug", dest="debug", action="store_true", 
+        default=False, help="enable Tornado debug mode w/ automatic loading (default=false)")
+    parser.add_option("--static", dest="static", action="store_true", 
+        default=False, help="enable Tornado sharing of the jsonic root folder (default=false)")
+    (options, args) = parser.parse_args()
+    # run the server
+    run(options.port, options.workers, options.debug, options.static)
+    
 if __name__ == '__main__':
-    run_server(processes=4, debug=True)
+    run_from_args()
