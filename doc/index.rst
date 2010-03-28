@@ -2,7 +2,7 @@
 JSonic - JavaScript text-to-speech 
 ==================================
 
-This documentation describes JSonic v |release| and was rendered on |today|. 
+This documentation describes JSonic v |release| and was rendered on |today|. The documented APIs and behavior are **unstable** until v 1.0.
 
 .. rubric:: Table of Contents
 
@@ -11,6 +11,7 @@ This documentation describes JSonic v |release| and was rendered on |today|.
    
    start
    js
+   cache
    rest
    changelog
 
