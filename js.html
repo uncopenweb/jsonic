@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The JavaScript API &mdash; JSonic v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="JSonic v0.1 documentation" href="index.html" />
+    <link rel="next" title="About caching" href="cache.html" />
+    <link rel="prev" title="Getting Started" href="start.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="cache.html" title="About caching"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="start.html" title="Getting Started"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">JSonic v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="the-javascript-api">
+<h1>The JavaScript API<a class="headerlink" href="#the-javascript-api" title="Permalink to this headline">¶</a></h1>
+<p>The client implements a JavaScript interface allowing web applications to query</p>
+<div class="section" id="the-jsonic-interface">
+<h2>The JSonic interface<a class="headerlink" href="#the-jsonic-interface" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>The following examples assume an <tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonic</span></tt> instance with caching disabled by default exists in local variable <cite>js</cite>.</p>
+<div class="section" id="speaking-text">
+<h3>Speaking text<a class="headerlink" href="#speaking-text" title="Permalink to this headline">¶</a></h3>
+<p>To say an utterance on the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel and not cache the result, do the following:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s2">&quot;This is some text to speak.&quot;</span><span class="p">});</span>
+</pre></div>
+</div>
+<p>To say an utterance on the same channel and cache the result for lower latency, do the following:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s2">&quot;This is some text to speak.&quot;</span><span class="p">,</span> <span class="nx">cache</span> <span class="o">:</span> <span class="kc">true</span><span class="p">});</span>
+</pre></div>
+</div>
+<p>To queue two sequential utterances on the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel, do the following:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s2">&quot;This is some text to speak.&quot;</span><span class="p">});</span>
+<span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s2">&quot;I wait my turn.&quot;</span><span class="p">});</span>
+</pre></div>
+</div>
+<p>To say two utterances simultaneously, one of the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel and the other on the <tt class="xref docutils literal"><span class="pre">custom</span></tt> channel, do the following:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s2">&quot;This is some text to speak.&quot;</span><span class="p">});</span>
+<span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s2">&quot;Ha! I like to interrupt.&quot;</span><span class="p">,</span> <span class="nx">channel</span> <span class="o">:</span> <span class="s1">&#39;custom&#39;</span><span class="p">});</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="playing-a-sound">
+<h3>Playing a sound<a class="headerlink" href="#playing-a-sound" title="Permalink to this headline">¶</a></h3>
+<p>To play a sound, letting JSonic choose the proper format (OGG or MP3) based on the browser capabilities, do the following:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">play</span><span class="p">({</span><span class="nx">url</span> <span class="o">:</span> <span class="s1">&#39;http://somewhere.com/sounds/sound_effect&#39;</span><span class="p">});</span>
+</pre></div>
+</div>
+<p>where a file named <tt class="docutils literal"><span class="pre">sound_effect.mp3</span></tt> and/or <tt class="docutils literal"><span class="pre">sound_effect.ogg</span></tt> exists at the given URL.</p>
+</div>
+<div class="section" id="interrupting">
+<h3>Interrupting<a class="headerlink" href="#interrupting" title="Permalink to this headline">¶</a></h3>
+<p>To cease output on the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel and clear its queued commands, do the following:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="changing-voices">
+<h3>Changing voices<a class="headerlink" href="#changing-voices" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="changing-speech-rate">
+<h3>Changing speech rate<a class="headerlink" href="#changing-speech-rate" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="changing-volume">
+<h3>Changing volume<a class="headerlink" href="#changing-volume" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="listening-for-events">
+<h3>Listening for events<a class="headerlink" href="#listening-for-events" title="Permalink to this headline">¶</a></h3>
+<p>Say you have a JSonic event callback named <tt class="xref docutils literal"><span class="pre">onEvent()</span></tt> implemented as follows:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="kd">function</span> <span class="nx">onEvent</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+   <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">event</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>To register the callback for all events on the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel, do the following:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">tok1</span> <span class="o">=</span> <span class="nx">js</span><span class="p">.</span><span class="nx">addObserver</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>To register the callback only for sound start and error events on the <tt class="xref docutils literal"><span class="pre">custom</span></tt> channel, do the following:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">tok2</span> <span class="o">=</span> <span class="nx">js</span><span class="p">.</span><span class="nx">addObserver</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">,</span> <span class="s1">&#39;custom&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;start-play&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">]);</span>
+</pre></div>
+</div>
+<p>To unregister the callback on the default channel only, do the following:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">removeObserver</span><span class="p">(</span><span class="nx">tok1</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="taking-action-before-after-a-command">
+<h3>Taking action before / after a command<a class="headerlink" href="#taking-action-before-after-a-command" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">The JavaScript API</a><ul>
+<li><a class="reference external" href="#the-jsonic-interface">The JSonic interface</a></li>
+<li><a class="reference external" href="#examples">Examples</a><ul>
+<li><a class="reference external" href="#speaking-text">Speaking text</a></li>
+<li><a class="reference external" href="#playing-a-sound">Playing a sound</a></li>
+<li><a class="reference external" href="#interrupting">Interrupting</a></li>
+<li><a class="reference external" href="#changing-voices">Changing voices</a></li>
+<li><a class="reference external" href="#changing-speech-rate">Changing speech rate</a></li>
+<li><a class="reference external" href="#changing-volume">Changing volume</a></li>
+<li><a class="reference external" href="#listening-for-events">Listening for events</a></li>
+<li><a class="reference external" href="#taking-action-before-after-a-command">Taking action before / after a command</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="start.html"
+                                  title="previous chapter">Getting Started</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="cache.html"
+                                  title="next chapter">About caching</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/js.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="cache.html" title="About caching"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="start.html" title="Getting Started"
+             >previous</a> |</li>
+        <li><a href="index.html">JSonic v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2010, Peter Parente.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Getting Started &mdash; JSonic v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="JSonic v0.1 documentation" href="index.html" />
+    <link rel="next" title="The JavaScript API" href="js.html" />
+    <link rel="prev" title="JSonic - JavaScript text-to-speech" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="js.html" title="The JavaScript API"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="JSonic - JavaScript text-to-speech"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">JSonic v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="getting-started">
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p>JSonic consists of a server implementing a REST API for synthesizing speech utterances to web accessible files and client JavaScript that caches and plays speech and sound on demand. The current version implements the server using <a class="reference external" href="http://www.tornadoweb.org/">Tornado</a> and the client using <a class="reference external" href="http://dojotoolkit.org/">Dojo</a>.</p>
+<div class="section" id="obtaining-the-source-code">
+<h2>Obtaining the source code<a class="headerlink" href="#obtaining-the-source-code" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">Install <a class="reference external" href="http://git-scm.com/">git</a>.</p>
+</li>
+<li><p class="first">Clone the git repository:</p>
+<div class="highlight-bash"><div class="highlight"><pre>git clone git://github.com/parente/jsonic.git
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="running-the-tornado-server">
+<h2>Running the Tornado server<a class="headerlink" href="#running-the-tornado-server" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">Install the prerequisites listed on the <a class="reference external" href="http://www.tornadoweb.org/">Tornado</a> website.</p>
+</li>
+<li><p class="first">Install the <a class="reference external" href="http://www.tornadoweb.org/">Tornado</a> web server. (tested with v 0.2)</p>
+</li>
+<li><p class="first">Install the <a class="reference external" href="http://pypi.python.org/pypi/iterpipes">iterpipes</a> module. (tested with v 0.3)</p>
+</li>
+<li><p class="first">Install the <a class="reference external" href="http://espeak.sourceforge.net/">espeak</a> text-to-speech engine. (tested with v 1.36.02)</p>
+</li>
+<li><p class="first">Install <a class="reference external" href="http://lame.sourceforge.net/">LAME</a> for MP3 encoding support. (tested with v 3.98.2)</p>
+</li>
+<li><p class="first">Install the oggenc utility from <a class="reference external" href="http://www.xiph.org/downloads/">Vorbis tools</a> for OGG encoding support. (tested with v 1.2.0)</p>
+</li>
+<li><p class="first">Start the JSonic server on port 8888 with 4 worker processes using the following command.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd </span>jsonic/server
+python jsonic.py
+</pre></div>
+</div>
+</li>
+</ol>
+<p>To get a list of command line options, run the following command.</p>
+<blockquote>
+<div class="highlight-bash"><div class="highlight"><pre>python jsonic.py --help
+</pre></div>
+</div>
+</blockquote>
+</div>
+<div class="section" id="loading-the-jsonic-dojo-module">
+<h2>Loading the JSonic Dojo module<a class="headerlink" href="#loading-the-jsonic-dojo-module" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Place the <tt class="docutils literal"><span class="pre">JSonic.js</span></tt> file in a web accessible location.</li>
+<li>Include <a class="reference external" href="http://dojotoolkit.org/">Dojo</a> (tested with 1.4.2) in your web application.</li>
+<li>Inform Dojo of the location of the <cite>info.mindtrove</cite> namespace on disk.</li>
+<li>Use <tt class="xref docutils literal"><span class="pre">dojo.require()</span></tt> to load the JSonic module.</li>
+</ol>
+<p>See the HTML files in the <tt class="docutils literal"><span class="pre">examples/</span></tt> folder for complete applications satisfying these requirements.</p>
+</div>
+<div class="section" id="speaking-hello-world">
+<h2>Speaking &#8220;Hello world!&#8221;<a class="headerlink" href="#speaking-hello-world" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">Create a configuration object for JSonic.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">args</span> <span class="o">=</span> <span class="p">{</span><span class="nx">jsonicURI</span> <span class="o">:</span> <span class="s1">&#39;/jsonic&#39;</span><span class="p">,</span> <span class="nx">defaultCaching</span> <span class="o">:</span> <span class="kc">true</span><span class="p">};</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Create an instance of the JSonic class</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">js</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">info</span><span class="p">.</span><span class="nx">mindtrove</span><span class="p">.</span><span class="nx">JSonic</span><span class="p">(</span><span class="nx">args</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Invoke the <tt class="xref docutils literal"><span class="pre">JSonic.say()</span></tt> method.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s1">&#39;Hello world!&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Getting Started</a><ul>
+<li><a class="reference external" href="#obtaining-the-source-code">Obtaining the source code</a></li>
+<li><a class="reference external" href="#running-the-tornado-server">Running the Tornado server</a></li>
+<li><a class="reference external" href="#loading-the-jsonic-dojo-module">Loading the JSonic Dojo module</a></li>
+<li><a class="reference external" href="#speaking-hello-world">Speaking &#8220;Hello world!&#8221;</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="index.html"
+                                  title="previous chapter">JSonic - JavaScript text-to-speech</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="js.html"
+                                  title="next chapter">The JavaScript API</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/start.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="js.html" title="The JavaScript API"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="JSonic - JavaScript text-to-speech"
+             >previous</a> |</li>
+        <li><a href="index.html">JSonic v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2010, Peter Parente.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+  </body>
+</html>

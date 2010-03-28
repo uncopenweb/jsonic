@@ -1,0 +1,336 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The REST API &mdash; JSonic v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '#',
+        VERSION:     '0.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="JSonic v0.1 documentation" href="index.html" />
+    <link rel="next" title="Changelog" href="changelog.html" />
+    <link rel="prev" title="About caching" href="cache.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="changelog.html" title="Changelog"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cache.html" title="About caching"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">JSonic v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="the-rest-api">
+<h1>The REST API<a class="headerlink" href="#the-rest-api" title="Permalink to this headline">¶</a></h1>
+<p>The JSonic server implements a REST interface providing information about available speech engines, synthesizing speech to audio files, and fetching speech files. The server sets the HTTP status code properly on every response to indicate whether a request was process successfully (e.g., 200, 206) or an error occurred (e.g., 500).</p>
+<div class="section" id="get-engine">
+<h2>GET /engine<a class="headerlink" href="#get-engine" title="Permalink to this headline">¶</a></h2>
+<p>Gets a list of all available speech engines. The response body contains a JSON encoded object adhering to the following schema on success.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="p">{</span>
+   <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Response object including a list of available speech engines&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;properties&quot;</span> <span class="o">:</span> <span class="p">{</span>
+      <span class="s2">&quot;success&quot;</span> <span class="o">:</span> <span class="p">{</span>
+         <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;True to indicate success&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;bool&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;default&quot;</span> <span class="o">:</span> <span class="kc">true</span>
+      <span class="p">},</span>
+      <span class="s2">&quot;result&quot;</span> <span class="o">:</span> <span class="p">{</span>
+         <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;List of speech engine identifiers&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;items&quot;</span> <span class="o">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">}</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The response body contains a JSON encoded object adhering to the following schema on failure if possible.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="p">{</span>
+   <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Error response object&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;properties&quot;</span> <span class="o">:</span> <span class="p">{</span>
+      <span class="s2">&quot;success&quot;</span> <span class="o">:</span> <span class="p">{</span>
+         <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;False to indicate an error&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;boolean&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;default&quot;</span> <span class="o">:</span> <span class="kc">false</span>
+      <span class="p">},</span>
+      <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="p">{</span>
+         <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Human readable description of the error&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">}</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="get-engine-id">
+<h2>GET /engine/[id]<a class="headerlink" href="#get-engine-id" title="Permalink to this headline">¶</a></h2>
+<p>Gets information about the particular speech engine named by its identifier. The response body contains a JSON encoded object adhering to the following schema.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="p">{</span>
+   <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Response object including properties supported by the speech engine&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;properties&quot;</span> <span class="o">:</span> <span class="p">{</span>
+      <span class="s2">&quot;success&quot;</span> <span class="o">:</span> <span class="p">{</span>
+         <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;True to indicate success&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;bool&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;default&quot;</span> <span class="o">:</span> <span class="kc">true</span>
+      <span class="p">},</span>
+      <span class="s2">&quot;result&quot;</span> <span class="o">:</span> <span class="p">{</span>
+         <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Object with names of supported engine properties&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;properties&quot;</span> <span class="o">:</span> <span class="p">{</span>
+            <span class="s2">&quot;voices&quot;</span> <span class="o">:</span> <span class="p">{</span>
+               <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Object describing synthesizer voices&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;properties&quot;</span> <span class="o">:</span> <span class="p">{</span>
+                  <span class="s2">&quot;values&quot;</span> <span class="o">:</span> <span class="p">{</span>
+                     <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;List of available voice identifiers&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;items&quot;</span> <span class="o">:</span> <span class="s2">&quot;string&quot;</span>
+                  <span class="p">},</span>
+                  <span class="s2">&quot;default&quot;</span> <span class="o">:</span> <span class="p">{</span>
+                     <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Default voice identifier used if none provided in a /synth request&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;string&quot;</span>
+                  <span class="p">}</span>
+               <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;rate&quot;</span> <span class="o">:</span> <span class="p">{</span>
+               <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Object describing rate of speech in words per minute (WPM)&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;properties&quot;</span> <span class="o">:</span> <span class="p">{</span>
+                  <span class="s2">&quot;minimum&quot;</span> <span class="o">:</span> <span class="p">{</span>
+                     <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Minimum supported WPM&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;integer&quot;</span>
+                  <span class="p">},</span>
+                  <span class="s2">&quot;maximum&quot;</span> <span class="o">:</span> <span class="p">{</span>
+                     <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Maximum supported WPM&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;integer&quot;</span>
+                  <span class="p">},</span>
+                  <span class="s2">&quot;default&quot;</span> <span class="o">:</span> <span class="p">{</span>
+                     <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Default WPM used when if none provided in a /synth request. Should be 200 WPM whenever possible.&quot;</span>
+                     <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;integer&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;default&quot;</span> <span class="o">:</span> <span class="mi">200</span>
+                  <span class="p">}</span>
+               <span class="p">}</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;pitch&quot;</span> <span class="o">:</span> <span class="p">{</span>
+               <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Object describing speech baseline pitch&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;properties&quot;</span> <span class="o">:</span> <span class="p">{</span>
+                  <span class="s2">&quot;minimum&quot;</span> <span class="o">:</span> <span class="p">{</span>
+                     <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Minimum supported pitch. Should be 0.0 if pitch is supported or the default value if not.&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;minimum&quot;</span> <span class="o">:</span> <span class="mf">0.0</span><span class="p">,</span>
+                     <span class="s2">&quot;minimumCanEqual&quot;</span> <span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+                     <span class="s2">&quot;default&quot;</span> <span class="o">:</span> <span class="mf">0.0</span>
+                  <span class="p">},</span>
+                  <span class="s2">&quot;maximum&quot;</span> <span class="o">:</span> <span class="p">{</span>
+                     <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Maximum supported pitch. Should be 1.0 if pitch is supported or the default value if not.&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;maximum&quot;</span> <span class="o">:</span> <span class="mf">1.0</span><span class="p">,</span>
+                     <span class="s2">&quot;maximumCanEqual&quot;</span> <span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+                     <span class="s2">&quot;default&quot;</span> <span class="o">:</span> <span class="mf">1.0</span>
+                  <span class="p">},</span>
+                  <span class="s2">&quot;default&quot;</span> <span class="o">:</span> <span class="p">{</span>
+                     <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Default pitch used when if none provided in a /synth request. Should be 0.5 whenever possible.&quot;</span>
+                     <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;number&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;minimum&quot;</span> <span class="o">:</span> <span class="mf">0.0</span><span class="p">,</span>
+                     <span class="s2">&quot;maximum&quot;</span> <span class="o">:</span> <span class="mf">1.0</span><span class="p">,</span>
+                     <span class="s2">&quot;default&quot;</span> <span class="o">:</span> <span class="mf">0.5</span>
+                  <span class="p">}</span>
+               <span class="p">}</span>
+            <span class="p">}</span>
+         <span class="p">}</span>
+      <span class="p">}</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The response body contains a JSON encoded object adhering to the following schema on failure if possible.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="p">{</span>
+   <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Error response object&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;properties&quot;</span> <span class="o">:</span> <span class="p">{</span>
+      <span class="s2">&quot;success&quot;</span> <span class="o">:</span> <span class="p">{</span>
+         <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;False to indicate an error&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;boolean&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;default&quot;</span> <span class="o">:</span> <span class="kc">false</span>
+      <span class="p">},</span>
+      <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="p">{</span>
+         <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Human readable description of the error&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">}</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="post-synth">
+<h2>POST /synth<a class="headerlink" href="#post-synth" title="Permalink to this headline">¶</a></h2>
+<p>Posts information about one or more utterances to synthesize to web accessible files. The request body contains a JSON encoded object adhering to the following schema.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="p">{</span>
+   <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Request object including a utterances to synthesize and their properties&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;properties&quot;</span> <span class="o">:</span> <span class="p">{</span>
+      <span class="s2">&quot;format&quot;</span> <span class="o">:</span> <span class="p">{</span>
+         <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Requested audio encoding for the utterance files&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;enum&quot;</span> <span class="o">:</span> <span class="p">[</span><span class="s2">&quot;.ogg&quot;</span><span class="p">,</span> <span class="s2">&quot;.mp3&quot;</span><span class="p">]</span>
+      <span class="p">},</span>
+      <span class="s2">&quot;utterances&quot;</span> <span class="o">:</span> <span class="p">{</span>
+         <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Object containing utterances to synthesize keyed by unique identifiers to be returned in the response&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;additionalProperties&quot;</span> <span class="o">:</span> <span class="kc">true</span>
+      <span class="p">},</span>
+      <span class="s2">&quot;properties&quot;</span> <span class="o">:</span> <span class="p">{</span>
+         <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Object with properties configuring the speech synthesizer for the utterances&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;properties&quot;</span> <span class="o">:</span> <span class="p">{</span>
+            <span class="s2">&quot;voice&quot;</span> <span class="o">:</span> <span class="p">{</span>
+               <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;One of the voice names returned by /engine/[id] to use for the utterances&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;string&quot;</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;rate&quot;</span> <span class="o">:</span> <span class="p">{</span>
+               <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;The rate of speech to use in words per minute (WPM) in the range indicated by /engine/[id]&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;integer&quot;</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;pitch&quot;</span> <span class="o">:</span> <span class="p">{</span>
+               <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;The baseline pitch of speech to use in the range indicated by /engine[id]&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;number&quot;</span>
+            <span class="p">}</span>
+         <span class="p">}</span>
+      <span class="p">}</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The response body contains a JSON encoded object adhering to the following schema on success.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="p">{</span>
+   <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Response object including URLs of synthesized utterances&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;properties&quot;</span> <span class="o">:</span> <span class="p">{</span>
+      <span class="s2">&quot;result&quot;</span> <span class="o">:</span> <span class="p">{</span>
+         <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Object containing URLs to synthesized utterances keyed by unique identifiers sent in the request&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;additionalProperties&quot;</span> <span class="o">:</span> <span class="kc">true</span>
+      <span class="p">}</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The response body contains a JSON encoded object adhering to the following schema on failure if possible.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="p">{</span>
+   <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Error response object&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;properties&quot;</span> <span class="o">:</span> <span class="p">{</span>
+      <span class="s2">&quot;success&quot;</span> <span class="o">:</span> <span class="p">{</span>
+         <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;False to indicate an error&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;boolean&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;default&quot;</span> <span class="o">:</span> <span class="kc">false</span>
+      <span class="p">},</span>
+      <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="p">{</span>
+         <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Human readable description of the error&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">}</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="get-files-id">
+<h2>GET /files/[id]<a class="headerlink" href="#get-files-id" title="Permalink to this headline">¶</a></h2>
+<p>Gets a synthesized speech file previously created by <cite>/synth</cite>. For status codes in the 200s, the response body contains the bytes of the file, possibly limited to a range specified in the request.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">The REST API</a><ul>
+<li><a class="reference external" href="#get-engine">GET /engine</a></li>
+<li><a class="reference external" href="#get-engine-id">GET /engine/[id]</a></li>
+<li><a class="reference external" href="#post-synth">POST /synth</a></li>
+<li><a class="reference external" href="#get-files-id">GET /files/[id]</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="cache.html"
+                                  title="previous chapter">About caching</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="changelog.html"
+                                  title="next chapter">Changelog</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/rest.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="changelog.html" title="Changelog"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="cache.html" title="About caching"
+             >previous</a> |</li>
+        <li><a href="index.html">JSonic v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2010, Peter Parente.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+    </div>
+  </body>
+</html>
