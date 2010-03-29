@@ -257,7 +257,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
  * and after a command is processed. Instances returned by many methods in 
  * info.mindtrove.JSonic.
  */
-dojo.declare('info.mindtrove.JSonicDeferred', dojo.Deferred, {
+dojo.declare('info.mindtrove.JSonicDeferred', null, {
     constructor: function() {
         this.before = new dojo.Deferred();
         this.after = new dojo.Deferred();
