@@ -18,66 +18,114 @@ The JSonic interface
    
    .. method:: addObserver(func, channel, actions)
    
-      :param func: 
-      :type func: function
-      :param channel: 
+      :param func: Callback function
+      :type func: function(notice)
+      :param channel: Name of the channel to observe. Defaults to :const:`default` if not defined.
       :type channel: string
-      :param actions: 
+      :param actions: List of string :ref:`action <action>` names to observe. Defaults to all actions if not defined.
       :type actions: array
-      :return:
+      :return: Token to use to unregister the callback later using :meth:`removeObserver`
       :rtype: object
    
    .. method:: getEngines()
    
-      :rtype:
+      :rtype: :class:`dojo.Deferred`
    
    .. method:: getEngineInfo(id)
    
       :param id: 
       :type id: string
-      :rtype:
+      :rtype: :class:`dojo.Deferred`
 
    .. method:: getProperty(args)
    
-      :param args: 
+      :param args: Object with the following properties:
+         
+         name (required)
+            String name of the :ref:`property <property>` to get 
+
+         channel (optional)
+            String name of the channel. Defaults to :const:`default` if not specified.
+         
       :type args: object
-      :rtype:
+      :rtype: :class:`dojo.Deferred`
       
    .. method:: play(args)
 
-      :param args: 
+      :param args: Object with the following properties:
+
+         url (required)
+            String URL of the sound to play. Either :const:`.ogg` or :const:`.mp3` will be appeneded to the end of the URL depending on which format the browser supports.
+         
+         cache (optional)
+            Boolean true to cache the sound audio node in memory for faster playback in the future, false to avoid caching. Defaults to false if not specified.
+      
+         channel (optional)
+            String name of the channel. Defaults to :const:`default` if not specified.
+      
       :type args: object
-      :rtype:
+      :rtype: :class:`info.mindtrove.JSonicDeferred`
    
    .. method:: removeObserver(token)
 
-      :param token: 
+      :param token: Token returned when registering the observer with :meth:`addObserver`
       :type token: object
-      :rtype:
+      :rtype: :const:`undefined`
 
    .. method:: reset(args)
 
-      :param args: 
+      :param args: Object with the following properties:
+      
+         channel (optional)
+            String name of the channel. Defaults to :const:`default` if not specified.
+      
       :type args: object
-      :rtype:
+      :rtype: :class:`info.mindtrove.JSonicDeferred`
    
    .. method:: say(args)
    
-      :param args: 
+      :param args: Object with the following properties:
+      
+         text (required)
+            String text to speak.
+         
+         cache (optional)
+            Boolean true to cache the sound audio node in memory and the utterance file URL in localStorage for faster playback in the future, false to avoid caching. Defaults to false if not specified.
+
+         channel (optional)
+            String name of the channel. Defaults to :const:`default` if not specified.
+      
       :type args: object
-      :rtype:
+      :rtype: :class:`info.mindtrove.JSonicDeferred`
 
    .. method:: setProperty(args)
 
-      :param args: 
+      :param args: Object with the following properties:
+         
+         name (required)
+            String name of the :ref:`property <property>` to set
+            
+         value (required)
+            Value to set for the :ref:`property <property>` where the type is dependent on the property name
+            
+         immediate (optional)
+            Boolean true to execute the change immediately instead of queuing the command, false to queue the property change like all other commands. Defaults to false if not specified.
+
+         channel (optional)
+            String name of the channel. Defaults to :const:`default` if not specified.
+         
       :type args: object
-      :rtype:
+      :rtype: :class:`dojo.Deferred`
    
    .. method:: stop(args)
 
-      :param args: 
+      :param args: Object with the following properties:
+
+         channel (optional)
+            String name of the channel. Defaults to :const:`default` if not specified.
+
       :type args: object
-      :rtype:
+      :rtype: :class:`info.mindtrove.JSonicDeferred`
 
 .. class:: JSonicDeferred
    
@@ -92,6 +140,60 @@ The JSonic interface
    .. method:: errAfter(func)
    
    .. method:: errBefore(func)
+
+.. _action:
+
+Callback actions
+----------------
+
+.. describe:: action : started-speech
+
+   :param channel:
+   :param url:
+   :param name:
+
+.. describe:: action : finished-speech
+
+   :param channel:
+   :param url:
+   :param name:
+   :param completed:
+
+.. describe:: action : started-say
+
+   :param channel:
+   :param url:
+   :param name:
+
+.. describe:: action : finished-say
+
+   :param channel:
+   :param url:
+   :param name:
+   :param completed:
+
+.. describe:: action : error
+
+   :param channel:
+   :param name:
+   :param description:
+
+.. _property:
+
+Supported properties
+--------------------
+
+pitch
+   todo
+
+rate
+   todo
+   
+voice
+   todo
+
+volume
+   todo
 
 Example code
 ------------
