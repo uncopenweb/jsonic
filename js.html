@@ -31,6 +31,9 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             accesskey="M">modules</a> |</li>
+        <li class="right" >
           <a href="cache.html" title="About caching"
              accesskey="N">next</a> |</li>
         <li class="right" >
@@ -46,14 +49,378 @@
           <div class="body">
             
   <div class="section" id="the-javascript-api">
-<h1>The JavaScript API<a class="headerlink" href="#the-javascript-api" title="Permalink to this headline">¶</a></h1>
-<p>The client implements a JavaScript interface allowing web applications to query</p>
+<span id="module-info.mindtrove"></span><h1>The JavaScript API<a class="headerlink" href="#the-javascript-api" title="Permalink to this headline">¶</a></h1>
+<p>The client implements a JavaScript interface allowing web applications to speak text, play sounds, change playback properties, queue commands, manage independent audio channels, and cache results for low-latency playback.</p>
 <div class="section" id="the-jsonic-interface">
 <h2>The JSonic interface<a class="headerlink" href="#the-jsonic-interface" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="info.mindtrove.JSonic">
+<em class="property">class </em><tt class="descclassname">info.mindtrove.</tt><tt class="descname">JSonic</tt><a class="headerlink" href="#info.mindtrove.JSonic" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="info.mindtrove.JSonic.constructor">
+<tt class="descname">constructor</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.constructor" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>args</em> (object) &#8211; </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="info.mindtrove.JSonic.addObserver">
+<tt class="descname">addObserver</tt><big>(</big><em>func</em>, <em>channel</em>, <em>actions</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.addObserver" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><em>func</em> (function(notice)) &#8211; Callback function</li>
+<li><em>channel</em> (string) &#8211; Name of the channel to observe. Defaults to <tt class="xref docutils literal"><span class="pre">default</span></tt> if not defined.</li>
+<li><em>actions</em> (array) &#8211; List of string <a class="reference internal" href="#action"><em>action</em></a> names to observe. Defaults to all actions if not defined.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Token to use to unregister the callback later using <a title="info.mindtrove.JSonic.removeObserver" class="reference internal" href="#info.mindtrove.JSonic.removeObserver"><tt class="xref docutils literal"><span class="pre">removeObserver()</span></tt></a></p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="info.mindtrove.JSonic.getEngines">
+<tt class="descname">getEngines</tt><big>(</big><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.getEngines" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref docutils literal"><span class="pre">dojo.Deferred</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="info.mindtrove.JSonic.getEngineInfo">
+<tt class="descname">getEngineInfo</tt><big>(</big><em>id</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.getEngineInfo" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>id</em> (string) &#8211; </td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref docutils literal"><span class="pre">dojo.Deferred</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="info.mindtrove.JSonic.getProperty">
+<tt class="descname">getProperty</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.getProperty" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>args</em> (object) &#8211; <p>Object with the following properties:</p>
+<dl class="docutils">
+<dt>name (required)</dt>
+<dd>String name of the <a class="reference internal" href="#property"><em>property</em></a> to get</dd>
+<dt>channel (optional)</dt>
+<dd>String name of the channel. Defaults to <tt class="xref docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref docutils literal"><span class="pre">dojo.Deferred</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="info.mindtrove.JSonic.play">
+<tt class="descname">play</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.play" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>args</em> (object) &#8211; <p>Object with the following properties:</p>
+<dl class="docutils">
+<dt>url (required)</dt>
+<dd>String URL of the sound to play. Either <tt class="xref docutils literal"><span class="pre">ogg</span></tt> or <tt class="xref docutils literal"><span class="pre">mp3</span></tt> will be appeneded to the end of the URL depending on which format the browser supports.</dd>
+<dt>cache (optional)</dt>
+<dd>Boolean true to cache the sound audio node in memory for faster playback in the future, false to avoid caching. Defaults to false if not specified.</dd>
+<dt>channel (optional)</dt>
+<dd>String name of the channel. Defaults to <tt class="xref docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonicDeferred</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="info.mindtrove.JSonic.removeObserver">
+<tt class="descname">removeObserver</tt><big>(</big><em>token</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.removeObserver" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>token</em> (object) &#8211; Token returned when registering the observer with <a title="info.mindtrove.JSonic.addObserver" class="reference internal" href="#info.mindtrove.JSonic.addObserver"><tt class="xref docutils literal"><span class="pre">addObserver()</span></tt></a></td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref docutils literal"><span class="pre">undefined</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="info.mindtrove.JSonic.reset">
+<tt class="descname">reset</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.reset" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>args</em> (object) &#8211; <p>Object with the following properties:</p>
+<dl class="docutils">
+<dt>channel (optional)</dt>
+<dd>String name of the channel. Defaults to <tt class="xref docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonicDeferred</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="info.mindtrove.JSonic.say">
+<tt class="descname">say</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.say" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>args</em> (object) &#8211; <p>Object with the following properties:</p>
+<dl class="docutils">
+<dt>text (required)</dt>
+<dd>String text to speak.</dd>
+<dt>cache (optional)</dt>
+<dd>Boolean true to cache the sound audio node in memory and the utterance file URL in localStorage for faster playback in the future, false to avoid caching. Defaults to false if not specified.</dd>
+<dt>channel (optional)</dt>
+<dd>String name of the channel. Defaults to <tt class="xref docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonicDeferred</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="info.mindtrove.JSonic.setProperty">
+<tt class="descname">setProperty</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.setProperty" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>args</em> (object) &#8211; <p>Object with the following properties:</p>
+<dl class="docutils">
+<dt>name (required)</dt>
+<dd>String name of the <a class="reference internal" href="#property"><em>property</em></a> to set</dd>
+<dt>value (required)</dt>
+<dd>Value to set for the <a class="reference internal" href="#property"><em>property</em></a> where the type is dependent on the property name</dd>
+<dt>immediate (optional)</dt>
+<dd>Boolean true to execute the change immediately instead of queuing the command, false to queue the property change like all other commands. Defaults to false if not specified.</dd>
+<dt>channel (optional)</dt>
+<dd>String name of the channel. Defaults to <tt class="xref docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref docutils literal"><span class="pre">dojo.Deferred</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="info.mindtrove.JSonic.stop">
+<tt class="descname">stop</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.stop" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>args</em> (object) &#8211; <p>Object with the following properties:</p>
+<dl class="docutils">
+<dt>channel (optional)</dt>
+<dd>String name of the channel. Defaults to <tt class="xref docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonicDeferred</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="info.mindtrove.JSonicDeferred">
+<em class="property">class </em><tt class="descclassname">info.mindtrove.</tt><tt class="descname">JSonicDeferred</tt><a class="headerlink" href="#info.mindtrove.JSonicDeferred" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="info.mindtrove.JSonicDeferred.addAfter">
+<tt class="descname">addAfter</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.addAfter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="info.mindtrove.JSonicDeferred.addBefore">
+<tt class="descname">addBefore</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.addBefore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="info.mindtrove.JSonicDeferred.anyAfter">
+<tt class="descname">anyAfter</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.anyAfter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="info.mindtrove.JSonicDeferred.anyBefore">
+<tt class="descname">anyBefore</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.anyBefore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="info.mindtrove.JSonicDeferred.errAfter">
+<tt class="descname">errAfter</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.errAfter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="info.mindtrove.JSonicDeferred.errBefore">
+<tt class="descname">errBefore</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.errBefore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
-<p>The following examples assume an <tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonic</span></tt> instance with caching disabled by default exists in local variable <cite>js</cite>.</p>
+<div class="section" id="callback-actions">
+<span id="action"></span><h2>Callback actions<a class="headerlink" href="#callback-actions" title="Permalink to this headline">¶</a></h2>
+<dl class="describe">
+<dt>
+<tt class="descname">action : started-speech</tt></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>channel</em> &#8211; </li>
+<li><em>url</em> &#8211; </li>
+<li><em>name</em> &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<tt class="descname">action : finished-speech</tt></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>channel</em> &#8211; </li>
+<li><em>url</em> &#8211; </li>
+<li><em>name</em> &#8211; </li>
+<li><em>completed</em> &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<tt class="descname">action : started-say</tt></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>channel</em> &#8211; </li>
+<li><em>url</em> &#8211; </li>
+<li><em>name</em> &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<tt class="descname">action : finished-say</tt></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>channel</em> &#8211; </li>
+<li><em>url</em> &#8211; </li>
+<li><em>name</em> &#8211; </li>
+<li><em>completed</em> &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<tt class="descname">action : error</tt></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>channel</em> &#8211; </li>
+<li><em>name</em> &#8211; </li>
+<li><em>description</em> &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="supported-properties">
+<span id="property"></span><h2>Supported properties<a class="headerlink" href="#supported-properties" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>pitch</dt>
+<dd>todo</dd>
+<dt>rate</dt>
+<dd>todo</dd>
+<dt>voice</dt>
+<dd>todo</dd>
+<dt>volume</dt>
+<dd>todo</dd>
+</dl>
+</div>
+<div class="section" id="example-code">
+<h2>Example code<a class="headerlink" href="#example-code" title="Permalink to this headline">¶</a></h2>
+<p>The following examples assume an <a title="info.mindtrove.JSonic" class="reference internal" href="#info.mindtrove.JSonic"><tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonic</span></tt></a> instance with caching disabled by default exists in local variable <cite>js</cite>.</p>
 <div class="section" id="speaking-text">
 <h3>Speaking text<a class="headerlink" href="#speaking-text" title="Permalink to this headline">¶</a></h3>
 <p>To say an utterance on the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel and not cache the result, do the following:</p>
@@ -92,12 +459,41 @@
 </div>
 <div class="section" id="changing-voices">
 <h3>Changing voices<a class="headerlink" href="#changing-voices" title="Permalink to this headline">¶</a></h3>
+<p>To query the <tt class="xref docutils literal"><span class="pre">espeak</span></tt> engine for its available voices, do the following:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">getEngineInfo</span><span class="p">(</span><span class="s1">&#39;espeak&#39;</span><span class="p">).</span><span class="nx">addAfter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+   <span class="kd">var</span> <span class="nx">voices</span> <span class="o">=</span> <span class="nx">response</span><span class="p">.</span><span class="nx">voices</span><span class="p">.</span><span class="nx">values</span><span class="p">;</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>To set the voice for all following speech commands on the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel, do the following:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">setProperty</span><span class="p">({</span><span class="nx">name</span> <span class="o">:</span> <span class="s1">&#39;voice&#39;</span><span class="p">,</span> <span class="nx">value</span> <span class="o">:</span> <span class="s1">&#39;it&#39;</span><span class="p">});</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="changing-speech-rate">
 <h3>Changing speech rate<a class="headerlink" href="#changing-speech-rate" title="Permalink to this headline">¶</a></h3>
+<p>To query the <tt class="xref docutils literal"><span class="pre">espeak</span></tt> engine for its range of speech rates, do the following:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">getEngineInfo</span><span class="p">(</span><span class="s1">&#39;espeak&#39;</span><span class="p">).</span><span class="nx">addAfter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+   <span class="kd">var</span> <span class="nx">min</span> <span class="o">=</span> <span class="nx">response</span><span class="p">.</span><span class="nx">rate</span><span class="p">.</span><span class="nx">minimum</span><span class="p">;</span>
+   <span class="kd">var</span> <span class="nx">max</span> <span class="o">=</span> <span class="nx">response</span><span class="p">.</span><span class="nx">rate</span><span class="p">.</span><span class="nx">maximum</span><span class="p">;</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>To set the rate for all following speech commands on the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel, do the following:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">setProperty</span><span class="p">({</span><span class="nx">name</span> <span class="o">:</span> <span class="s1">&#39;rate&#39;</span><span class="p">,</span> <span class="nx">value</span> <span class="o">:</span> <span class="mi">250</span><span class="p">});</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="changing-volume">
 <h3>Changing volume<a class="headerlink" href="#changing-volume" title="Permalink to this headline">¶</a></h3>
+<p>To set the volume for all following audio output on the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel, do the following:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">setProperty</span><span class="p">({</span><span class="nx">name</span> <span class="o">:</span> <span class="s1">&#39;volume&#39;</span><span class="p">,</span> <span class="nx">value</span> <span class="o">:</span> <span class="mf">0.5</span><span class="p">});</span>
+</pre></div>
+</div>
+<p>To set the volume for the current audio output and all following commands on the <tt class="xref docutils literal"><span class="pre">custom</span></tt> channel, do the following:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">setProperty</span><span class="p">({</span><span class="nx">name</span> <span class="o">:</span> <span class="s1">&#39;volume&#39;</span><span class="p">,</span> <span class="nx">value</span> <span class="o">:</span> <span class="mf">0.25</span><span class="p">,</span> <span class="nx">immediate</span> <span class="o">:</span> <span class="kc">true</span><span class="p">});</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="listening-for-events">
 <h3>Listening for events<a class="headerlink" href="#listening-for-events" title="Permalink to this headline">¶</a></h3>
@@ -122,6 +518,19 @@
 </div>
 <div class="section" id="taking-action-before-after-a-command">
 <h3>Taking action before / after a command<a class="headerlink" href="#taking-action-before-after-a-command" title="Permalink to this headline">¶</a></h3>
+<p>Say you have the <tt class="xref docutils literal"><span class="pre">onEvent()</span></tt> function described above. You want it to execute in response to certain commands.</p>
+<p>To execute the callback as the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel finishes speaking an utterance completely, do the following:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s1">&#39;I am a banana.&#39;</span><span class="p">}).</span><span class="nx">addAfter</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>To execute the callback as the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel starts speaking an utterance and either finishes speaking or encounters an error speaking, do the following:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s1">&#39;I am a banana.&#39;</span><span class="p">}).</span><span class="nx">addBefore</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">).</span><span class="nx">anyAfter</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>To execute the callback with the voice configured on the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel immediately and when the command is processed by the channel, do the following:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">getProperty</span><span class="p">({</span><span class="nx">name</span> <span class="o">:</span> <span class="s1">&#39;voice&#39;</span><span class="p">}).</span><span class="nx">addBefore</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">).</span><span class="nx">addAfter</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">);</span>
+</pre></div>
+</div>
 </div>
 </div>
 </div>
@@ -136,7 +545,9 @@
             <ul>
 <li><a class="reference external" href="#">The JavaScript API</a><ul>
 <li><a class="reference external" href="#the-jsonic-interface">The JSonic interface</a></li>
-<li><a class="reference external" href="#examples">Examples</a><ul>
+<li><a class="reference external" href="#callback-actions">Callback actions</a></li>
+<li><a class="reference external" href="#supported-properties">Supported properties</a></li>
+<li><a class="reference external" href="#example-code">Example code</a><ul>
 <li><a class="reference external" href="#speaking-text">Speaking text</a></li>
 <li><a class="reference external" href="#playing-a-sound">Playing a sound</a></li>
 <li><a class="reference external" href="#interrupting">Interrupting</a></li>
@@ -185,6 +596,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="modindex.html" title="Global Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="cache.html" title="About caching"
              >next</a> |</li>
