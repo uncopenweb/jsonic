@@ -145,14 +145,15 @@ class EspeakSynth(ISynthesizer):
 
     def write_wav(self, utterance):
         '''Implements ISynthesizer.write_wav.'''
-        utterHash = hashlib.sha1(utterance).hexdigest()
+        utf8Utterance = utterance.encode('utf-8')
+        utterHash = hashlib.sha1(utf8Utterance).hexdigest()
         hashFn = '%s-%s' % (utterHash, self._optHash)
         # write wave file into path
         wav = os.path.join(self._path, hashFn+'.wav')
         if not os.path.isfile(wav):
             args = self._opts + [wav]
             c = iterpipes.cmd('speak -s{} -p{} -v{} -w{}', *args)
-            ret = iterpipes.call(c, utterance.encode('utf-8'))
+            ret = iterpipes.call(c, utf8Utterance)
         return hashFn
 
     @classmethod
