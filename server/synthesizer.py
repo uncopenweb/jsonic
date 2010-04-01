@@ -152,8 +152,9 @@ class EspeakSynth(ISynthesizer):
         wav = os.path.join(self._path, hashFn+'.wav')
         if not os.path.isfile(wav):
             args = self._opts + [wav]
-            c = iterpipes.cmd('speak -s{} -p{} -v{} -w{}', *args)
-            ret = iterpipes.call(c, utf8Utterance)
+            c = iterpipes.cmd('speak -s{} -p{} -v{} -w{}', *args, 
+                encoding='utf-8')
+            ret = iterpipes.call(c, utterance)
         return hashFn
 
     @classmethod
