@@ -178,13 +178,18 @@ class SynthHandler(JSonicHandler):
         #self.on_synth_complete(synthesize(*params))
     
     def on_synth_complete(self, response):
-        if response['success']:
-            #self.set_header('Content-Type', 'application/json')
-            self.write(response)
-            self.finish()
-        else:
-            self.send_json_error(response)
-
+        # protect against IOErrors bubbling up to worker pool
+        try:
+            if response['success']:
+                #self.set_header('Content-Type', 'application/json')
+                self.write(response)
+                self.finish()
+            else:
+                self.send_json_error(response)
+        except IOError:
+            # doesn't look like we should do any cleanup, but who knows
+            pass
+            
 class EngineHandler(JSonicHandler):
     '''
     Retrieves information about available speech synthesis engines.
