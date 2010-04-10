@@ -3,6 +3,26 @@ The REST API
 
 The JSonic server implements a REST interface providing information about available speech engines, synthesizing speech to audio files, and fetching speech files. The server sets the HTTP status code properly on every response to indicate whether a request was process successfully (e.g., 200, 206) or an error occurred (e.g., 500).
 
+GET /version
+------------
+
+Gets the version of the server REST API. The response body contains a JSON encoded object adhering to the following schema on success.
+
+.. sourcecode:: javascript
+
+   {
+      "description" : "Response object including version information",
+      "type" : "object",
+      "properties" : {
+         "version" : {
+            "description" : "Version string in major.minor format",
+            "type" : "string"
+         }
+      }
+   }
+
+The only possible error is that the server is unreachable and no response is returned.
+
 GET /engine
 -----------
 

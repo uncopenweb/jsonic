@@ -21,6 +21,8 @@ import os
 import stat
 import optparse
 
+# current server api version
+VERSION = '0.1'
 # path containing synthed and encoded speech files
 CACHE_PATH = os.path.join(os.path.dirname(__file__), 'files')
 try:
@@ -189,7 +191,22 @@ class SynthHandler(JSonicHandler):
         except IOError:
             # doesn't look like we should do any cleanup, but who knows
             pass
-            
+
+class VersionHandler(tornado.web.RequestHandler):
+    '''
+    Retrieves information about the server version.
+    '''
+    def get(self):
+        '''
+        Responds with the version number of the current server API in the
+        following JSON format:
+        
+        {
+            "version" : <unicode>
+        }
+        '''
+        self.write({version : VERSION})
+
 class EngineHandler(JSonicHandler):
     '''
     Retrieves information about available speech synthesis engines.
@@ -357,7 +374,8 @@ def run(port=8888, processes=4, debug=False, static=False):
         (r'/engine', EngineHandler),
         (r'/engine/([a-zA-Z0-9]+)', EngineHandler),
         (r'/synth', SynthHandler),
-        (r'/files/([a-f0-9]+-[a-f0-9]+\..*)', FilesHandler, {'path' : './files'})
+        (r'/files/([a-f0-9]+-[a-f0-9]+\..*)', FilesHandler, {'path' : './files'}),
+        (r'/version', VersionHandler)
     ], debug=debug, **kwargs)
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(port)

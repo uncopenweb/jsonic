@@ -26,6 +26,10 @@ The JSonic interface
       :type actions: array
       :return: Token to use to unregister the callback later using :meth:`removeObserver`
       :rtype: object
+      
+   .. method:: getClientVersion()
+   
+      :rtype: string
    
    .. method:: getEngines()
    
@@ -48,6 +52,10 @@ The JSonic interface
             String name of the channel. Defaults to :const:`default` if not specified.
          
       :type args: object
+      :rtype: :class:`dojo.Deferred`
+   
+   .. method:: getServerVersion()
+   
       :rtype: :class:`dojo.Deferred`
       
    .. method:: play(args)
