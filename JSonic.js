@@ -24,6 +24,30 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
             jsonicURI : this.jsonicURI
         });
     },
+
+    /**
+     * Gets the version of the JSonic server API.
+     *
+     * :return: Deferred with a callback to get the version info
+     * :rtype: dojo.Deferred
+     */
+    getServerVersion: function() {
+        var request = {
+            url : this.jsonicURI+'version',
+            handleAs: 'json'
+        };
+        return dojo.xhrGet(request);
+    },
+
+    /**
+     * Gets the version of the JSonic client API.
+     *
+     * :return: Version
+     * :rtype: string
+     */
+    getClientVersion: function() {
+        return '0.1';
+    },
     
     /**
      * Queues speech on a channel. The args parameter supports the following
@@ -279,7 +303,7 @@ dojo.declare('info.mindtrove.JSonicDeferred', null, {
      * :return: This instance for call chaining.
      */    
     callAfter: function(callback) {
-        this.after.addCallback(callback)
+        this.after.addCallback(callback);
         return this;
     },
     
@@ -362,7 +386,7 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
     
     resetCache: function(args) {
         try {
-            this._speechFiles.clear()
+            this._speechFiles.clear();
         } catch(e) {
             this._speechFiles = {};
         }
@@ -379,7 +403,7 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
             }
             def.callback(names);
         } else {
-            var request = {
+            request = {
                 url : this.jsonicURI+'engine',
                 handleAs: 'json',
                 load: dojo.hitch(this, function(response) {
@@ -398,7 +422,7 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
             def = new dojo.Deferred();
             def.callback(this._engineCache[name]);
         } else {
-            var request = {
+            request = {
                 url : this.jsonicURI+'engine/'+name,
                 handleAs: 'json',
                 load: dojo.hitch(this, function(response) {
