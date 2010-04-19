@@ -9,9 +9,9 @@ The client implements a JavaScript interface allowing web applications to speak 
 Client concepts
 ---------------
 
-The client consists of a set of named channels that maintain independent queues of commands. A channel processes one command at a time and, unless otherwise directed, avoids processing the next until the previous has finished or has been interrupted. Multiple channels can process commands at the same time, however. For example, the `default` channel might have one speech utterance queued while it is speaking another. At the same time, the `secondary` channel might process a volume change command followed by a command to play a sound.
+The client consists of a set of named :term:`channels` that maintain independent :term:`queues` of :term:`commands`. A channel processes its queue sequentially in first in, first out order, though some commands are processed immediately (e.g., stop). Multiple channels can process commands at the same time, however. For example, the `default` channel might have one speech utterance queued while it is speaking another. At the same time, the `secondary` channel might process a volume change command followed by a command to play a sound.
 
-Channels send notifications of actions as they occur in two manners. First, channels invoke callback functions registered by an application for one or more kinds of actions. Second, the channels return deferred results for each command before and after it is processed. The former technique is useful for listeners that need information when many commands are processed. The latter is useful when an application wants information particular commands.
+Channels send :term:`notifications` of important events as they occur in two manners. First, channels invoke callback functions registered by an application for one or more kinds of notifications. Second, the channels return deferred results for each command before and after it is processed. The former technique is useful for listeners that need information across many commands. The latter is useful when an application wants information about particular commands.
 
 The JSonic interface
 --------------------
@@ -52,7 +52,7 @@ The JSonic interface
       :type func: :func:`function(notice)`
       :param channel: Name of the channel to observe. Defaults to :const:`default` if not defined.
       :type channel: string
-      :param actions: List of string :ref:`action <notification>` names to observe. Defaults to all actions if not defined.
+      :param actions: List of string :ref:`notification <notification>` actions to observe. Defaults to all actions if not defined.
       :type actions: array
       :return: Token to use to unregister the callback later using :meth:`removeObserver`
       :rtype: object
@@ -76,7 +76,7 @@ The JSonic interface
    
       :param id: Identifier associated with the engine as returned by :meth:`getEngines`.
       :type id: string
-      :return: A deferred callback with an object matching the :ref:`/engine/[id] <engine-info-schema>` or an errback with an :class:`Error` object
+      :return: A deferred callback with an object matching the :ref:`/engine/[id] schema <engine-info-schema>` or an errback with an :class:`Error` object
       :rtype: `dojo.Deferred`_
 
    .. method:: getProperty(args)
@@ -261,6 +261,8 @@ Before and after deferred notification
 Channel notifications
 ---------------------
 
+The type of a channel notification is determined by the value of its `action` property. The following notifications are supported, listed by their actions. 
+
 .. _started-say-notice:
 
 .. describe:: action : started-say
@@ -356,7 +358,7 @@ volume
 Example code
 ------------
 
-The following examples assume an :class:`info.mindtrove.JSonic` instance with caching disabled by default exists in local variable `js`. The following code create such an instance.
+The following examples assume an :class:`info.mindtrove.JSonic` instance with caching disabled by default exists in local variable `js`. The following code creates such an instance.
 
 .. sourcecode:: javascript
 
@@ -422,7 +424,7 @@ To query the :const:`espeak` engine for its available voices, do the following:
       var voices = response.voices.values;
    });
 
-To set the voice for all following speech commands on the :const:`default` channel, do the following:
+To set an Italian voice for all following speech commands on the :const:`default` channel, do the following:
 
 .. sourcecode:: javascript
 
@@ -435,7 +437,7 @@ To query the :const:`espeak` engine for its range of speech rates, do the follow
 
 .. sourcecode:: javascript
 
-   js.getEngineInfo('espeak').addAfter(function(response) {
+   js.getEngineInfo('espeak').addCallback(function(response) {
       var min = response.rate.minimum;
       var max = response.rate.maximum;
    });
@@ -506,7 +508,6 @@ To execute the callback as the :const:`default` channel starts speaking an utter
 .. sourcecode:: javascript
 
    js.say({text : 'I am a banana.'}).addBefore(onEvent).anyAfter(onEvent);
-
 
 To execute the callback with the voice configured on the :const:`default` channel immediately and when the command is processed by the channel, do the following:
 
