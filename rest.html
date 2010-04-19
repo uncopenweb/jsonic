@@ -51,8 +51,25 @@
   <div class="section" id="the-rest-api">
 <h1>The REST API<a class="headerlink" href="#the-rest-api" title="Permalink to this headline">¶</a></h1>
 <p>The JSonic server implements a REST interface providing information about available speech engines, synthesizing speech to audio files, and fetching speech files. The server sets the HTTP status code properly on every response to indicate whether a request was process successfully (e.g., 200, 206) or an error occurred (e.g., 500).</p>
+<div class="section" id="get-version">
+<span id="version-schema"></span><h2>GET /version<a class="headerlink" href="#get-version" title="Permalink to this headline">¶</a></h2>
+<p>Gets the version of the server REST API. The response body contains a JSON encoded object adhering to the following schema on success.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="p">{</span>
+   <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Response object including version information&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;properties&quot;</span> <span class="o">:</span> <span class="p">{</span>
+      <span class="s2">&quot;version&quot;</span> <span class="o">:</span> <span class="p">{</span>
+         <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Version string in major.minor format&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;type&quot;</span> <span class="o">:</span> <span class="s2">&quot;string&quot;</span>
+      <span class="p">}</span>
+   <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The only possible error is that the server is unreachable and no response is returned.</p>
+</div>
 <div class="section" id="get-engine">
-<h2>GET /engine<a class="headerlink" href="#get-engine" title="Permalink to this headline">¶</a></h2>
+<span id="engine-schema"></span><h2>GET /engine<a class="headerlink" href="#get-engine" title="Permalink to this headline">¶</a></h2>
 <p>Gets a list of all available speech engines. The response body contains a JSON encoded object adhering to the following schema on success.</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="p">{</span>
    <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Response object including a list of available speech engines&quot;</span><span class="p">,</span>
@@ -92,7 +109,7 @@
 </div>
 </div>
 <div class="section" id="get-engine-id">
-<h2>GET /engine/[id]<a class="headerlink" href="#get-engine-id" title="Permalink to this headline">¶</a></h2>
+<span id="engine-info-schema"></span><h2>GET /engine/[id]<a class="headerlink" href="#get-engine-id" title="Permalink to this headline">¶</a></h2>
 <p>Gets information about the particular speech engine named by its identifier. The response body contains a JSON encoded object adhering to the following schema.</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="p">{</span>
    <span class="s2">&quot;description&quot;</span> <span class="o">:</span> <span class="s2">&quot;Response object including properties supported by the speech engine&quot;</span><span class="p">,</span>
@@ -280,6 +297,7 @@
             <h3><a href="index.html">Table Of Contents</a></h3>
             <ul>
 <li><a class="reference external" href="#">The REST API</a><ul>
+<li><a class="reference external" href="#get-version">GET /version</a></li>
 <li><a class="reference external" href="#get-engine">GET /engine</a></li>
 <li><a class="reference external" href="#get-engine-id">GET /engine/[id]</a></li>
 <li><a class="reference external" href="#post-synth">POST /synth</a></li>

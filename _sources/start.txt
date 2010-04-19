@@ -3,11 +3,38 @@ Getting Started
 
 JSonic consists of a server implementing a REST API for synthesizing speech utterances to web accessible files and client JavaScript that caches and plays speech and sound on demand. The current version implements the server using `Tornado`_ and the client using `Dojo`_.
 
-Obtaining the source code
--------------------------
+Requirements
+------------
+
+The following lists show all of the minimum requirements for both the server and client. You do not have to download all of these up-front; the remaining sections walk you through how to .
+
+The server Python code has been tested with these minimum versions:
+
+1. `Python`_ 2.6
+2. `Tornado`_ 0.2
+3. `iterpipes`_ 0.3
+4. `espeak`_ 1.36.02
+5. `lame`_ 3.98.2
+6. `oggenc`_ 1.2.0
+
+The client JS code requires:
+
+1. `Dojo`_ 1.4.2 (from a CDN is fine)
+3. A browser supporting the HTML5 <audio> node
+4. A browser supporting HTML5 localStorage (optional)
+
+Obtaining the JSonic source code
+--------------------------------
+
+To get the latest stable release of JSonic:
+
+#. Visit http://github.com/parente/jsonic/downloads.
+#. Download the latest version.
+
+To get the latest development code:
 
 #. Install `git`_.
-#. Clone the git repository:
+#. Clone the JSonic git repository:
 
    .. sourcecode:: bash
    
@@ -66,6 +93,7 @@ Speaking "Hello world!"
    
       js.say({text : 'Hello world!'})
 
+.. _Python: http://www.python.org
 .. _git: http://git-scm.com/
 .. _Dojo: http://dojotoolkit.org/
 .. _Tornado: http://www.tornadoweb.org/
@@ -73,3 +101,4 @@ Speaking "Hello world!"
 .. _espeak: http://espeak.sourceforge.net/
 .. _LAME: http://lame.sourceforge.net/
 .. _Vorbis tools: http://www.xiph.org/downloads/
+.. _oggenc: http://www.xiph.org/downloads/

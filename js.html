@@ -51,35 +51,60 @@
   <div class="section" id="the-javascript-api">
 <span id="module-info.mindtrove"></span><h1>The JavaScript API<a class="headerlink" href="#the-javascript-api" title="Permalink to this headline">¶</a></h1>
 <p>The client implements a JavaScript interface allowing web applications to speak text, play sounds, change playback properties, queue commands, manage independent audio channels, and cache results for low-latency playback.</p>
+<div class="section" id="client-concepts">
+<h2>Client concepts<a class="headerlink" href="#client-concepts" title="Permalink to this headline">¶</a></h2>
+<p>The client consists of a set of named channels that maintain independent queues of commands. A channel processes one command at a time and, unless otherwise directed, avoids processing the next until the previous has finished or has been interrupted. Multiple channels can process commands at the same time, however. For example, the <cite>default</cite> channel might have one speech utterance queued while it is speaking another. At the same time, the <cite>secondary</cite> channel might process a volume change command followed by a command to play a sound.</p>
+<p>Channels send notifications of actions as they occur in two manners. First, channels invoke callback functions registered by an application for one or more kinds of actions. Second, the channels return deferred results for each command before and after it is processed. The former technique is useful for listeners that need information when many commands are processed. The latter is useful when an application wants information particular commands.</p>
+</div>
 <div class="section" id="the-jsonic-interface">
 <h2>The JSonic interface<a class="headerlink" href="#the-jsonic-interface" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="info.mindtrove.JSonic">
 <em class="property">class </em><tt class="descclassname">info.mindtrove.</tt><tt class="descname">JSonic</tt><a class="headerlink" href="#info.mindtrove.JSonic" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><p>The <a title="info.mindtrove.JSonic" class="reference internal" href="#info.mindtrove.JSonic"><tt class="xref docutils literal"><span class="pre">JSonic</span></tt></a> class implements the entire client API. Only one instance is required and recommended per page for the best caching performance.</p>
+<dl class="method">
 <dt id="info.mindtrove.JSonic.constructor">
 <tt class="descname">constructor</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.constructor" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Initializes the client API.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>args</em> (object) &#8211; </td>
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>args</em> (object) &#8211; <p>Object with the following properties:</p>
+<p>defaultCaching (optional)</p>
+<blockquote>
+True to enable all levels of caching as the default for calls to <a title="info.mindtrove.JSonic.say" class="reference internal" href="#info.mindtrove.JSonic.say"><tt class="xref docutils literal"><span class="pre">say()</span></tt></a> and <a title="info.mindtrove.JSonic.play" class="reference internal" href="#info.mindtrove.JSonic.play"><tt class="xref docutils literal"><span class="pre">play()</span></tt></a>. False to disable all caching except browser caching as the default for those methods. Defaults to false.</blockquote>
+<p>jsonicURI (optional)</p>
+<blockquote>
+String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cite>.</blockquote>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="info.mindtrove.JSonic.defaultCaching">
+<tt class="descname">defaultCaching</tt><a class="headerlink" href="#info.mindtrove.JSonic.defaultCaching" title="Permalink to this definition">¶</a></dt>
+<dd>Read-only. True if caching is enabled by default for all to <a title="info.mindtrove.JSonic.say" class="reference internal" href="#info.mindtrove.JSonic.say"><tt class="xref docutils literal"><span class="pre">say()</span></tt></a> and <a title="info.mindtrove.JSonic.play" class="reference internal" href="#info.mindtrove.JSonic.play"><tt class="xref docutils literal"><span class="pre">play()</span></tt></a> calls. False if caching is disabled by default.</dd></dl>
+
+<dl class="attribute">
+<dt id="info.mindtrove.JSonic.jsonicURI">
+<tt class="descname">jsonicURI</tt><a class="headerlink" href="#info.mindtrove.JSonic.jsonicURI" title="Permalink to this definition">¶</a></dt>
+<dd>Read-only. The root of the JSonic REST API.</dd></dl>
+
 <dl class="method">
 <dt id="info.mindtrove.JSonic.addObserver">
 <tt class="descname">addObserver</tt><big>(</big><em>func</em>, <em>channel</em>, <em>actions</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.addObserver" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Adds a listener for speech and sound <a class="reference internal" href="#notification"><em>notifications</em></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><em>func</em> (function(notice)) &#8211; Callback function</li>
+<li><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(notice)()</span></tt>) &#8211; Callback function</li>
 <li><em>channel</em> (string) &#8211; Name of the channel to observe. Defaults to <tt class="xref docutils literal"><span class="pre">default</span></tt> if not defined.</li>
-<li><em>actions</em> (array) &#8211; List of string <a class="reference internal" href="#action"><em>action</em></a> names to observe. Defaults to all actions if not defined.</li>
+<li><em>actions</em> (array) &#8211; List of string <a class="reference internal" href="#notification"><em>action</em></a> names to observe. Defaults to all actions if not defined.</li>
 </ul>
 </td>
 </tr>
@@ -94,13 +119,30 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="info.mindtrove.JSonic.getEngines">
-<tt class="descname">getEngines</tt><big>(</big><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.getEngines" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dt id="info.mindtrove.JSonic.getClientVersion">
+<tt class="descname">getClientVersion</tt><big>(</big><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.getClientVersion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the version number of the client API implemented by this instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref docutils literal"><span class="pre">dojo.Deferred</span></tt></td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="info.mindtrove.JSonic.getEngines">
+<tt class="descname">getEngines</tt><big>(</big><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.getEngines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the names of the text to speech engines installed on the server.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with an object matching the <a class="reference external" href="rest.html#engine-schema"><em>/engine schema</em></a> or an errback with an <tt class="xref docutils literal"><span class="pre">Error</span></tt> object</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://dojotoolkit.org/reference-guide/dojo/Deferred.html#dojo-deferred">dojo.Deferred</a></td>
 </tr>
 </tbody>
 </table>
@@ -109,13 +151,16 @@
 <dl class="method">
 <dt id="info.mindtrove.JSonic.getEngineInfo">
 <tt class="descname">getEngineInfo</tt><big>(</big><em>id</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.getEngineInfo" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Gets detailed information about a particular text to speech engine.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>id</em> (string) &#8211; </td>
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>id</em> (string) &#8211; Identifier associated with the engine as returned by <a title="info.mindtrove.JSonic.getEngines" class="reference internal" href="#info.mindtrove.JSonic.getEngines"><tt class="xref docutils literal"><span class="pre">getEngines()</span></tt></a>.</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref docutils literal"><span class="pre">dojo.Deferred</span></tt></td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with an object matching the <a class="reference external" href="rest.html#engine-info-schema"><em>/engine/[id]</em></a> or an errback with an <tt class="xref docutils literal"><span class="pre">Error</span></tt> object</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://dojotoolkit.org/reference-guide/dojo/Deferred.html#dojo-deferred">dojo.Deferred</a></td>
 </tr>
 </tbody>
 </table>
@@ -124,7 +169,8 @@
 <dl class="method">
 <dt id="info.mindtrove.JSonic.getProperty">
 <tt class="descname">getProperty</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.getProperty" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Gets the current value of one of the supported <a class="reference internal" href="#property"><em>audio properties</em></a>, immediately and at the time this command is processed in the queue.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -137,7 +183,25 @@
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref docutils literal"><span class="pre">dojo.Deferred</span></tt></td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with the property value at the time this command is received (before) and when the command is processed in the queue (after)</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="info.mindtrove.JSonic.getServerVersion">
+<tt class="descname">getServerVersion</tt><big>(</big><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.getServerVersion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the version number of the server API currently in use by this instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with an object matching the <a class="reference external" href="rest.html#version-schema"><em>/version schema</em></a> or an errback with an <tt class="xref docutils literal"><span class="pre">Error</span></tt> object</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://dojotoolkit.org/reference-guide/dojo/Deferred.html#dojo-deferred">dojo.Deferred</a></td>
 </tr>
 </tbody>
 </table>
@@ -146,22 +210,25 @@
 <dl class="method">
 <dt id="info.mindtrove.JSonic.play">
 <tt class="descname">play</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.play" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Plays a sound.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>args</em> (object) &#8211; <p>Object with the following properties:</p>
 <dl class="docutils">
 <dt>url (required)</dt>
-<dd>String URL of the sound to play. Either <tt class="xref docutils literal"><span class="pre">ogg</span></tt> or <tt class="xref docutils literal"><span class="pre">mp3</span></tt> will be appeneded to the end of the URL depending on which format the browser supports.</dd>
+<dd>String URL of the sound to play. Either <tt class="xref docutils literal"><span class="pre">ogg</span></tt> or <tt class="xref docutils literal"><span class="pre">mp3</span></tt> will be appended to the end of the URL depending on which format the browser supports.</dd>
 <dt>cache (optional)</dt>
-<dd>Boolean true to cache the sound audio node in memory for faster playback in the future, false to avoid caching. Defaults to false if not specified.</dd>
+<dd>Boolean true to cache the sound audio node in memory for faster playback in the future, false to avoid caching. Defaults to <a title="info.mindtrove.JSonic.defaultCaching" class="reference internal" href="#info.mindtrove.JSonic.defaultCaching"><tt class="xref docutils literal"><span class="pre">defaultCaching</span></tt></a> if not specified.</dd>
 <dt>channel (optional)</dt>
 <dd>String name of the channel. Defaults to <tt class="xref docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonicDeferred</span></tt></a></td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with a <a class="reference internal" href="#started-play-notice"><em>play notification</em></a> when the sound command is processed (before) and a <a class="reference internal" href="#finished-play-notice"><em>play notification</em></a> when the sound finishes playing (after)</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -170,7 +237,8 @@
 <dl class="method">
 <dt id="info.mindtrove.JSonic.removeObserver">
 <tt class="descname">removeObserver</tt><big>(</big><em>token</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.removeObserver" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Removes a listener for speech and sound <a class="reference internal" href="#notification"><em>notifications</em></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -185,7 +253,8 @@
 <dl class="method">
 <dt id="info.mindtrove.JSonic.reset">
 <tt class="descname">reset</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.reset" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Resets all channel <a class="reference internal" href="#property"><em>audio properties</em></a> to their defaults.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -196,7 +265,7 @@
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonicDeferred</span></tt></a></td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -205,7 +274,8 @@
 <dl class="method">
 <dt id="info.mindtrove.JSonic.say">
 <tt class="descname">say</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.say" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Speaks an utterance.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -214,13 +284,15 @@
 <dt>text (required)</dt>
 <dd>String text to speak.</dd>
 <dt>cache (optional)</dt>
-<dd>Boolean true to cache the sound audio node in memory and the utterance file URL in localStorage for faster playback in the future, false to avoid caching. Defaults to false if not specified.</dd>
+<dd>Boolean true to cache the sound audio node in memory and the utterance file URL in localStorage for faster playback in the future, false to avoid caching. Defaults to <a title="info.mindtrove.JSonic.defaultCaching" class="reference internal" href="#info.mindtrove.JSonic.defaultCaching"><tt class="xref docutils literal"><span class="pre">defaultCaching</span></tt></a> if not specified.</dd>
 <dt>channel (optional)</dt>
 <dd>String name of the channel. Defaults to <tt class="xref docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonicDeferred</span></tt></a></td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with a <a class="reference internal" href="#started-say-notice"><em>say notification</em></a> when the speech command is processed (before) and a <a class="reference internal" href="#finished-say-notice"><em>say notification</em></a> when the speech utterance finishes (after)</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -229,7 +301,8 @@
 <dl class="method">
 <dt id="info.mindtrove.JSonic.setProperty">
 <tt class="descname">setProperty</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.setProperty" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Sets the current value of one of the supported <a class="reference internal" href="#property"><em>audio properties</em></a> either immediately or when the command is processed in the queue.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -246,7 +319,9 @@
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref docutils literal"><span class="pre">dojo.Deferred</span></tt></td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with the value of the property before it is processed (before) and the value of the property after the change is made (after)</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -255,7 +330,8 @@
 <dl class="method">
 <dt id="info.mindtrove.JSonic.stop">
 <tt class="descname">stop</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.stop" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Immediately stops all output from a channel and clears all queued commands for that channel.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -266,7 +342,9 @@
 </dl>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonicDeferred</span></tt></a></td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with no parameters invoked before the stop is processed (before) and after the stop is processed (after)</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -274,92 +352,138 @@
 
 </dd></dl>
 
+</div>
+<div class="section" id="before-and-after-deferred-notification">
+<h2>Before and after deferred notification<a class="headerlink" href="#before-and-after-deferred-notification" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="info.mindtrove.JSonicDeferred">
 <em class="property">class </em><tt class="descclassname">info.mindtrove.</tt><tt class="descname">JSonicDeferred</tt><a class="headerlink" href="#info.mindtrove.JSonicDeferred" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><p>The <a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a> class wraps two <a class="reference external" href="http://dojotoolkit.org/reference-guide/dojo/Deferred.html#dojo-deferred">dojo.Deferred</a> instances. A channel invokes the <tt class="xref docutils literal"><span class="pre">callback()</span></tt> or <tt class="xref docutils literal"><span class="pre">errback()</span></tt> method on the <cite>before</cite> deferred before a command is processed in the channel queue. A channel invokes the <tt class="xref docutils literal"><span class="pre">callback()</span></tt> or <tt class="xref docutils literal"><span class="pre">errback()</span></tt> method on the <cite>after</cite> deferred after the channel has finished processing the command.</p>
+<dl class="method">
 <dt id="info.mindtrove.JSonicDeferred.addAfter">
 <tt class="descname">addAfter</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.addAfter" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Adds a function to be called once after a command is processed successfully.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(notice)()</span></tt>) &#8211; Callback function</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="info.mindtrove.JSonicDeferred.addBefore">
 <tt class="descname">addBefore</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.addBefore" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Adds a function to be called once before a command is processed successfully.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(notice)()</span></tt>) &#8211; Callback function</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="info.mindtrove.JSonicDeferred.anyAfter">
 <tt class="descname">anyAfter</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.anyAfter" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Adds a function to be called once after a command is processed successfully or if an error occurs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(noticeOrError)()</span></tt>) &#8211; Callback function</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="info.mindtrove.JSonicDeferred.anyBefore">
 <tt class="descname">anyBefore</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.anyBefore" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Adds a function to be called once before a command is processed successfully or if an error occurs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(noticeOrError)()</span></tt>) &#8211; Callback function</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="info.mindtrove.JSonicDeferred.errAfter">
 <tt class="descname">errAfter</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.errAfter" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Adds a function to be called once after a command is processed but an error occurs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(error)()</span></tt>) &#8211; Callback function</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="info.mindtrove.JSonicDeferred.errBefore">
 <tt class="descname">errBefore</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.errBefore" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Adds a function to be called once before a command is processed but an error occurs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(error)()</span></tt>) &#8211; Callback function</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
 </div>
-<div class="section" id="callback-actions">
-<span id="action"></span><h2>Callback actions<a class="headerlink" href="#callback-actions" title="Permalink to this headline">¶</a></h2>
-<dl class="describe">
-<dt>
-<tt class="descname">action : started-speech</tt></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><em>channel</em> &#8211; </li>
-<li><em>url</em> &#8211; </li>
-<li><em>name</em> &#8211; </li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="describe">
-<dt>
-<tt class="descname">action : finished-speech</tt></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><em>channel</em> &#8211; </li>
-<li><em>url</em> &#8211; </li>
-<li><em>name</em> &#8211; </li>
-<li><em>completed</em> &#8211; </li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="describe">
+<div class="section" id="channel-notifications">
+<span id="notification"></span><h2>Channel notifications<a class="headerlink" href="#channel-notifications" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="started-say-notice"></span><dl class="describe">
 <dt>
 <tt class="descname">action : started-say</tt></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Occurs when a channel starts processing a <a title="info.mindtrove.JSonic.say" class="reference internal" href="#info.mindtrove.JSonic.say"><tt class="xref docutils literal"><span class="pre">JSonic.say()</span></tt></a> command (i.e., when it starts synthesizing the utterance).</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><em>channel</em> &#8211; </li>
-<li><em>url</em> &#8211; </li>
-<li><em>name</em> &#8211; </li>
+<li><em>channel</em> (string) &#8211; Name of the channel</li>
+<li><em>url</em> (string) &#8211; URL of the synthesized speech file</li>
+<li><em>name</em> (string) &#8211; Application name assigned to the utterance</li>
 </ul>
 </td>
 </tr>
@@ -367,18 +491,19 @@
 </table>
 </dd></dl>
 
-<dl class="describe">
+<span class="target" id="finished-say-notice"></span><dl class="describe">
 <dt>
 <tt class="descname">action : finished-say</tt></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Occurs when a channel finishes processing a <a title="info.mindtrove.JSonic.say" class="reference internal" href="#info.mindtrove.JSonic.say"><tt class="xref docutils literal"><span class="pre">JSonic.say()</span></tt></a> command (i.e., when it finishes speaking the utterance).</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><em>channel</em> &#8211; </li>
-<li><em>url</em> &#8211; </li>
-<li><em>name</em> &#8211; </li>
-<li><em>completed</em> &#8211; </li>
+<li><em>channel</em> (string) &#8211; Name of the channel</li>
+<li><em>url</em> (string) &#8211; URL of the synthesized speech file</li>
+<li><em>name</em> (string) &#8211; Application name assigned to the utterance</li>
+<li><em>completed</em> (boolean) &#8211; True if the speech finished in its entirety, false if it was interrupted before it could finish</li>
 </ul>
 </td>
 </tr>
@@ -386,17 +511,57 @@
 </table>
 </dd></dl>
 
-<dl class="describe">
+<span class="target" id="started-play-notice"></span><dl class="describe">
 <dt>
-<tt class="descname">action : error</tt></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<tt class="descname">action : started-play</tt></dt>
+<dd><p>Occurs when a channel starts processing a <a title="info.mindtrove.JSonic.play" class="reference internal" href="#info.mindtrove.JSonic.play"><tt class="xref docutils literal"><span class="pre">JSonic.play()</span></tt></a> command (i.e., when it starts streaming the sound).</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><em>channel</em> &#8211; </li>
-<li><em>name</em> &#8211; </li>
-<li><em>description</em> &#8211; </li>
+<li><em>channel</em> (string) &#8211; Name of the channel</li>
+<li><em>url</em> (string) &#8211; URL of the sound file</li>
+<li><em>name</em> (string) &#8211; Application name assigned to the sound</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<span class="target" id="finished-play-notice"></span><dl class="describe">
+<dt>
+<tt class="descname">action : finished-play</tt></dt>
+<dd><p>Occurs when a channel finishes processing a <a title="info.mindtrove.JSonic.play" class="reference internal" href="#info.mindtrove.JSonic.play"><tt class="xref docutils literal"><span class="pre">JSonic.play()</span></tt></a> command (i.e., when it finishes playing the sound).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>channel</em> (string) &#8211; Name of the channel</li>
+<li><em>url</em> (string) &#8211; URL of the sound file</li>
+<li><em>name</em> (string) &#8211; Application name assigned to the sound</li>
+<li><em>completed</em> (boolean) &#8211; True if the sound finished in its entirety, false if it was interrupted before it could finish</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<span class="target" id="error-notice"></span><dl class="describe">
+<dt>
+<tt class="descname">action : error</tt></dt>
+<dd><p>Occurs when a channel encounters an error processing a command.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><em>channel</em> (string) &#8211; Name of the channel</li>
+<li><em>name</em> (string) &#8211; Application name assigned to the command that caused the error</li>
+<li><em>description</em> (string) &#8211; English description of the problem that occurred</li>
 </ul>
 </td>
 </tr>
@@ -405,22 +570,29 @@
 </dd></dl>
 
 </div>
-<div class="section" id="supported-properties">
-<span id="property"></span><h2>Supported properties<a class="headerlink" href="#supported-properties" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="channel-properties">
+<span id="property"></span><h2>Channel properties<a class="headerlink" href="#channel-properties" title="Permalink to this headline">¶</a></h2>
 <dl class="docutils">
+<dt>engine</dt>
+<dd>Text to speech engine used to synthesize speech on the channel. A string matching one of the engine names listed by <a title="info.mindtrove.JSonic.getEngines" class="reference internal" href="#info.mindtrove.JSonic.getEngines"><tt class="xref docutils literal"><span class="pre">JSonic.getEngines()</span></tt></a>.</dd>
+<dt>loop</dt>
+<dd>Flag controlling if speech or sound output on the channel loops indefinitely or not. A boolean.</dd>
 <dt>pitch</dt>
-<dd>todo</dd>
+<dd>Baseline pitch of speech synthesized and output on the channel. A floating point number in the inclusive range [0.0, 1.0].</dd>
 <dt>rate</dt>
-<dd>todo</dd>
+<dd>Rate of speech synthesized and output on the channel. An integer words per minute greater than zero.</dd>
 <dt>voice</dt>
-<dd>todo</dd>
+<dd>Voice used to synthesize speech on the channel. A string matching one of the voice identifiers supported by an engine indicated by <a title="info.mindtrove.JSonic.getEngineInfo" class="reference internal" href="#info.mindtrove.JSonic.getEngineInfo"><tt class="xref docutils literal"><span class="pre">JSonic.getEngineInfo()</span></tt></a>.</dd>
 <dt>volume</dt>
-<dd>todo</dd>
+<dd>Volume of speech and sound output on the channel. A floating point number in the inclusive range [0.0, 1.0].</dd>
 </dl>
 </div>
 <div class="section" id="example-code">
 <h2>Example code<a class="headerlink" href="#example-code" title="Permalink to this headline">¶</a></h2>
-<p>The following examples assume an <a title="info.mindtrove.JSonic" class="reference internal" href="#info.mindtrove.JSonic"><tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonic</span></tt></a> instance with caching disabled by default exists in local variable <cite>js</cite>.</p>
+<p>The following examples assume an <a title="info.mindtrove.JSonic" class="reference internal" href="#info.mindtrove.JSonic"><tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonic</span></tt></a> instance with caching disabled by default exists in local variable <cite>js</cite>. The following code create such an instance.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">js</span> <span class="o">=</span> <span class="nx">info</span><span class="p">.</span><span class="nx">mindtrove</span><span class="p">.</span><span class="nx">JSonic</span><span class="p">();</span>
+</pre></div>
+</div>
 <div class="section" id="speaking-text">
 <h3>Speaking text<a class="headerlink" href="#speaking-text" title="Permalink to this headline">¶</a></h3>
 <p>To say an utterance on the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel and not cache the result, do the following:</p>
@@ -544,9 +716,11 @@
             <h3><a href="index.html">Table Of Contents</a></h3>
             <ul>
 <li><a class="reference external" href="#">The JavaScript API</a><ul>
+<li><a class="reference external" href="#client-concepts">Client concepts</a></li>
 <li><a class="reference external" href="#the-jsonic-interface">The JSonic interface</a></li>
-<li><a class="reference external" href="#callback-actions">Callback actions</a></li>
-<li><a class="reference external" href="#supported-properties">Supported properties</a></li>
+<li><a class="reference external" href="#before-and-after-deferred-notification">Before and after deferred notification</a></li>
+<li><a class="reference external" href="#channel-notifications">Channel notifications</a></li>
+<li><a class="reference external" href="#channel-properties">Channel properties</a></li>
 <li><a class="reference external" href="#example-code">Example code</a><ul>
 <li><a class="reference external" href="#speaking-text">Speaking text</a></li>
 <li><a class="reference external" href="#playing-a-sound">Playing a sound</a></li>

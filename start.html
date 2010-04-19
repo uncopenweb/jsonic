@@ -51,12 +51,35 @@
   <div class="section" id="getting-started">
 <h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
 <p>JSonic consists of a server implementing a REST API for synthesizing speech utterances to web accessible files and client JavaScript that caches and plays speech and sound on demand. The current version implements the server using <a class="reference external" href="http://www.tornadoweb.org/">Tornado</a> and the client using <a class="reference external" href="http://dojotoolkit.org/">Dojo</a>.</p>
-<div class="section" id="obtaining-the-source-code">
-<h2>Obtaining the source code<a class="headerlink" href="#obtaining-the-source-code" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<p>The following lists show all of the minimum requirements for both the server and client. You do not have to download all of these up-front; the remaining sections walk you through how to .</p>
+<p>The server Python code has been tested with these minimum versions:</p>
+<ol class="arabic simple">
+<li><a class="reference external" href="http://www.python.org">Python</a> 2.6</li>
+<li><a class="reference external" href="http://www.tornadoweb.org/">Tornado</a> 0.2</li>
+<li><a class="reference external" href="http://pypi.python.org/pypi/iterpipes">iterpipes</a> 0.3</li>
+<li><a class="reference external" href="http://espeak.sourceforge.net/">espeak</a> 1.36.02</li>
+<li><a class="reference external" href="http://lame.sourceforge.net/">lame</a> 3.98.2</li>
+<li><a class="reference external" href="http://www.xiph.org/downloads/">oggenc</a> 1.2.0</li>
+</ol>
+<p>The client JS code requires:</p>
+<p>1. <a class="reference external" href="http://dojotoolkit.org/">Dojo</a> 1.4.2 (from a CDN is fine)
+3. A browser supporting the HTML5 &lt;audio&gt; node
+4. A browser supporting HTML5 localStorage (optional)</p>
+</div>
+<div class="section" id="obtaining-the-jsonic-source-code">
+<h2>Obtaining the JSonic source code<a class="headerlink" href="#obtaining-the-jsonic-source-code" title="Permalink to this headline">¶</a></h2>
+<p>To get the latest stable release of JSonic:</p>
+<ol class="arabic simple">
+<li>Visit <a class="reference external" href="http://github.com/parente/jsonic/downloads">http://github.com/parente/jsonic/downloads</a>.</li>
+<li>Download the latest version.</li>
+</ol>
+<p>To get the latest development code:</p>
 <ol class="arabic">
 <li><p class="first">Install <a class="reference external" href="http://git-scm.com/">git</a>.</p>
 </li>
-<li><p class="first">Clone the git repository:</p>
+<li><p class="first">Clone the JSonic git repository:</p>
 <div class="highlight-bash"><div class="highlight"><pre>git clone git://github.com/parente/jsonic.git
 </pre></div>
 </div>
@@ -133,7 +156,8 @@ python jsonic.py
             <h3><a href="index.html">Table Of Contents</a></h3>
             <ul>
 <li><a class="reference external" href="#">Getting Started</a><ul>
-<li><a class="reference external" href="#obtaining-the-source-code">Obtaining the source code</a></li>
+<li><a class="reference external" href="#requirements">Requirements</a></li>
+<li><a class="reference external" href="#obtaining-the-jsonic-source-code">Obtaining the JSonic source code</a></li>
 <li><a class="reference external" href="#running-the-tornado-server">Running the Tornado server</a></li>
 <li><a class="reference external" href="#loading-the-jsonic-dojo-module">Loading the JSonic Dojo module</a></li>
 <li><a class="reference external" href="#speaking-hello-world">Speaking &#8220;Hello world!&#8221;</a></li>
