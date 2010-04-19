@@ -6,26 +6,10 @@ JSonic
 :Description: JavaScript API for speech and sound using HTML5 audio.
 :Documentation: http://parente.github.com/jsonic
 
-Requirements
-============
+Documentation
+=============
 
-The client JS code requires:
-
-1. Dojo 1.4.1 (from a CDN is fine)
-2. A browser supporting the HTML5 <audio> node
-3. JSonic.js
-4. A browser supporting HTML5 localStorage (optional)
-
-The server Python code has been tested with these minimum versions:
-
-1. Python 2.6
-2. Tornado 0.2
-3. iterpipes 0.3
-4. espeak 1.36.02
-5. lame lame 3.98.2
-6. oggenc 1.2.0
-
-Execute `python jsonic.py` to start the server. The see the demos under `examples/` for how to use the JS API.
+See http://parente.github.com/jsonic/ for help getting started and full API documentation.
 
 License
 =======
