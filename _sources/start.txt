@@ -20,8 +20,8 @@ The server Python code has been tested with these minimum versions:
 The client JS code requires:
 
 1. `Dojo`_ 1.4.2 (from a CDN is fine)
-3. A browser supporting the HTML5 <audio> node
-4. A browser supporting HTML5 localStorage (optional)
+2. A browser supporting the HTML5 <audio> node
+3. A browser supporting HTML5 localStorage (optional)
 
 Obtaining the JSonic source code
 --------------------------------
@@ -44,12 +44,12 @@ Running the Tornado server
 --------------------------
 
 #. Install the prerequisites listed on the `Tornado`_ website.
-#. Install the `Tornado`_ web server. (tested with v 0.2)
-#. Install the `iterpipes`_ module. (tested with v 0.3)
-#. Install the `espeak`_ text-to-speech engine. (tested with v 1.36.02)
-#. Install `LAME`_ for MP3 encoding support. (tested with v 3.98.2)
-#. Install the oggenc utility from `Vorbis tools`_ for OGG encoding support. (tested with v 1.2.0)
-#. Start the JSonic server on port 8888 with 4 worker processes using the following command. 
+#. Install the `Tornado`_ web server.
+#. Install the `iterpipes`_ module.
+#. Install the `espeak`_ text-to-speech engine.
+#. Install `LAME`_ for MP3 encoding support.
+#. Install the oggenc utility from `Vorbis tools`_ for OGG encoding support.
+#. Start the JSonic server on port 8888 with 4 worker processes using the following command.
 
    .. sourcecode:: bash
    
@@ -66,11 +66,11 @@ Loading the JSonic Dojo module
 ------------------------------
 
 #. Place the :file:`JSonic.js` file in a web accessible location.
-#. Include `Dojo`_ (tested with 1.4.2) in your web application.
-#. Inform Dojo of the location of the `info.mindtrove` namespace on disk.
+#. Include `Dojo`_ in your web application.
+#. Inform Dojo of the location of the :mod:`info.mindtrove` namespace on disk.
 #. Use :func:`dojo.require` to load the JSonic module.
 
-See the HTML files in the :file:`examples/` folder for complete applications satisfying these requirements.
+See the HTML files in the :file:`examples/` folder for complete applications satisfying these requirements. You can run the examples by visiting the :file:`http://yourdomain:8888/static/examples/` URL of the JSonic server if you start the server with the `--static` parameter.
 
 Speaking "Hello world!"
 -----------------------

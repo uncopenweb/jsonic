@@ -50,7 +50,8 @@
             
   <div class="section" id="the-rest-api">
 <h1>The REST API<a class="headerlink" href="#the-rest-api" title="Permalink to this headline">¶</a></h1>
-<p>The JSonic server implements a REST interface providing information about available speech engines, synthesizing speech to audio files, and fetching speech files. The server sets the HTTP status code properly on every response to indicate whether a request was process successfully (e.g., 200, 206) or an error occurred (e.g., 500).</p>
+<p>The JSonic server implements a REST interface providing information about available speech engines, synthesizing speech to audio files, and fetching speech files. The server sets the HTTP status code properly on every response to indicate whether a request was processed successfully (e.g., 200, 206) or an error occurred (e.g., 500).</p>
+<p>The JSonic client API encapsulates the REST API in an object-oriented wrapper for easier use by applications. Nevertheless, the REST API should be considered public and addressable by other client implementations.</p>
 <div class="section" id="get-version">
 <span id="version-schema"></span><h2>GET /version<a class="headerlink" href="#get-version" title="Permalink to this headline">¶</a></h2>
 <p>Gets the version of the server REST API. The response body contains a JSON encoded object adhering to the following schema on success.</p>
@@ -285,6 +286,7 @@
 <div class="section" id="get-files-id">
 <h2>GET /files/[id]<a class="headerlink" href="#get-files-id" title="Permalink to this headline">¶</a></h2>
 <p>Gets a synthesized speech file previously created by <cite>/synth</cite>. For status codes in the 200s, the response body contains the bytes of the file, possibly limited to a range specified in the request.</p>
+<p>At deployment time, a web server optimized for serving static files may safely mask this portion of the JSonic REST API and serve the synthesized speech files itself without informing the JSonic server.</p>
 </div>
 </div>
 

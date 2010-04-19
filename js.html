@@ -53,8 +53,8 @@
 <p>The client implements a JavaScript interface allowing web applications to speak text, play sounds, change playback properties, queue commands, manage independent audio channels, and cache results for low-latency playback.</p>
 <div class="section" id="client-concepts">
 <h2>Client concepts<a class="headerlink" href="#client-concepts" title="Permalink to this headline">¶</a></h2>
-<p>The client consists of a set of named channels that maintain independent queues of commands. A channel processes one command at a time and, unless otherwise directed, avoids processing the next until the previous has finished or has been interrupted. Multiple channels can process commands at the same time, however. For example, the <cite>default</cite> channel might have one speech utterance queued while it is speaking another. At the same time, the <cite>secondary</cite> channel might process a volume change command followed by a command to play a sound.</p>
-<p>Channels send notifications of actions as they occur in two manners. First, channels invoke callback functions registered by an application for one or more kinds of actions. Second, the channels return deferred results for each command before and after it is processed. The former technique is useful for listeners that need information when many commands are processed. The latter is useful when an application wants information particular commands.</p>
+<p>The client consists of a set of named <em class="xref">channels</em> that maintain independent <em class="xref">queues</em> of <em class="xref">commands</em>. A channel processes its queue sequentially in first in, first out order, though some commands are processed immediately (e.g., stop). Multiple channels can process commands at the same time, however. For example, the <cite>default</cite> channel might have one speech utterance queued while it is speaking another. At the same time, the <cite>secondary</cite> channel might process a volume change command followed by a command to play a sound.</p>
+<p>Channels send <em class="xref">notifications</em> of important events as they occur in two manners. First, channels invoke callback functions registered by an application for one or more kinds of notifications. Second, the channels return deferred results for each command before and after it is processed. The former technique is useful for listeners that need information across many commands. The latter is useful when an application wants information about particular commands.</p>
 </div>
 <div class="section" id="the-jsonic-interface">
 <h2>The JSonic interface<a class="headerlink" href="#the-jsonic-interface" title="Permalink to this headline">¶</a></h2>
@@ -73,7 +73,7 @@
 <tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>args</em> (object) &#8211; <p>Object with the following properties:</p>
 <p>defaultCaching (optional)</p>
 <blockquote>
-True to enable all levels of caching as the default for calls to <a title="info.mindtrove.JSonic.say" class="reference internal" href="#info.mindtrove.JSonic.say"><tt class="xref docutils literal"><span class="pre">say()</span></tt></a> and <a title="info.mindtrove.JSonic.play" class="reference internal" href="#info.mindtrove.JSonic.play"><tt class="xref docutils literal"><span class="pre">play()</span></tt></a>. False to disable all caching except browser caching as the default for those methods. Defaults to false.</blockquote>
+True to enable all levels of caching as the default for calls to <a title="info.mindtrove.JSonic.say" class="reference internal" href="#info.mindtrove.JSonic.say"><tt class="xref docutils literal"><span class="pre">say</span></tt></a> and <a title="info.mindtrove.JSonic.play" class="reference internal" href="#info.mindtrove.JSonic.play"><tt class="xref docutils literal"><span class="pre">play</span></tt></a>. False to disable all caching except browser caching as the default for those methods. Defaults to false.</blockquote>
 <p>jsonicURI (optional)</p>
 <blockquote>
 String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cite>.</blockquote>
@@ -86,7 +86,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <dl class="attribute">
 <dt id="info.mindtrove.JSonic.defaultCaching">
 <tt class="descname">defaultCaching</tt><a class="headerlink" href="#info.mindtrove.JSonic.defaultCaching" title="Permalink to this definition">¶</a></dt>
-<dd>Read-only. True if caching is enabled by default for all to <a title="info.mindtrove.JSonic.say" class="reference internal" href="#info.mindtrove.JSonic.say"><tt class="xref docutils literal"><span class="pre">say()</span></tt></a> and <a title="info.mindtrove.JSonic.play" class="reference internal" href="#info.mindtrove.JSonic.play"><tt class="xref docutils literal"><span class="pre">play()</span></tt></a> calls. False if caching is disabled by default.</dd></dl>
+<dd>Read-only. True if caching is enabled by default for all to <a title="info.mindtrove.JSonic.say" class="reference internal" href="#info.mindtrove.JSonic.say"><tt class="xref docutils literal"><span class="pre">say</span></tt></a> and <a title="info.mindtrove.JSonic.play" class="reference internal" href="#info.mindtrove.JSonic.play"><tt class="xref docutils literal"><span class="pre">play</span></tt></a> calls. False if caching is disabled by default.</dd></dl>
 
 <dl class="attribute">
 <dt id="info.mindtrove.JSonic.jsonicURI">
@@ -102,13 +102,13 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(notice)()</span></tt>) &#8211; Callback function</li>
+<li><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(notice)</span></tt>) &#8211; Callback function</li>
 <li><em>channel</em> (string) &#8211; Name of the channel to observe. Defaults to <tt class="xref docutils literal"><span class="pre">default</span></tt> if not defined.</li>
-<li><em>actions</em> (array) &#8211; List of string <a class="reference internal" href="#notification"><em>action</em></a> names to observe. Defaults to all actions if not defined.</li>
+<li><em>actions</em> (array) &#8211; List of string <a class="reference internal" href="#notification"><em>notification</em></a> actions to observe. Defaults to all actions if not defined.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Token to use to unregister the callback later using <a title="info.mindtrove.JSonic.removeObserver" class="reference internal" href="#info.mindtrove.JSonic.removeObserver"><tt class="xref docutils literal"><span class="pre">removeObserver()</span></tt></a></p>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Token to use to unregister the callback later using <a title="info.mindtrove.JSonic.removeObserver" class="reference internal" href="#info.mindtrove.JSonic.removeObserver"><tt class="xref docutils literal"><span class="pre">removeObserver</span></tt></a></p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">object</p>
@@ -156,9 +156,9 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>id</em> (string) &#8211; Identifier associated with the engine as returned by <a title="info.mindtrove.JSonic.getEngines" class="reference internal" href="#info.mindtrove.JSonic.getEngines"><tt class="xref docutils literal"><span class="pre">getEngines()</span></tt></a>.</td>
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>id</em> (string) &#8211; Identifier associated with the engine as returned by <a title="info.mindtrove.JSonic.getEngines" class="reference internal" href="#info.mindtrove.JSonic.getEngines"><tt class="xref docutils literal"><span class="pre">getEngines</span></tt></a>.</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with an object matching the <a class="reference external" href="rest.html#engine-info-schema"><em>/engine/[id]</em></a> or an errback with an <tt class="xref docutils literal"><span class="pre">Error</span></tt> object</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with an object matching the <a class="reference external" href="rest.html#engine-info-schema"><em>/engine/[id] schema</em></a> or an errback with an <tt class="xref docutils literal"><span class="pre">Error</span></tt> object</td>
 </tr>
 <tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://dojotoolkit.org/reference-guide/dojo/Deferred.html#dojo-deferred">dojo.Deferred</a></td>
 </tr>
@@ -242,7 +242,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>token</em> (object) &#8211; Token returned when registering the observer with <a title="info.mindtrove.JSonic.addObserver" class="reference internal" href="#info.mindtrove.JSonic.addObserver"><tt class="xref docutils literal"><span class="pre">addObserver()</span></tt></a></td>
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>token</em> (object) &#8211; Token returned when registering the observer with <a title="info.mindtrove.JSonic.addObserver" class="reference internal" href="#info.mindtrove.JSonic.addObserver"><tt class="xref docutils literal"><span class="pre">addObserver</span></tt></a></td>
 </tr>
 <tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref docutils literal"><span class="pre">undefined</span></tt></td>
 </tr>
@@ -358,7 +358,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <dl class="class">
 <dt id="info.mindtrove.JSonicDeferred">
 <em class="property">class </em><tt class="descclassname">info.mindtrove.</tt><tt class="descname">JSonicDeferred</tt><a class="headerlink" href="#info.mindtrove.JSonicDeferred" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a> class wraps two <a class="reference external" href="http://dojotoolkit.org/reference-guide/dojo/Deferred.html#dojo-deferred">dojo.Deferred</a> instances. A channel invokes the <tt class="xref docutils literal"><span class="pre">callback()</span></tt> or <tt class="xref docutils literal"><span class="pre">errback()</span></tt> method on the <cite>before</cite> deferred before a command is processed in the channel queue. A channel invokes the <tt class="xref docutils literal"><span class="pre">callback()</span></tt> or <tt class="xref docutils literal"><span class="pre">errback()</span></tt> method on the <cite>after</cite> deferred after the channel has finished processing the command.</p>
+<dd><p>The <a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a> class wraps two <a class="reference external" href="http://dojotoolkit.org/reference-guide/dojo/Deferred.html#dojo-deferred">dojo.Deferred</a> instances. A channel invokes the <tt class="xref docutils literal"><span class="pre">callback</span></tt> or <tt class="xref docutils literal"><span class="pre">errback</span></tt> method on the <cite>before</cite> deferred before a command is processed in the channel queue. A channel invokes the <tt class="xref docutils literal"><span class="pre">callback</span></tt> or <tt class="xref docutils literal"><span class="pre">errback</span></tt> method on the <cite>after</cite> deferred after the channel has finished processing the command.</p>
 <dl class="method">
 <dt id="info.mindtrove.JSonicDeferred.addAfter">
 <tt class="descname">addAfter</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.addAfter" title="Permalink to this definition">¶</a></dt>
@@ -367,7 +367,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(notice)()</span></tt>) &#8211; Callback function</td>
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(notice)</span></tt>) &#8211; Callback function</td>
 </tr>
 <tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
 </tr>
@@ -385,7 +385,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(notice)()</span></tt>) &#8211; Callback function</td>
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(notice)</span></tt>) &#8211; Callback function</td>
 </tr>
 <tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
 </tr>
@@ -403,7 +403,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(noticeOrError)()</span></tt>) &#8211; Callback function</td>
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(noticeOrError)</span></tt>) &#8211; Callback function</td>
 </tr>
 <tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
 </tr>
@@ -421,7 +421,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(noticeOrError)()</span></tt>) &#8211; Callback function</td>
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(noticeOrError)</span></tt>) &#8211; Callback function</td>
 </tr>
 <tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
 </tr>
@@ -439,7 +439,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(error)()</span></tt>) &#8211; Callback function</td>
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(error)</span></tt>) &#8211; Callback function</td>
 </tr>
 <tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
 </tr>
@@ -457,7 +457,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(error)()</span></tt>) &#8211; Callback function</td>
+<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(error)</span></tt>) &#8211; Callback function</td>
 </tr>
 <tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
 </tr>
@@ -472,10 +472,11 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 </div>
 <div class="section" id="channel-notifications">
 <span id="notification"></span><h2>Channel notifications<a class="headerlink" href="#channel-notifications" title="Permalink to this headline">¶</a></h2>
+<p>The type of a channel notification is determined by the value of its <cite>action</cite> property. The following notifications are supported, listed by their actions.</p>
 <span class="target" id="started-say-notice"></span><dl class="describe">
 <dt>
 <tt class="descname">action : started-say</tt></dt>
-<dd><p>Occurs when a channel starts processing a <a title="info.mindtrove.JSonic.say" class="reference internal" href="#info.mindtrove.JSonic.say"><tt class="xref docutils literal"><span class="pre">JSonic.say()</span></tt></a> command (i.e., when it starts synthesizing the utterance).</p>
+<dd><p>Occurs when a channel starts processing a <a title="info.mindtrove.JSonic.say" class="reference internal" href="#info.mindtrove.JSonic.say"><tt class="xref docutils literal"><span class="pre">JSonic.say</span></tt></a> command (i.e., when it starts synthesizing the utterance).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -494,7 +495,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <span class="target" id="finished-say-notice"></span><dl class="describe">
 <dt>
 <tt class="descname">action : finished-say</tt></dt>
-<dd><p>Occurs when a channel finishes processing a <a title="info.mindtrove.JSonic.say" class="reference internal" href="#info.mindtrove.JSonic.say"><tt class="xref docutils literal"><span class="pre">JSonic.say()</span></tt></a> command (i.e., when it finishes speaking the utterance).</p>
+<dd><p>Occurs when a channel finishes processing a <a title="info.mindtrove.JSonic.say" class="reference internal" href="#info.mindtrove.JSonic.say"><tt class="xref docutils literal"><span class="pre">JSonic.say</span></tt></a> command (i.e., when it finishes speaking the utterance).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -514,7 +515,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <span class="target" id="started-play-notice"></span><dl class="describe">
 <dt>
 <tt class="descname">action : started-play</tt></dt>
-<dd><p>Occurs when a channel starts processing a <a title="info.mindtrove.JSonic.play" class="reference internal" href="#info.mindtrove.JSonic.play"><tt class="xref docutils literal"><span class="pre">JSonic.play()</span></tt></a> command (i.e., when it starts streaming the sound).</p>
+<dd><p>Occurs when a channel starts processing a <a title="info.mindtrove.JSonic.play" class="reference internal" href="#info.mindtrove.JSonic.play"><tt class="xref docutils literal"><span class="pre">JSonic.play</span></tt></a> command (i.e., when it starts streaming the sound).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -533,7 +534,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <span class="target" id="finished-play-notice"></span><dl class="describe">
 <dt>
 <tt class="descname">action : finished-play</tt></dt>
-<dd><p>Occurs when a channel finishes processing a <a title="info.mindtrove.JSonic.play" class="reference internal" href="#info.mindtrove.JSonic.play"><tt class="xref docutils literal"><span class="pre">JSonic.play()</span></tt></a> command (i.e., when it finishes playing the sound).</p>
+<dd><p>Occurs when a channel finishes processing a <a title="info.mindtrove.JSonic.play" class="reference internal" href="#info.mindtrove.JSonic.play"><tt class="xref docutils literal"><span class="pre">JSonic.play</span></tt></a> command (i.e., when it finishes playing the sound).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -574,7 +575,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <span id="property"></span><h2>Channel properties<a class="headerlink" href="#channel-properties" title="Permalink to this headline">¶</a></h2>
 <dl class="docutils">
 <dt>engine</dt>
-<dd>Text to speech engine used to synthesize speech on the channel. A string matching one of the engine names listed by <a title="info.mindtrove.JSonic.getEngines" class="reference internal" href="#info.mindtrove.JSonic.getEngines"><tt class="xref docutils literal"><span class="pre">JSonic.getEngines()</span></tt></a>.</dd>
+<dd>Text to speech engine used to synthesize speech on the channel. A string matching one of the engine names listed by <a title="info.mindtrove.JSonic.getEngines" class="reference internal" href="#info.mindtrove.JSonic.getEngines"><tt class="xref docutils literal"><span class="pre">JSonic.getEngines</span></tt></a>.</dd>
 <dt>loop</dt>
 <dd>Flag controlling if speech or sound output on the channel loops indefinitely or not. A boolean.</dd>
 <dt>pitch</dt>
@@ -582,14 +583,14 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <dt>rate</dt>
 <dd>Rate of speech synthesized and output on the channel. An integer words per minute greater than zero.</dd>
 <dt>voice</dt>
-<dd>Voice used to synthesize speech on the channel. A string matching one of the voice identifiers supported by an engine indicated by <a title="info.mindtrove.JSonic.getEngineInfo" class="reference internal" href="#info.mindtrove.JSonic.getEngineInfo"><tt class="xref docutils literal"><span class="pre">JSonic.getEngineInfo()</span></tt></a>.</dd>
+<dd>Voice used to synthesize speech on the channel. A string matching one of the voice identifiers supported by an engine indicated by <a title="info.mindtrove.JSonic.getEngineInfo" class="reference internal" href="#info.mindtrove.JSonic.getEngineInfo"><tt class="xref docutils literal"><span class="pre">JSonic.getEngineInfo</span></tt></a>.</dd>
 <dt>volume</dt>
 <dd>Volume of speech and sound output on the channel. A floating point number in the inclusive range [0.0, 1.0].</dd>
 </dl>
 </div>
 <div class="section" id="example-code">
 <h2>Example code<a class="headerlink" href="#example-code" title="Permalink to this headline">¶</a></h2>
-<p>The following examples assume an <a title="info.mindtrove.JSonic" class="reference internal" href="#info.mindtrove.JSonic"><tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonic</span></tt></a> instance with caching disabled by default exists in local variable <cite>js</cite>. The following code create such an instance.</p>
+<p>The following examples assume an <a title="info.mindtrove.JSonic" class="reference internal" href="#info.mindtrove.JSonic"><tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonic</span></tt></a> instance with caching disabled by default exists in local variable <cite>js</cite>. The following code creates such an instance.</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">js</span> <span class="o">=</span> <span class="nx">info</span><span class="p">.</span><span class="nx">mindtrove</span><span class="p">.</span><span class="nx">JSonic</span><span class="p">();</span>
 </pre></div>
 </div>
@@ -637,7 +638,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <span class="p">});</span>
 </pre></div>
 </div>
-<p>To set the voice for all following speech commands on the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel, do the following:</p>
+<p>To set an Italian voice for all following speech commands on the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel, do the following:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">setProperty</span><span class="p">({</span><span class="nx">name</span> <span class="o">:</span> <span class="s1">&#39;voice&#39;</span><span class="p">,</span> <span class="nx">value</span> <span class="o">:</span> <span class="s1">&#39;it&#39;</span><span class="p">});</span>
 </pre></div>
 </div>
@@ -645,7 +646,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <div class="section" id="changing-speech-rate">
 <h3>Changing speech rate<a class="headerlink" href="#changing-speech-rate" title="Permalink to this headline">¶</a></h3>
 <p>To query the <tt class="xref docutils literal"><span class="pre">espeak</span></tt> engine for its range of speech rates, do the following:</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">getEngineInfo</span><span class="p">(</span><span class="s1">&#39;espeak&#39;</span><span class="p">).</span><span class="nx">addAfter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">getEngineInfo</span><span class="p">(</span><span class="s1">&#39;espeak&#39;</span><span class="p">).</span><span class="nx">addCallback</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
    <span class="kd">var</span> <span class="nx">min</span> <span class="o">=</span> <span class="nx">response</span><span class="p">.</span><span class="nx">rate</span><span class="p">.</span><span class="nx">minimum</span><span class="p">;</span>
    <span class="kd">var</span> <span class="nx">max</span> <span class="o">=</span> <span class="nx">response</span><span class="p">.</span><span class="nx">rate</span><span class="p">.</span><span class="nx">maximum</span><span class="p">;</span>
 <span class="p">});</span>
@@ -669,7 +670,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 </div>
 <div class="section" id="listening-for-events">
 <h3>Listening for events<a class="headerlink" href="#listening-for-events" title="Permalink to this headline">¶</a></h3>
-<p>Say you have a JSonic event callback named <tt class="xref docutils literal"><span class="pre">onEvent()</span></tt> implemented as follows:</p>
+<p>Say you have a JSonic event callback named <tt class="xref docutils literal"><span class="pre">onEvent</span></tt> implemented as follows:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="kd">function</span> <span class="nx">onEvent</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">event</span><span class="p">);</span>
 <span class="p">}</span>
@@ -690,7 +691,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 </div>
 <div class="section" id="taking-action-before-after-a-command">
 <h3>Taking action before / after a command<a class="headerlink" href="#taking-action-before-after-a-command" title="Permalink to this headline">¶</a></h3>
-<p>Say you have the <tt class="xref docutils literal"><span class="pre">onEvent()</span></tt> function described above. You want it to execute in response to certain commands.</p>
+<p>Say you have the <tt class="xref docutils literal"><span class="pre">onEvent</span></tt> function described above. You want it to execute in response to certain commands.</p>
 <p>To execute the callback as the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel finishes speaking an utterance completely, do the following:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s1">&#39;I am a banana.&#39;</span><span class="p">}).</span><span class="nx">addAfter</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">);</span>
 </pre></div>

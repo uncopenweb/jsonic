@@ -64,9 +64,11 @@
 <li><a class="reference external" href="http://www.xiph.org/downloads/">oggenc</a> 1.2.0</li>
 </ol>
 <p>The client JS code requires:</p>
-<p>1. <a class="reference external" href="http://dojotoolkit.org/">Dojo</a> 1.4.2 (from a CDN is fine)
-3. A browser supporting the HTML5 &lt;audio&gt; node
-4. A browser supporting HTML5 localStorage (optional)</p>
+<ol class="arabic simple">
+<li><a class="reference external" href="http://dojotoolkit.org/">Dojo</a> 1.4.2 (from a CDN is fine)</li>
+<li>A browser supporting the HTML5 &lt;audio&gt; node</li>
+<li>A browser supporting HTML5 localStorage (optional)</li>
+</ol>
 </div>
 <div class="section" id="obtaining-the-jsonic-source-code">
 <h2>Obtaining the JSonic source code<a class="headerlink" href="#obtaining-the-jsonic-source-code" title="Permalink to this headline">¶</a></h2>
@@ -91,15 +93,15 @@
 <ol class="arabic">
 <li><p class="first">Install the prerequisites listed on the <a class="reference external" href="http://www.tornadoweb.org/">Tornado</a> website.</p>
 </li>
-<li><p class="first">Install the <a class="reference external" href="http://www.tornadoweb.org/">Tornado</a> web server. (tested with v 0.2)</p>
+<li><p class="first">Install the <a class="reference external" href="http://www.tornadoweb.org/">Tornado</a> web server.</p>
 </li>
-<li><p class="first">Install the <a class="reference external" href="http://pypi.python.org/pypi/iterpipes">iterpipes</a> module. (tested with v 0.3)</p>
+<li><p class="first">Install the <a class="reference external" href="http://pypi.python.org/pypi/iterpipes">iterpipes</a> module.</p>
 </li>
-<li><p class="first">Install the <a class="reference external" href="http://espeak.sourceforge.net/">espeak</a> text-to-speech engine. (tested with v 1.36.02)</p>
+<li><p class="first">Install the <a class="reference external" href="http://espeak.sourceforge.net/">espeak</a> text-to-speech engine.</p>
 </li>
-<li><p class="first">Install <a class="reference external" href="http://lame.sourceforge.net/">LAME</a> for MP3 encoding support. (tested with v 3.98.2)</p>
+<li><p class="first">Install <a class="reference external" href="http://lame.sourceforge.net/">LAME</a> for MP3 encoding support.</p>
 </li>
-<li><p class="first">Install the oggenc utility from <a class="reference external" href="http://www.xiph.org/downloads/">Vorbis tools</a> for OGG encoding support. (tested with v 1.2.0)</p>
+<li><p class="first">Install the oggenc utility from <a class="reference external" href="http://www.xiph.org/downloads/">Vorbis tools</a> for OGG encoding support.</p>
 </li>
 <li><p class="first">Start the JSonic server on port 8888 with 4 worker processes using the following command.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd </span>jsonic/server
@@ -119,11 +121,11 @@ python jsonic.py
 <h2>Loading the JSonic Dojo module<a class="headerlink" href="#loading-the-jsonic-dojo-module" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
 <li>Place the <tt class="docutils literal"><span class="pre">JSonic.js</span></tt> file in a web accessible location.</li>
-<li>Include <a class="reference external" href="http://dojotoolkit.org/">Dojo</a> (tested with 1.4.2) in your web application.</li>
-<li>Inform Dojo of the location of the <cite>info.mindtrove</cite> namespace on disk.</li>
-<li>Use <tt class="xref docutils literal"><span class="pre">dojo.require()</span></tt> to load the JSonic module.</li>
+<li>Include <a class="reference external" href="http://dojotoolkit.org/">Dojo</a> in your web application.</li>
+<li>Inform Dojo of the location of the <a title="Namespace for the JSonic client." class="reference external" href="js.html#module-info.mindtrove"><tt class="xref docutils literal"><span class="pre">info.mindtrove</span></tt></a> namespace on disk.</li>
+<li>Use <tt class="xref docutils literal"><span class="pre">dojo.require</span></tt> to load the JSonic module.</li>
 </ol>
-<p>See the HTML files in the <tt class="docutils literal"><span class="pre">examples/</span></tt> folder for complete applications satisfying these requirements.</p>
+<p>See the HTML files in the <tt class="docutils literal"><span class="pre">examples/</span></tt> folder for complete applications satisfying these requirements. You can run the examples by visiting the <tt class="docutils literal"><span class="pre">http://yourdomain:8888/static/examples/</span></tt> URL of the JSonic server if you start the server with the <cite>&#8211;static</cite> parameter.</p>
 </div>
 <div class="section" id="speaking-hello-world">
 <h2>Speaking &#8220;Hello world!&#8221;<a class="headerlink" href="#speaking-hello-world" title="Permalink to this headline">¶</a></h2>
@@ -138,7 +140,7 @@ python jsonic.py
 </pre></div>
 </div>
 </li>
-<li><p class="first">Invoke the <tt class="xref docutils literal"><span class="pre">JSonic.say()</span></tt> method.</p>
+<li><p class="first">Invoke the <tt class="xref docutils literal"><span class="pre">JSonic.say</span></tt> method.</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s1">&#39;Hello world!&#39;</span><span class="p">})</span>
 </pre></div>
 </div>

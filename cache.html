@@ -50,10 +50,10 @@
             
   <div class="section" id="about-caching">
 <h1>About caching<a class="headerlink" href="#about-caching" title="Permalink to this headline">¶</a></h1>
-<p>The JSonic client makes use of various levels of caching to lower the time delay between a call to <a title="info.mindtrove.JSonic.say" class="reference external" href="js.html#info.mindtrove.JSonic.say"><tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonic.say()</span></tt></a> and actual audio output.</p>
+<p>The JSonic client makes use of various levels of caching to lower the time delay between a call to <a title="info.mindtrove.JSonic.say" class="reference external" href="js.html#info.mindtrove.JSonic.say"><tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonic.say</span></tt></a> and actual audio output.</p>
 <div class="section" id="url-caching">
 <h2>URL caching<a class="headerlink" href="#url-caching" title="Permalink to this headline">¶</a></h2>
-<p>The JSonic client caches string URLs of synthesized speech files in memory the first time they are spoken. If the user&#8217;s browser supports HTML5 local storage, it also stores the utterance text and its file URL in the local store to reduce the number of server requests for speech files by one the next time the application loads.</p>
+<p>The JSonic client caches string URLs of synthesized speech files in memory the first time they are spoken by an application instance. If the user&#8217;s browser supports HTML5 local storage, JSonic also stores the utterance text and its file URL in the persistent store to eliminate the synthesis request to the server the next time the application loads.</p>
 <p>As of version 0.1, the client does not attempt to flush cached URLs from memory or local storage. A future version of JSonic will support a configurable maximum URL cache size and invalidation algorithm.</p>
 </div>
 <div class="section" id="node-caching">
@@ -63,7 +63,7 @@
 </div>
 <div class="section" id="browser-caching">
 <h2>Browser caching<a class="headerlink" href="#browser-caching" title="Permalink to this headline">¶</a></h2>
-<p>Most web browsers cache audio data retrieved by audio elements on disk or in memory for faster playback in the future. JSonic does not impede these actions, but performance of audio caching varies between current browser implementations of HTML5.</p>
+<p>Most web browsers cache audio data retrieved by audio elements on disk or in memory for faster playback in the future. JSonic does not impede these actions, but performance of audio caching varies among current browser implementations of HTML5.</p>
 </div>
 </div>
 

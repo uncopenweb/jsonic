@@ -1,7 +1,9 @@
 The REST API
 ============
 
-The JSonic server implements a REST interface providing information about available speech engines, synthesizing speech to audio files, and fetching speech files. The server sets the HTTP status code properly on every response to indicate whether a request was process successfully (e.g., 200, 206) or an error occurred (e.g., 500).
+The JSonic server implements a REST interface providing information about available speech engines, synthesizing speech to audio files, and fetching speech files. The server sets the HTTP status code properly on every response to indicate whether a request was processed successfully (e.g., 200, 206) or an error occurred (e.g., 500).
+
+The JSonic client API encapsulates the REST API in an object-oriented wrapper for easier use by applications. Nevertheless, the REST API should be considered public and addressable by other client implementations.
 
 .. _version-schema:
 
@@ -262,3 +264,5 @@ GET /files/[id]
 ---------------
 
 Gets a synthesized speech file previously created by `/synth`. For status codes in the 200s, the response body contains the bytes of the file, possibly limited to a range specified in the request.
+
+At deployment time, a web server optimized for serving static files may safely mask this portion of the JSonic REST API and serve the synthesized speech files itself without informing the JSonic server.
