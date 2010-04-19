@@ -6,42 +6,82 @@ The JavaScript API
 
 The client implements a JavaScript interface allowing web applications to speak text, play sounds, change playback properties, queue commands, manage independent audio channels, and cache results for low-latency playback.
 
+Client concepts
+---------------
+
+The client consists of a set of named channels that maintain independent queues of commands. A channel processes one command at a time and, unless otherwise directed, avoids processing the next until the previous has finished or has been interrupted. Multiple channels can process commands at the same time, however. For example, the `default` channel might have one speech utterance queued while it is speaking another. At the same time, the `secondary` channel might process a volume change command followed by a command to play a sound.
+
+Channels send notifications of actions as they occur in two manners. First, channels invoke callback functions registered by an application for one or more kinds of actions. Second, the channels return deferred results for each command before and after it is processed. The former technique is useful for listeners that need information when many commands are processed. The latter is useful when an application wants information particular commands.
+
 The JSonic interface
 --------------------
 
 .. class:: JSonic
 
+   The :class:`JSonic` class implements the entire client API. Only one instance is required and recommended per page for the best caching performance.
+
    .. method:: constructor(args)
    
-      :param args: 
+      Initializes the client API.
+   
+      :param args: Object with the following properties:
+      
+         defaultCaching (optional)
+
+            True to enable all levels of caching as the default for calls to :meth:`say` and :meth:`play`. False to disable all caching except browser caching as the default for those methods. Defaults to false.
+
+         jsonicURI (optional)
+         
+            String URI pointing to the root of the JSonic REST API. Defaults to `/`.     
+     
       :type args: object
+
+   .. attribute:: defaultCaching
+   
+      Read-only. True if caching is enabled by default for all to :meth:`say` and :meth:`play` calls. False if caching is disabled by default.
+      
+   .. attribute:: jsonicURI
+   
+      Read-only. The root of the JSonic REST API.
    
    .. method:: addObserver(func, channel, actions)
    
+      Adds a listener for speech and sound :ref:`notifications <notification>`.
+   
       :param func: Callback function
-      :type func: function(notice)
+      :type func: :func:`function(notice)`
       :param channel: Name of the channel to observe. Defaults to :const:`default` if not defined.
       :type channel: string
-      :param actions: List of string :ref:`action <action>` names to observe. Defaults to all actions if not defined.
+      :param actions: List of string :ref:`action <notification>` names to observe. Defaults to all actions if not defined.
       :type actions: array
       :return: Token to use to unregister the callback later using :meth:`removeObserver`
       :rtype: object
       
    .. method:: getClientVersion()
    
+      Gets the version number of the client API implemented by this instance.
+   
       :rtype: string
    
    .. method:: getEngines()
    
-      :rtype: :class:`dojo.Deferred`
+      Gets the names of the text to speech engines installed on the server.
+   
+      :return: A deferred callback with an object matching the :ref:`/engine schema <engine-schema>` or an errback with an :class:`Error` object
+      :rtype: `dojo.Deferred`_
    
    .. method:: getEngineInfo(id)
    
-      :param id: 
+      Gets detailed information about a particular text to speech engine.
+   
+      :param id: Identifier associated with the engine as returned by :meth:`getEngines`.
       :type id: string
-      :rtype: :class:`dojo.Deferred`
+      :return: A deferred callback with an object matching the :ref:`/engine/[id] <engine-info-schema>` or an errback with an :class:`Error` object
+      :rtype: `dojo.Deferred`_
 
    .. method:: getProperty(args)
+   
+      Gets the current value of one of the supported :ref:`audio properties <property>`, immediately and at the time this command is processed in the queue.
    
       :param args: Object with the following properties:
          
@@ -52,35 +92,46 @@ The JSonic interface
             String name of the channel. Defaults to :const:`default` if not specified.
          
       :type args: object
-      :rtype: :class:`dojo.Deferred`
+      :return: A deferred callback with the property value at the time this command is received (before) and when the command is processed in the queue (after)
+      :rtype: :class:`JSonicDeferred`
    
    .. method:: getServerVersion()
    
-      :rtype: :class:`dojo.Deferred`
+      Gets the version number of the server API currently in use by this instance.
+   
+      :return: A deferred callback with an object matching the :ref:`/version schema <version-schema>` or an errback with an :class:`Error` object
+      :rtype: `dojo.Deferred`_
       
    .. method:: play(args)
+   
+      Plays a sound. 
 
       :param args: Object with the following properties:
 
          url (required)
-            String URL of the sound to play. Either :const:`.ogg` or :const:`.mp3` will be appeneded to the end of the URL depending on which format the browser supports.
+            String URL of the sound to play. Either :const:`.ogg` or :const:`.mp3` will be appended to the end of the URL depending on which format the browser supports.
          
          cache (optional)
-            Boolean true to cache the sound audio node in memory for faster playback in the future, false to avoid caching. Defaults to false if not specified.
+            Boolean true to cache the sound audio node in memory for faster playback in the future, false to avoid caching. Defaults to :attr:`defaultCaching` if not specified.
       
          channel (optional)
             String name of the channel. Defaults to :const:`default` if not specified.
       
       :type args: object
-      :rtype: :class:`info.mindtrove.JSonicDeferred`
+      :return: A deferred callback with a :ref:`play notification <started-play-notice>` when the sound command is processed (before) and a :ref:`play notification <finished-play-notice>` when the sound finishes playing (after)
+      :rtype: :class:`JSonicDeferred`
    
    .. method:: removeObserver(token)
+   
+      Removes a listener for speech and sound :ref:`notifications <notification>`.
 
       :param token: Token returned when registering the observer with :meth:`addObserver`
       :type token: object
       :rtype: :const:`undefined`
 
    .. method:: reset(args)
+   
+      Resets all channel :ref:`audio properties <property>` to their defaults.
 
       :param args: Object with the following properties:
       
@@ -88,9 +139,11 @@ The JSonic interface
             String name of the channel. Defaults to :const:`default` if not specified.
       
       :type args: object
-      :rtype: :class:`info.mindtrove.JSonicDeferred`
+      :rtype: :class:`JSonicDeferred`
    
    .. method:: say(args)
+   
+      Speaks an utterance.
    
       :param args: Object with the following properties:
       
@@ -98,15 +151,18 @@ The JSonic interface
             String text to speak.
          
          cache (optional)
-            Boolean true to cache the sound audio node in memory and the utterance file URL in localStorage for faster playback in the future, false to avoid caching. Defaults to false if not specified.
+            Boolean true to cache the sound audio node in memory and the utterance file URL in localStorage for faster playback in the future, false to avoid caching. Defaults to :attr:`defaultCaching` if not specified.
 
          channel (optional)
             String name of the channel. Defaults to :const:`default` if not specified.
       
       :type args: object
-      :rtype: :class:`info.mindtrove.JSonicDeferred`
+      :return: A deferred callback with a :ref:`say notification <started-say-notice>` when the speech command is processed (before) and a :ref:`say notification <finished-say-notice>` when the speech utterance finishes (after)
+      :rtype: :class:`JSonicDeferred`
 
    .. method:: setProperty(args)
+   
+      Sets the current value of one of the supported :ref:`audio properties <property>` either immediately or when the command is processed in the queue.
 
       :param args: Object with the following properties:
          
@@ -123,9 +179,12 @@ The JSonic interface
             String name of the channel. Defaults to :const:`default` if not specified.
          
       :type args: object
-      :rtype: :class:`dojo.Deferred`
+      :return: A deferred callback with the value of the property before it is processed (before) and the value of the property after the change is made (after)
+      :rtype: :class:`JSonicDeferred`
    
    .. method:: stop(args)
+   
+      Immediately stops all output from a channel and clears all queued commands for that channel.
 
       :param args: Object with the following properties:
 
@@ -133,80 +192,175 @@ The JSonic interface
             String name of the channel. Defaults to :const:`default` if not specified.
 
       :type args: object
-      :rtype: :class:`info.mindtrove.JSonicDeferred`
+      :return: A deferred callback with no parameters invoked before the stop is processed (before) and after the stop is processed (after)
+      :rtype: :class:`JSonicDeferred`
+      
+Before and after deferred notification
+--------------------------------------
 
 .. class:: JSonicDeferred
+
+   The :class:`JSonicDeferred` class wraps two `dojo.Deferred`_ instances. A channel invokes the :meth:`callback` or :meth:`errback` method on the `before` deferred before a command is processed in the channel queue. A channel invokes the :meth:`callback` or :meth:`errback` method on the `after` deferred after the channel has finished processing the command.
    
    .. method:: addAfter(func)
    
+      Adds a function to be called once after a command is processed successfully.
+      
+      :param func: Callback function
+      :type func: :func:`function(notice)`
+      :return: This instance for call chaining
+      :rtype: :class:`JSonicDeferred`
+   
    .. method:: addBefore(func)
+
+      Adds a function to be called once before a command is processed successfully.
+
+      :param func: Callback function
+      :type func: :func:`function(notice)`
+      :return: This instance for call chaining
+      :rtype: :class:`JSonicDeferred`
    
    .. method:: anyAfter(func)
    
+      Adds a function to be called once after a command is processed successfully or if an error occurs.
+   
+      :param func: Callback function
+      :type func: :func:`function(noticeOrError)`
+      :return: This instance for call chaining
+      :rtype: :class:`JSonicDeferred`
+   
    .. method:: anyBefore(func)
+
+      Adds a function to be called once before a command is processed successfully or if an error occurs.
+   
+      :param func: Callback function
+      :type func: :func:`function(noticeOrError)`
+      :return: This instance for call chaining
+      :rtype: :class:`JSonicDeferred`
    
    .. method:: errAfter(func)
    
+      Adds a function to be called once after a command is processed but an error occurs.
+   
+      :param func: Callback function
+      :type func: :func:`function(error)`
+      :return: This instance for call chaining
+      :rtype: :class:`JSonicDeferred`
+   
    .. method:: errBefore(func)
 
-.. _action:
+      Adds a function to be called once before a command is processed but an error occurs.
+   
+      :param func: Callback function
+      :type func: :func:`function(error)`
+      :return: This instance for call chaining
+      :rtype: :class:`JSonicDeferred`
 
-Callback actions
-----------------
+.. _notification:
 
-.. describe:: action : started-speech
+Channel notifications
+---------------------
 
-   :param channel:
-   :param url:
-   :param name:
-
-.. describe:: action : finished-speech
-
-   :param channel:
-   :param url:
-   :param name:
-   :param completed:
+.. _started-say-notice:
 
 .. describe:: action : started-say
 
-   :param channel:
-   :param url:
-   :param name:
+   Occurs when a channel starts processing a :meth:`JSonic.say` command (i.e., when it starts synthesizing the utterance).
+
+   :param channel: Name of the channel
+   :type channel: string
+   :param url: URL of the synthesized speech file
+   :type url: string
+   :param name: Application name assigned to the utterance
+   :type name: string
+
+.. _finished-say-notice:
 
 .. describe:: action : finished-say
 
-   :param channel:
-   :param url:
-   :param name:
-   :param completed:
+   Occurs when a channel finishes processing a :meth:`JSonic.say` command (i.e., when it finishes speaking the utterance).
+
+   :param channel: Name of the channel
+   :type channel: string
+   :param url: URL of the synthesized speech file
+   :type url: string
+   :param name: Application name assigned to the utterance
+   :type name: string
+   :param completed: True if the speech finished in its entirety, false if it was interrupted before it could finish
+   :type completed: boolean
+
+.. _started-play-notice:
+
+.. describe:: action : started-play
+
+   Occurs when a channel starts processing a :meth:`JSonic.play` command (i.e., when it starts streaming the sound).
+
+   :param channel: Name of the channel
+   :type channel: string
+   :param url: URL of the sound file
+   :type url: string
+   :param name: Application name assigned to the sound
+   :type name: string
+
+.. _finished-play-notice:
+
+.. describe:: action : finished-play
+
+   Occurs when a channel finishes processing a :meth:`JSonic.play` command (i.e., when it finishes playing the sound).
+
+   :param channel: Name of the channel
+   :type channel: string
+   :param url: URL of the sound file
+   :type url: string
+   :param name: Application name assigned to the sound
+   :type name: string
+   :param completed: True if the sound finished in its entirety, false if it was interrupted before it could finish
+   :type completed: boolean
+
+.. _error-notice:
 
 .. describe:: action : error
 
-   :param channel:
-   :param name:
-   :param description:
+   Occurs when a channel encounters an error processing a command.
+
+   :param channel: Name of the channel
+   :type channel: string
+   :param name: Application name assigned to the command that caused the error
+   :type name: string
+   :param description: English description of the problem that occurred
+   :type description: string
 
 .. _property:
 
-Supported properties
---------------------
+Channel properties
+------------------
+
+engine
+   Text to speech engine used to synthesize speech on the channel. A string matching one of the engine names listed by :meth:`JSonic.getEngines`.
+   
+loop
+   Flag controlling if speech or sound output on the channel loops indefinitely or not. A boolean.
 
 pitch
-   todo
+   Baseline pitch of speech synthesized and output on the channel. A floating point number in the inclusive range [0.0, 1.0].
 
 rate
-   todo
+   Rate of speech synthesized and output on the channel. An integer words per minute greater than zero.
    
 voice
-   todo
+   Voice used to synthesize speech on the channel. A string matching one of the voice identifiers supported by an engine indicated by :meth:`JSonic.getEngineInfo`.
 
 volume
-   todo
+   Volume of speech and sound output on the channel. A floating point number in the inclusive range [0.0, 1.0].
 
 Example code
 ------------
 
-The following examples assume an :class:`info.mindtrove.JSonic` instance with caching disabled by default exists in local variable `js`.
+The following examples assume an :class:`info.mindtrove.JSonic` instance with caching disabled by default exists in local variable `js`. The following code create such an instance.
+
+.. sourcecode:: javascript
+
+   var js = info.mindtrove.JSonic();
 
 Speaking text
 ~~~~~~~~~~~~~
@@ -359,3 +513,5 @@ To execute the callback with the voice configured on the :const:`default` channe
 .. sourcecode:: javascript
 
    js.getProperty({name : 'voice'}).addBefore(onEvent).addAfter(onEvent);
+
+.. _dojo.Deferred: http://dojotoolkit.org/reference-guide/dojo/Deferred.html#dojo-deferred
