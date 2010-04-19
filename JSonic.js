@@ -1,12 +1,15 @@
 /*
  * JSonic client-side API implemented using Dojo.
  *
- * :requires: Dojo 1.4, JSonic REST API on server
+ * :requires: Dojo 1.4.x, JSonic REST API on server
  * :copyright: Peter Parente 2010
  * :license: BSD
 **/
 dojo.provide('info.mindtrove.JSonic');
 dojo.require('dijit._Widget');
+
+// client api version
+info.mindtrove._jsonicVersion = '0.1';
 
 /**
  * JSonic widget for application use.
@@ -46,7 +49,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
      * :rtype: string
      */
     getClientVersion: function() {
-        return '0.1';
+        return info.mindtrove._jsonicVersion;
     },
     
     /**
@@ -352,7 +355,7 @@ dojo.declare('info.mindtrove.JSonicDeferred', null, {
  * Private. Shared cache implementation for JSonic. The cache maintains three 
  * pieces of information to reduce speech/sound output latency:
  *
- * 1. <audio> nodes pointing to speech/sound URLs cloned for reused by channels 
+ * 1. <audio> nodes pointing to speech/sound URLs cloned for reuse by channels 
  * 2. Filenames of speech utterances already synthesized on the server
  * 3. Utterance / sound frequency tracking for cache warming
  */
@@ -364,12 +367,17 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
         // cache of speech utterances
         this._speechCache = {};
         // cache of speech filenames
-        try {
+        if(localStorage) {
             this._speechFiles = localStorage;
-        } catch(e) {
+            // clear the cache if versions don't match
+            if(localStorage['jsonic.version'] != info.mindtrove._jsonicVersion) {
+                // reset the cache
+                this.resetCache();
+            }
+        } else {
             this._speechFiles = {};
         }
-        // cache of sound utterances
+        // cache of sound files
         this._soundCache = {};
         // cache of requests for speech rendering in progress
         this._speechRenderings = {};
@@ -383,14 +391,23 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
             throw new Error('no known media supported');
         }
     },
-    
+
     resetCache: function(args) {
-        try {
-            this._speechFiles.clear();
-        } catch(e) {
-            this._speechFiles = {};
+        if(localStorage) {
+            // only delete things with the jsonic prefix
+            for(var key in localStorage) {
+                if(key.search('jsonic.') == 0) {
+                    delete localStorage[key];
+                }
+            }
+            // store the latest version number
+            this._speechFiles['jsonic.version'] = info.mindtrove._jsonicVersion;
+        } else {
+            this._speechFiles = {};        
         }
-        delete this._speechCache[args.key];
+        if(args) {
+            delete this._speechCache[args.key];
+        }
     },
     
     getEngines: function() {
@@ -450,7 +467,7 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
     },
 
     _getSpeechCacheKey: function(text, props) {
-        var key = text;
+        var key = 'jsonic.'+text;
         var names = [];
         // @todo: would be nice not to recompute every time, but how to
         //  store if we prefetch speech and are peeking into the queue?
@@ -519,14 +536,14 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
         if(resultDef) resultDef.errback(desc);
         return err;
     },
-    
+
     _onSpeechSynthed: function(resultDef, args, response) {
         delete this._speechRenderings[args.key];
         var node = dojo.create('audio');
         node.autobuffer = true;
         node.src = this.jsonicURI+'files/'+response.result.text+this._ext;
         // @todo: don't let caches grow unbounded
-        // @todo: distinguish server caching from audio node caching
+        // @todo: distinguish levels of caching
         if(args.cache) {
             // cache the audio node
             this._speechCache[args.key] = node;
