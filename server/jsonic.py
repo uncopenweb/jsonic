@@ -347,7 +347,7 @@ class FilesHandler(tornado.web.StaticFileHandler):
         finally:
             fh.close()
 
-def run(port=8888, processes=4, debug=False, static=False):
+def run(port=8888, processes=4, debug=False, static=False, pid=None):
     '''
     Runs an instance of the JSonic server.
     
@@ -364,7 +364,14 @@ def run(port=8888, processes=4, debug=False, static=False):
         False to disable static file sharing when this server should handle the
         JSonic REST API only.
     :type static: bool
+    :param pid: Name of a pid file to write if launching as a daemon or None
+        to run in the foreground
+    :type pid: string
     '''
+    if pid is not None:
+        # launch as a daemon and write the pid file
+        import daemon
+        daemon.daemonize(pid)
     kwargs = {}
     kwargs['pool'] = pool = multiprocessing.Pool(processes=processes)
     if static:
@@ -396,9 +403,11 @@ def run_from_args():
         default=False, help="enable Tornado debug mode w/ automatic loading (default=false)")
     parser.add_option("--static", dest="static", action="store_true", 
         default=False, help="enable Tornado sharing of the jsonic root folder (default=false)")
+    parser.add_option("--pid", dest="pid", default=None, type="str",
+        help="launch as a daemon and write to the given pid file (default=None)")
     (options, args) = parser.parse_args()
     # run the server
-    run(options.port, options.workers, options.debug, options.static)
+    run(options.port, options.workers, options.debug, options.static, options.pid)
     
 if __name__ == '__main__':
     run_from_args()
