@@ -378,12 +378,19 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
         this._speechCache = {};
         // cache of speech filenames
         if(localStorage) {
-            this._speechFiles = localStorage;
             // clear the cache if versions don't match
             if(localStorage['jsonic.version'] != info.mindtrove._jsonicVersion) {
                 // reset the cache
                 this.resetCache();
             }
+            // warm the cache from localStorage
+            try {
+                this._speechFiles = dojo.fromJson(localStorage['jsonic.cache']) || {};
+            } catch(e) {
+                this._speechFiles = {};
+            }
+            // register to persist on page unload
+            dojo.addOnUnload(this, '_persist');
         } else {
             this._speechFiles = {};
         }
@@ -401,20 +408,19 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
             throw new Error('no known media supported');
         }
     },
+    
+    _persist: function() {
+        localStorage['jsonic.cache'] = dojo.toJson(this._speechFiles);
+    },
 
     resetCache: function(args) {
         if(localStorage) {
-            // only delete things with the jsonic prefix
-            for(var key in localStorage) {
-                if(key.search('jsonic.') == 0) {
-                    delete localStorage[key];
-                }
-            }
-            // store the latest version number
-            this._speechFiles['jsonic.version'] = info.mindtrove._jsonicVersion;
-        } else {
-            this._speechFiles = {};        
+            // clear out the cache
+            delete localStorage['jsonic.cache'];
+            // update the version number
+            localStorage['jsonic.version'] = info.mindtrove._jsonicVersion;
         }
+        this._speechFiles = {};
         if(args) {
             delete this._speechCache[args.key];
         }
@@ -477,7 +483,7 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
     },
 
     _getSpeechCacheKey: function(text, props) {
-        var key = 'jsonic.'+text;
+        var key = text;
         var names = [];
         // @todo: would be nice not to recompute every time, but how to
         //  store if we prefetch speech and are peeking into the queue?
