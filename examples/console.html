@@ -15,7 +15,7 @@
     dojo.require('info.mindtrove.JSonic');
     var js;
     dojo.ready(function() {
-      js = new info.mindtrove.JSonic();
+      js = info.mindtrove.initJSonic();
       js.addObserver(function(notice) {
         console.debug(notice.action);
         console.log(notice);

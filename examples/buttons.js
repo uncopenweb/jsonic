@@ -84,7 +84,7 @@ function onEnd(notice) {
 }
 
 dojo.ready(function() {
-    var js = new info.mindtrove.JSonic({defaultCaching : true});
+    var js = info.mindtrove.initJSonic({defaultCaching : true});
     js.addObserver(onStart)
     dojo.query('button').forEach(function(node) {
         dojo.connect(node, 'onclick', dojo.partial(buttonHandlers[node.id], js));

@@ -35,7 +35,7 @@
     dojo.require('info.mindtrove.JSonic');
     var js;
     dojo.ready(function() {
-      js = new info.mindtrove.JSonic({defaultCaching : true});
+      js = info.mindtrove.initJSonic({defaultCaching : true});
       // find all the p elements
       dojo.query('p').forEach(function(item) {
         var line = dojo.byId(item.getAttribute('data-line'));

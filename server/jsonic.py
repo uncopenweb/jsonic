@@ -22,7 +22,7 @@ import stat
 import optparse
 
 # current server api version
-VERSION = '0.1'
+VERSION = '0.2'
 # path containing synthed and encoded speech files
 CACHE_PATH = os.path.join(os.path.dirname(__file__), 'files')
 try:

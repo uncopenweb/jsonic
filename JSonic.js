@@ -9,7 +9,17 @@ dojo.provide('info.mindtrove.JSonic');
 dojo.require('dijit._Widget');
 
 // client api version
-info.mindtrove._jsonicVersion = '0.1';
+info.mindtrove._jsonicVersion = '0.2';
+// singleton instance
+info.mindtrove._instance = null;
+
+// factory to build a JSonic instance
+info.mindtrove.initJSonic = function(args) {
+    if(!info.mindtrove._instance) {
+        info.mindtrove._instance = new info.mindtrove.JSonic(args);
+    }
+    return info.mindtrove._instance;
+};
 
 /**
  * JSonic widget for application use.
@@ -270,7 +280,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
         var ch = this._channels[id];
         if(ch === undefined) {
             ch = new info.mindtrove.JSonicChannel({
-                id : id, 
+                id : 'jsonic.'+id, 
                 cache : this._cache
             });
             this._channels[id] = ch;

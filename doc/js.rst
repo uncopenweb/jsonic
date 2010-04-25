@@ -13,28 +13,31 @@ The client consists of a set of named :term:`channels` that maintain independent
 
 Channels send :term:`notifications` of important events as they occur in two manners. First, channels invoke callback functions registered by an application for one or more kinds of notifications. Second, the channels return deferred results for each command before and after it is processed. The former technique is useful for listeners that need information across many commands. The latter is useful when an application wants information about particular commands.
 
+The JSonic factory
+------------------
+
+.. function:: initJSonic
+
+   Initializes the client API.
+   
+   :param args: Object with the following properties:
+   
+      defaultCaching (optional)
+
+         True to enable all levels of caching as the default for calls to :meth:`say` and :meth:`play`. False to disable all caching except browser caching as the default for those methods. Defaults to false.
+
+      jsonicURI (optional)
+      
+         String URI pointing to the root of the JSonic REST API. Defaults to `/`.     
+ 
+   :type args: object   
+
 The JSonic interface
 --------------------
 
 .. class:: JSonic
 
-   The :class:`JSonic` class implements the entire client API. Only one instance is required and recommended per page for the best caching performance.
-
-   .. method:: constructor(args)
-   
-      Initializes the client API.
-   
-      :param args: Object with the following properties:
-      
-         defaultCaching (optional)
-
-            True to enable all levels of caching as the default for calls to :meth:`say` and :meth:`play`. False to disable all caching except browser caching as the default for those methods. Defaults to false.
-
-         jsonicURI (optional)
-         
-            String URI pointing to the root of the JSonic REST API. Defaults to `/`.     
-     
-      :type args: object
+   The :class:`JSonic` class implements the entire client API. Only one instance is allowed per page and should be constructed using the :func:`initJSonic` factory function.
 
    .. attribute:: defaultCaching
    
