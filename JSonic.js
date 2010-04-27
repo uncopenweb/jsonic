@@ -600,6 +600,8 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
     },
     
     push: function(args) {
+        // copy the args to avoid problems with reuse
+        args = dojo.clone(args);
         if(args.method == '_setProperty' && args.immediate) {
             // set property now
             this._setProperty(args);
@@ -708,7 +710,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         this._name = null;
         this._busy = false;
         args.defs.after.callback();
-        if(cargs) {
+        if(cargs && cargs.started) {
             // notify of end if currently playing
             var notice = {
                 url : cargs.url,
@@ -839,6 +841,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
             channel : this.id,
             name : this._name
         };
+        this._args.started = true;
         this._args.defs.before.callback();
         this._notify(notice);
     }
