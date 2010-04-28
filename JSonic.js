@@ -654,7 +654,10 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         // don't play if we've stopped in the meantime
         if(this._args != args) return;
         this._audioNode = node;
-        this._audioNode.volume = this._properties.volume;
+        if(!dojo.isChrome) {
+            // set volume immediately in non-chrome browsers
+            this._audioNode.volume = this._properties.volume;
+        }
         // @todo: not yet supported well in browsers, do our own
         //this._audioNode.loop = this._properties.loop;
         this._connects[0] = dojo.connect(node, 'play', this, '_onStart');
@@ -838,6 +841,10 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
             channel : this.id,
             name : this._name
         };
+        if(dojo.isChrome) {
+            // workaround for chrome bug; can't set vol until started
+            this._audioNode.volume = this._properties.volume;
+        }
         this._args.started = true;
         this._args.defs.before.callback();
         this._notify(notice);
