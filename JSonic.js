@@ -87,8 +87,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
         if(!args || !args.text) throw new Error('args.text required');
         args.cache = (args.cache == undefined) ? this.defaultCaching : args.cache;
         args.method = '_say';
-        args.defs = new info.mindtrove.JSonicDeferred();
-        this._getChannel(args.channel).push(args);
+        args = this._getChannel(args.channel).push(args);
         return args.defs;
     },
     
@@ -119,8 +118,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
         if(!args || !args.url) throw new Error('args.url required');
         args.cache = (args.cache == undefined) ? this.defaultCaching : args.cache;
         args.method = '_play';
-        args.defs = new info.mindtrove.JSonicDeferred();
-        this._getChannel(args.channel).push(args);
+        args = this._getChannel(args.channel).push(args);
         return args.defs;
     },
     
@@ -137,8 +135,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
     stop: function(args) {
         args = args || {};
         args.method = '_stop';
-        args.defs = new info.mindtrove.JSonicDeferred();
-        this._getChannel(args.channel).push(args);
+        args = this._getChannel(args.channel).push(args);
         return args.defs;
     },
     
@@ -177,8 +174,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
     setProperty: function(args) {
         if(!args || !args.name) throw new Error('args.name required');
         args.method = '_setProperty';
-        args.defs = new info.mindtrove.JSonicDeferred();
-        this._getChannel(args.channel).push(args);
+        args = this._getChannel(args.channel).push(args);
         return args.defs;
     },
 
@@ -201,8 +197,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
     getProperty: function(args) {
         if(!args || !args.name) throw new Error('args.name required');
         args.method = '_getProperty';
-        args.defs = new info.mindtrove.JSonicDeferred();
-        this._getChannel(args.channel).push(args);
+        args = this._getChannel(args.channel).push(args);
         return args.defs;
     },
     
@@ -221,8 +216,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
     reset: function(args) {
         args = args || {};
         args.method = '_reset';
-        args.defs = new info.mindtrove.JSonicDeferred();
-        this._getChannel(args.channel).push(args);
+        args = this._getChannel(args.channel).push(args);
         return args.defs;
     },
 
@@ -602,14 +596,16 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
     push: function(args) {
         // copy the args to avoid problems with reuse
         args = dojo.clone(args);
+        // create deferred responses in the copy
+        args.defs = new info.mindtrove.JSonicDeferred();
         if(args.method == '_setProperty' && args.immediate) {
             // set property now
             this._setProperty(args);
-            return;
+            return args;
         } else if(args.method == '_stop') {
             // stop immediately
             this._stop(args);
-            return;
+            return args;
         } else if(args.method == '_play') {
             // pre-load sound
             args.audio = this.cache.getSound(args);
@@ -627,6 +623,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         }
         this._queue.push(args);
         this._pump();
+        return args;
     },
 
     addObserver: function(func, actions) {
