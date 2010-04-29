@@ -1,3 +1,6 @@
 *.py[co]
 doc/_build
 .DS_Store
+server/files/*.mp3
+server/files/*.wav
+server/files/*.ogg
