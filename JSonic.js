@@ -661,21 +661,12 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         // @todo: not yet supported well in browsers, do our own
         //this._audioNode.loop = this._properties.loop;
         this._connects[0] = dojo.connect(node, 'play', this, '_onStart');
-        this._connects[1] = dojo.connect(node, 'ended', this, '_onEnd');
-        this._connects[2] = dojo.connect(node, 'error', this, '_onMediaError');
+        this._connects[1] = dojo.connect(node, 'pause', this, '_onPause');
+        this._connects[2] = dojo.connect(node, 'ended', this, '_onEnd');
+        this._connects[3] = dojo.connect(node, 'error', this, '_onMediaError');
         this._audioNode.play();
     },
     
-    _stopAudioNode: function() {
-        if(this._audioNode) {
-            this._audioNode.pause();
-            dojo.destroy(this._audioNode);
-        }
-        dojo.forEach(this._connects, dojo.disconnect);
-        this._connects = [];
-        this._audioNode = null;
-    },
-
     _say: function(args) {
         this._busy = true;
         this._kind = 'say';
@@ -698,29 +689,18 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
     },
     
     _stop: function(args) {
-        var cargs = this._args;
-        var cname = this._name;
-        var ckind = this._kind;
         args.defs.before.callback();
-        this._stopAudioNode();
-        // clear everything before giving after callbacks
-        this._args = null;
+        var didPause = false;
+        if(this._audioNode) {
+            didPause = true;
+            this._audioNode.pause();
+            this._audioNode = null;
+        }
         this._queue = [];
-        this._kind = null;
-        this._name = null;
-        this._busy = false;
         args.defs.after.callback();
-        if(cargs && cargs.started) {
-            // notify of end if currently playing
-            var notice = {
-                url : cargs.url,
-                action : 'finished-'+ckind, 
-                completed: false,
-                channel : this.id,
-                name : cname
-            };
-            cargs.defs.after.callback(false);
-            this._notify(notice);
+        if(!didPause) {
+            // never playing, simulate the pause event
+            this._onPause();
         }
     },
     
@@ -806,6 +786,33 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         this._notify(notice);
         this._pump();
     },
+    
+    _onPause: function(event) {
+        var cargs = this._args;
+        var cname = this._name;
+        var ckind = this._kind;
+        // clear everything before giving the after callbacks
+        dojo.destroy(this._audioNode);
+        dojo.forEach(this._connects, dojo.disconnect);
+        this._connects = [];
+        this._args = null;
+        this._kind = null;
+        this._name = null;
+        this._busy = false;
+        if(cargs && cargs.started) {
+            // notify of end if currently playing
+            var notice = {
+                url : cargs.url,
+                action : 'finished-'+ckind, 
+                completed: false,
+                channel : this.id,
+                name : cname
+            };
+            cargs.defs.after.callback(false);
+            this._notify(notice);
+        }
+        this._pump();
+    },
 
     _onEnd: function(event) {
         var notice = {
@@ -819,11 +826,15 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
             // start playing again, loop attr not implemented well in browsers
             this._audioNode.load();
             this._audioNode.play();
+            // @todo: should this come first?
             // don't listen to start events anymore for this sound
             dojo.disconnect(this._connects[0]);
             return;
         }
-        this._stopAudioNode();
+        dojo.destroy(this._audioNode);
+        dojo.forEach(this._connects, dojo.disconnect);
+        this._audioNode = null;
+        this._connects = [];
         // clear everything before after callback
         var cargs = this._args;
         this._args = null;
