@@ -4,7 +4,6 @@ JSonic
 
 :Author: Peter Parente
 :Description: JavaScript API for speech and sound using HTML5 audio.
-:Documentation: http://parente.github.com/jsonic
 
 Documentation
 =============
@@ -13,6 +12,15 @@ See http://parente.github.com/jsonic/ for help getting started and full API docu
 
 FAQ
 ===
+
+What browsers does JSonic support?
+----------------------------------
+
+We've tested JSonic on the following browsers. It should work on any browser supporting the HTML5 audio spec, however.
+
+* Firefox 3.6, 3.7
+* Safari 4
+* Chrome 5.0 beta (with known issue http://code.google.com/p/chromium/issues/detail?id=38930)
 
 Is this a clone of WebAnywhere?
 -------------------------------
