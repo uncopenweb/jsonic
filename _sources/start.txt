@@ -16,6 +16,7 @@ The server Python code has been tested with these minimum versions:
 4. `espeak`_ 1.36.02
 5. `lame`_ 3.98.2
 6. `oggenc`_ 1.2.0
+7. `daemon`_ 1.0 (optional)
 
 The client JS code requires:
 
@@ -102,3 +103,4 @@ Speaking "Hello world!"
 .. _LAME: http://lame.sourceforge.net/
 .. _Vorbis tools: http://www.xiph.org/downloads/
 .. _oggenc: http://www.xiph.org/downloads/
+.. _daemon: http://pypi.python.org/pypi/daemon/1.0

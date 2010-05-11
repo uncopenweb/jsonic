@@ -1,6 +1,6 @@
 # Sphinx inventory version 1
 # Project: JSonic
-# Version: 0.1
+# Version: 0.2
 info.mindtrove mod js.html
 info.mindtrove.JSonic.say method js.html
 info.mindtrove.JSonic.removeObserver method js.html
@@ -24,4 +24,4 @@ info.mindtrove.JSonicDeferred.anyAfter method js.html
 info.mindtrove.JSonic.stop method js.html
 info.mindtrove.JSonicDeferred.addAfter method js.html
 info.mindtrove.JSonic.setProperty method js.html
-info.mindtrove.JSonic.constructor method js.html
+info.mindtrove.initJSonic function js.html

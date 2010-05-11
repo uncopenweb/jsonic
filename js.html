@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>The JavaScript API &mdash; JSonic v0.1 documentation</title>
+    <title>The JavaScript API &mdash; JSonic v0.2 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '#',
-        VERSION:     '0.1',
+        VERSION:     '0.2',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="JSonic v0.1 documentation" href="index.html" />
+    <link rel="top" title="JSonic v0.2 documentation" href="index.html" />
     <link rel="next" title="About caching" href="cache.html" />
     <link rel="prev" title="Getting Started" href="start.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="start.html" title="Getting Started"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">JSonic v0.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">JSonic v0.2 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -56,15 +56,11 @@
 <p>The client consists of a set of named <em class="xref">channels</em> that maintain independent <em class="xref">queues</em> of <em class="xref">commands</em>. A channel processes its queue sequentially in first in, first out order, though some commands are processed immediately (e.g., stop). Multiple channels can process commands at the same time, however. For example, the <cite>default</cite> channel might have one speech utterance queued while it is speaking another. At the same time, the <cite>secondary</cite> channel might process a volume change command followed by a command to play a sound.</p>
 <p>Channels send <em class="xref">notifications</em> of important events as they occur in two manners. First, channels invoke callback functions registered by an application for one or more kinds of notifications. Second, the channels return deferred results for each command before and after it is processed. The former technique is useful for listeners that need information across many commands. The latter is useful when an application wants information about particular commands.</p>
 </div>
-<div class="section" id="the-jsonic-interface">
-<h2>The JSonic interface<a class="headerlink" href="#the-jsonic-interface" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="info.mindtrove.JSonic">
-<em class="property">class </em><tt class="descclassname">info.mindtrove.</tt><tt class="descname">JSonic</tt><a class="headerlink" href="#info.mindtrove.JSonic" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a title="info.mindtrove.JSonic" class="reference internal" href="#info.mindtrove.JSonic"><tt class="xref docutils literal"><span class="pre">JSonic</span></tt></a> class implements the entire client API. Only one instance is required and recommended per page for the best caching performance.</p>
-<dl class="method">
-<dt id="info.mindtrove.JSonic.constructor">
-<tt class="descname">constructor</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.constructor" title="Permalink to this definition">¶</a></dt>
+<div class="section" id="the-jsonic-factory">
+<h2>The JSonic factory<a class="headerlink" href="#the-jsonic-factory" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="info.mindtrove.initJSonic">
+<tt class="descclassname">info.mindtrove.</tt><tt class="descname">initJSonic</tt><big>(</big><big>)</big><a class="headerlink" href="#info.mindtrove.initJSonic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes the client API.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -73,7 +69,7 @@
 <tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>args</em> (object) &#8211; <p>Object with the following properties:</p>
 <p>defaultCaching (optional)</p>
 <blockquote>
-True to enable all levels of caching as the default for calls to <a title="info.mindtrove.JSonic.say" class="reference internal" href="#info.mindtrove.JSonic.say"><tt class="xref docutils literal"><span class="pre">say</span></tt></a> and <a title="info.mindtrove.JSonic.play" class="reference internal" href="#info.mindtrove.JSonic.play"><tt class="xref docutils literal"><span class="pre">play</span></tt></a>. False to disable all caching except browser caching as the default for those methods. Defaults to false.</blockquote>
+True to enable all levels of caching as the default for calls to <tt class="xref docutils literal"><span class="pre">say</span></tt> and <tt class="xref docutils literal"><span class="pre">play</span></tt>. False to disable all caching except browser caching as the default for those methods. Defaults to false.</blockquote>
 <p>jsonicURI (optional)</p>
 <blockquote>
 String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cite>.</blockquote>
@@ -83,6 +79,13 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 </table>
 </dd></dl>
 
+</div>
+<div class="section" id="the-jsonic-interface">
+<h2>The JSonic interface<a class="headerlink" href="#the-jsonic-interface" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="info.mindtrove.JSonic">
+<em class="property">class </em><tt class="descclassname">info.mindtrove.</tt><tt class="descname">JSonic</tt><a class="headerlink" href="#info.mindtrove.JSonic" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a title="info.mindtrove.JSonic" class="reference internal" href="#info.mindtrove.JSonic"><tt class="xref docutils literal"><span class="pre">JSonic</span></tt></a> class implements the entire client API. Only one instance is allowed per page and should be constructed using the <a title="info.mindtrove.initJSonic" class="reference internal" href="#info.mindtrove.initJSonic"><tt class="xref docutils literal"><span class="pre">initJSonic</span></tt></a> factory function.</p>
 <dl class="attribute">
 <dt id="info.mindtrove.JSonic.defaultCaching">
 <tt class="descname">defaultCaching</tt><a class="headerlink" href="#info.mindtrove.JSonic.defaultCaching" title="Permalink to this definition">¶</a></dt>
@@ -718,6 +721,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
             <ul>
 <li><a class="reference external" href="#">The JavaScript API</a><ul>
 <li><a class="reference external" href="#client-concepts">Client concepts</a></li>
+<li><a class="reference external" href="#the-jsonic-factory">The JSonic factory</a></li>
 <li><a class="reference external" href="#the-jsonic-interface">The JSonic interface</a></li>
 <li><a class="reference external" href="#before-and-after-deferred-notification">Before and after deferred notification</a></li>
 <li><a class="reference external" href="#channel-notifications">Channel notifications</a></li>
@@ -780,7 +784,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
         <li class="right" >
           <a href="start.html" title="Getting Started"
              >previous</a> |</li>
-        <li><a href="index.html">JSonic v0.1 documentation</a> &raquo;</li> 
+        <li><a href="index.html">JSonic v0.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
