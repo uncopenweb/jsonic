@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>JSonic Audio Examples</title>
+    <script type="text/javascript">
+        var djConfig = {
+            isDebug: false, 
+            parseOnLoad: false,
+            baseUrl: './',
+            modulePaths: {'info.mindtrove' : '..'}
+        };
+    </script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/dojo/1.4.1/dojo/dojo.xd.js"></script>
+    <script type="text/javascript" src="/static/trace.js"></script>
+    <script type="text/javascript">
+    dojo.require('info.mindtrove.JSonic');
+    var js;
+    dojo.ready(function() {
+      js = info.mindtrove.initJSonic();
+      for(var i=0; i < 100; i++) {
+        console.log('saying ' + i)
+        js.say({text : String(i), cache : true});
+        console.log('stoping ' + i);
+        js.stop();
+      }
+      console.log('saying done');
+      js.say({text : 'done', cache : true});
+      console.log('said done');
+    });
+    </script>
+  </head>
+  <body></body>
+</html>

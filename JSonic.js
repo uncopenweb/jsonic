@@ -854,7 +854,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         };
         if(dojo.isChrome) {
             // workaround for chrome bug; can't set vol until started
-            this._audioNode.volume = this._properties.volume;
+            event.target.volume = this._properties.volume;
         }
         this._args.started = true;
         this._args.defs.before.callback();
