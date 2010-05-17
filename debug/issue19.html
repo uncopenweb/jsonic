@@ -20,12 +20,16 @@
       for(var i=0; i < 100; i++) {
         console.log('saying ' + i)
         js.say({text : String(i), cache : true});
-        console.log('stoping ' + i);
+        console.log('stopping ' + i);
         js.stop();
       }
       console.log('saying done');
-      js.say({text : 'done', cache : true});
-      console.log('said done');
+      var def = js.say({text : 'done', cache : true});
+      def.anyBefore(function() {
+        console.log('started saying done');
+      }).anyAfter(function() {
+        console.log('finished saying done');
+      });
     });
     </script>
   </head>
