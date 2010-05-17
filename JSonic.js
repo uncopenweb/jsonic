@@ -551,6 +551,7 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
         delete this._speechRenderings[args.key];
         var node = dojo.create('audio');
         node.autobuffer = true;
+        node.preload = 'auto';
         node.src = this.jsonicURI+'files/'+response.result.text+this._ext;
         // @todo: don't let caches grow unbounded
         // @todo: distinguish levels of caching
