@@ -205,7 +205,7 @@ Before and after deferred notification
 
    The :class:`JSonicDeferred` class wraps two `dojo.Deferred`_ instances. A channel invokes the :meth:`callback` or :meth:`errback` method on the `before` deferred before a command is processed in the channel queue. A channel invokes the :meth:`callback` or :meth:`errback` method on the `after` deferred after the channel has finished processing the command.
    
-   .. method:: addAfter(func)
+   .. method:: callAfter(func)
    
       Adds a function to be called once after a command is processed successfully.
       
@@ -214,7 +214,7 @@ Before and after deferred notification
       :return: This instance for call chaining
       :rtype: :class:`JSonicDeferred`
    
-   .. method:: addBefore(func)
+   .. method:: callBefore(func)
 
       Adds a function to be called once before a command is processed successfully.
 
