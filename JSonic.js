@@ -11,14 +11,14 @@ dojo.require('dijit._Widget');
 // client api version
 info.mindtrove._jsonicVersion = '0.2';
 // singleton instance
-info.mindtrove._instance = null;
+info.mindtrove._jsonicInstance = null;
 
 // factory to build a JSonic instance
 info.mindtrove.initJSonic = function(args) {
-    if(!info.mindtrove._instance) {
-        info.mindtrove._instance = new info.mindtrove.JSonic(args);
+    if(!info.mindtrove._jsonicInstance) {
+        return new info.mindtrove.JSonic(args);
     }
-    return info.mindtrove._instance;
+    return info.mindtrove._jsonicInstance;
 };
 
 /**
@@ -29,6 +29,13 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
     jsonicURI: '/',
     // cache speech / sounds by default or not? defaults to false for privacy
     defaultCaching: false,
+    constructor: function() {
+        if(info.mindtrove._jsonicInstance) {
+            throw new Error('JSonic instance already exists');
+        }
+        info.mindtrove._jsonicInstance = this;
+    },
+
     postMixInProperties: function() {
         // created audio channels
         this._channels = {};
@@ -36,6 +43,17 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
         this._cache = new info.mindtrove.JSonicCache({
             jsonicURI : this.jsonicURI
         });
+    },
+    
+    /**
+     * Cleanup all resources on a destroy() call.
+     */
+    uninitialize: function() {
+        for(var ch in this._channels) {
+            this._channels[ch].destroy();
+        }
+        this._cache.destroy();
+        info.mindtrove._jsonicInstance = null;
     },
 
     /**
@@ -589,7 +607,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         // current audio node using the channel
         this._audioNode = null;
         // callback tokens for the current audio node
-        this._connects = [];
+        this._aconnects = [];
         // set default properties
         this._reset();
     },
@@ -655,16 +673,14 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         // don't play if we've stopped in the meantime
         if(this._args != args) return;
         this._audioNode = node;
-        if(!dojo.isChrome) {
-            // set volume immediately in non-chrome browsers
-            this._audioNode.volume = this._properties.volume;
-        }
+        // set volume immediately
+        this._audioNode.volume = this._properties.volume;
         // @todo: not yet supported well in browsers, do our own
         //this._audioNode.loop = this._properties.loop;
-        this._connects[0] = dojo.connect(node, 'play', this, '_onStart');
-        this._connects[1] = dojo.connect(node, 'pause', this, '_onPause');
-        this._connects[2] = dojo.connect(node, 'ended', this, '_onEnd');
-        this._connects[3] = dojo.connect(node, 'error', this, '_onMediaError');
+        this._aconnects[0] = dojo.connect(node, 'play', this, '_onStart');
+        this._aconnects[1] = dojo.connect(node, 'pause', this, '_onPause');
+        this._aconnects[2] = dojo.connect(node, 'ended', this, '_onEnd');
+        this._aconnects[3] = dojo.connect(node, 'error', this, '_onMediaError');
         this._audioNode.play();
     },
     
@@ -794,8 +810,8 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         var ckind = this._kind;
         // clear everything before giving the after callbacks
         dojo.destroy(this._audioNode);
-        dojo.forEach(this._connects, dojo.disconnect);
-        this._connects = [];
+        dojo.forEach(this._aconnects, dojo.disconnect);
+        this._aconnects = [];
         this._args = null;
         this._kind = null;
         this._name = null;
@@ -829,13 +845,13 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
             this._audioNode.play();
             // @todo: should this come first?
             // don't listen to start events anymore for this sound
-            dojo.disconnect(this._connects[0]);
+            dojo.disconnect(this._aconnects[0]);
             return;
         }
         dojo.destroy(this._audioNode);
-        dojo.forEach(this._connects, dojo.disconnect);
+        dojo.forEach(this._aconnects, dojo.disconnect);
         this._audioNode = null;
-        this._connects = [];
+        this._aconnects = [];
         // clear everything before after callback
         var cargs = this._args;
         this._args = null;

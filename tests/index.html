@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>JSonic Unit Tests</title>
+    <link rel="stylesheet" href="http://github.com/jquery/qunit/raw/master/qunit/qunit.css" type="text/css" media="screen" />
+    <script type="text/javascript">
+        var djConfig = {
+            isDebug: false, 
+            parseOnLoad: false,
+            baseUrl: './',
+            modulePaths: {'info.mindtrove' : '..'}
+        };
+    </script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/dojo/1.4.1/dojo/dojo.xd.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript" src="http://github.com/jquery/qunit/raw/master/qunit/qunit.js"></script>
+    <script type="text/javascript">
+    // default timeout for async failure
+    var TO = 5000;
+    // test sounds and utterances
+    var SND1 = '../examples/sounds/18382__inferno__hvylas';
+    var SND2 = '../examples/sounds/9081__tigersound__disappear';
+    var UT1 = 'My first sentence.';
+    var UT2 = 'Another sentence from me.';
+    // standard test fixture setup and teardown
+    var MODOPTS = {
+       setup: function() {
+           this.js = info.mindtrove.initJSonic();
+       },
+       teardown: function() {
+           this.js.destroyRecursive();
+       }
+    };
+    dojo.require('info.mindtrove.JSonic');
+    dojo.require('info.mindtrove.tests.creation');
+    dojo.require('info.mindtrove.tests.simple');
+    dojo.require('info.mindtrove.tests.sequential');
+    // start qunit on page load
+    dojo.ready(start);
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">JSonic tests</h1>
+    <h2 id="qunit-banner"></h2>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+  </body>
+</html>
