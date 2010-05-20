@@ -363,8 +363,8 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <em class="property">class </em><tt class="descclassname">info.mindtrove.</tt><tt class="descname">JSonicDeferred</tt><a class="headerlink" href="#info.mindtrove.JSonicDeferred" title="Permalink to this definition">¶</a></dt>
 <dd><p>The <a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a> class wraps two <a class="reference external" href="http://dojotoolkit.org/reference-guide/dojo/Deferred.html#dojo-deferred">dojo.Deferred</a> instances. A channel invokes the <tt class="xref docutils literal"><span class="pre">callback</span></tt> or <tt class="xref docutils literal"><span class="pre">errback</span></tt> method on the <cite>before</cite> deferred before a command is processed in the channel queue. A channel invokes the <tt class="xref docutils literal"><span class="pre">callback</span></tt> or <tt class="xref docutils literal"><span class="pre">errback</span></tt> method on the <cite>after</cite> deferred after the channel has finished processing the command.</p>
 <dl class="method">
-<dt id="info.mindtrove.JSonicDeferred.addAfter">
-<tt class="descname">addAfter</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.addAfter" title="Permalink to this definition">¶</a></dt>
+<dt id="info.mindtrove.JSonicDeferred.callAfter">
+<tt class="descname">callAfter</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.callAfter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a function to be called once after a command is processed successfully.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -381,8 +381,8 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 </dd></dl>
 
 <dl class="method">
-<dt id="info.mindtrove.JSonicDeferred.addBefore">
-<tt class="descname">addBefore</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.addBefore" title="Permalink to this definition">¶</a></dt>
+<dt id="info.mindtrove.JSonicDeferred.callBefore">
+<tt class="descname">callBefore</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.callBefore" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a function to be called once before a command is processed successfully.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

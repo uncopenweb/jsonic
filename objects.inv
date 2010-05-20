@@ -5,6 +5,7 @@ info.mindtrove mod js.html
 info.mindtrove.JSonic.say method js.html
 info.mindtrove.JSonic.removeObserver method js.html
 info.mindtrove.JSonic.getProperty method js.html
+info.mindtrove.JSonicDeferred.callAfter method js.html
 info.mindtrove.JSonic.getClientVersion method js.html
 info.mindtrove.JSonicDeferred class js.html
 info.mindtrove.JSonicDeferred.errAfter method js.html
@@ -13,15 +14,14 @@ info.mindtrove.JSonic.play method js.html
 info.mindtrove.JSonic.getEngines method js.html
 info.mindtrove.JSonic.jsonicURI attribute js.html
 info.mindtrove.JSonicDeferred.anyBefore method js.html
-info.mindtrove.JSonicDeferred.addBefore method js.html
 info.mindtrove.JSonic class js.html
 info.mindtrove.JSonic.getEngineInfo method js.html
 info.mindtrove.JSonic.defaultCaching attribute js.html
 info.mindtrove.JSonicDeferred.errBefore method js.html
 info.mindtrove.JSonic.getServerVersion method js.html
 info.mindtrove.JSonic.addObserver method js.html
+info.mindtrove.JSonicDeferred.callBefore method js.html
 info.mindtrove.JSonicDeferred.anyAfter method js.html
 info.mindtrove.JSonic.stop method js.html
-info.mindtrove.JSonicDeferred.addAfter method js.html
 info.mindtrove.JSonic.setProperty method js.html
 info.mindtrove.initJSonic function js.html
