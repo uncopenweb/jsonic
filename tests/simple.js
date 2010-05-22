@@ -17,9 +17,7 @@ test('stop say', function () {
     var def = this.js.say({text : UT1});
     def.callBefore(function() {
         ok(true, 'before deferred invoked');
-        setTimeout(function() {
-            js.stop();
-        }, 10);
+        setTimeout(function() {js.stop();}, 10);
     }).callAfter(function(completed) {
         ok(!completed, 'after deferred invoked on interrupt');
         start();
@@ -37,7 +35,7 @@ test('loop say', 4, function() {
     var def2 = this.js.say({text : UT1});
     def2.callBefore(function() {
         ok(true, 'before say deferred invoked');
-        setTimeout(dojo.hitch(js, js.stop), 3000);
+        setTimeout(function() {js.stop();}, 3000);
     }).callAfter(function(completed) {
         ok(!completed, 'after say deferred invoked on interrupt');
         start();
@@ -66,7 +64,7 @@ test('say rate', 3, function() {
     });
     var def2 = this.js.say({text : UT1});
     def2.callBefore(function() {
-        setTimeout(dojo.hitch(js, js.stop), 1000);
+        setTimeout(function() {js.stop();}, 1000);
     }).callAfter(function(completed) {
         ok(completed, 'fast say completed before stop');
         start();
@@ -106,7 +104,7 @@ test('loop play', 4, function() {
     var def2 = this.js.play({url : SND1});
     def2.callBefore(function() {
         ok(true, 'before play deferred invoked');
-        setTimeout(dojo.hitch(js, js.stop), 3000);
+        setTimeout(function() {js.stop();}, 3000);
     }).callAfter(function(completed) {
         ok(!completed, 'after play deferred invoked on interrupt');
         start();
@@ -140,7 +138,7 @@ test('stop play', 2, function() {
     var js = this.js;
     def.callBefore(function() {
         ok(true, 'before deferred invoked');
-        setTimeout(dojo.hitch(js, js.stop), 50);
+        setTimeout(function() {js.stop();}, 50);
     }).callAfter(function(completed) {
         ok(!completed, 'after deferred invoked on interrupt');
         start();
