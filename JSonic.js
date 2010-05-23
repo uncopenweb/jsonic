@@ -616,6 +616,13 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         this._reset();
     },
     
+    uninitialize: function() {
+        this._args = null;
+        if(this._audioNode && !this._audioNode.paused) {
+            this._audioNode.pause();
+        }
+    },
+    
     push: function(args) {
         // copy the args to avoid problems with reuse
         args = dojo.clone(args);
