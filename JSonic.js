@@ -703,17 +703,21 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         this._busy = true;
         this._kind = 'say';
         this._args = args;
-        var def = (args.audio) ? args.audio : this.cache.getSpeech(args);
-        def.addCallback(dojo.hitch(this, '_playAudioNode', this._args));
-        def.addErrback(dojo.hitch(this, '_onSynthError', this._args));
+        if(!args.audio) {
+            args.audio = this.cache.getSpeech(args);
+        }
+        args.audio.addCallback(dojo.hitch(this, '_playAudioNode', this._args));
+        args.audio.addErrback(dojo.hitch(this, '_onSynthError', this._args));
     },
     
     _play: function(args) {
         this._busy = true;
         this._kind = 'play';
         this._args = args;
-        var node = (args.audio) ? args.audio : this.cache.getSound(args);
-        this._playAudioNode(args, node);
+        if(!args.audio) {
+            args.audio = this.cache.getSound(args);
+        }
+        this._playAudioNode(args, args.audio);
     },
     
     _stop: function(args) {
@@ -722,7 +726,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         if(this._audioNode) {
             didPause = true;
             this._audioNode.pause();
-            this._audioNode = null;
+            //this._audioNode = null;
         }
         this._queue = [];
         args.defs.after.callback();
@@ -820,8 +824,8 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         var cname = this._name;
         var ckind = this._kind;
         // clear everything before giving the after callbacks
-        dojo.destroy(this._audioNode);
         dojo.forEach(this._aconnects, dojo.disconnect);
+        dojo.destroy(this._audioNode);
         this._aconnects = [];
         this._args = null;
         this._kind = null;
