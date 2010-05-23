@@ -9,7 +9,7 @@ dojo.provide('info.mindtrove.JSonic');
 dojo.require('dijit._Widget');
 
 // client api version
-info.mindtrove._jsonicVersion = '0.2';
+info.mindtrove._jsonicVersion = '0.3';
 // singleton instance
 info.mindtrove._jsonicInstance = null;
 
