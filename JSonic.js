@@ -823,6 +823,11 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         var cargs = this._args;
         var cname = this._name;
         var ckind = this._kind;
+        // on chrome, audio continues to play sometimes even after the pause
+        // set volume to zero to avoid any actual output
+        if(this._audioNode) {
+            this._audioNode.volume = 0;
+        }
         // clear everything before giving the after callbacks
         dojo.forEach(this._aconnects, dojo.disconnect);
         dojo.destroy(this._audioNode);
