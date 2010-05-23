@@ -15,6 +15,7 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/dojo/1.4.1/dojo/dojo.xd.js"></script>
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script type="text/javascript" src="http://github.com/jquery/qunit/raw/master/qunit/qunit.js"></script>
+    <script type="text/javascript" src='../trace.js'></script>
     <script type="text/javascript">
     // default timeout for async failure
     var TO = 5000;
@@ -24,17 +25,21 @@
     var UT1 = 'My first sentence.';
     var UT2 = 'Another sentence from me.';
     // standard test fixture setup and teardown
-    var MODOPTS = {
-       setup: function() {
-           this.js = info.mindtrove.initJSonic();
-       },
-       teardown: function() {
-           this.js.destroyRecursive();
-       }
+    var getModOpts = function(args) {
+      return {
+         setup: function() {
+             this.js = info.mindtrove.initJSonic(args);
+         },
+         teardown: function() {
+             this.js._cache.resetCache();
+             this.js.destroyRecursive();
+         }
+      }
     };
     dojo.require('info.mindtrove.JSonic');
     dojo.require('info.mindtrove.tests.creation');
     dojo.require('info.mindtrove.tests.simple');
+    dojo.require('info.mindtrove.tests.interrupt');
     dojo.require('info.mindtrove.tests.sequential');
     dojo.require('info.mindtrove.tests.concurrent');
     // start qunit on page load
