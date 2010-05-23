@@ -18,8 +18,10 @@ import mimetypes
 import datetime
 import time
 import os
+import sys
 import stat
 import optparse
+import logging
 
 # current server api version
 VERSION = '0.3'
@@ -369,9 +371,18 @@ def run(port=8888, processes=4, debug=False, static=False, pid=None):
     :type pid: string
     '''
     if pid is not None:
+        # log to file
+        logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s %(levelname)s %(message)s',
+                    filename='jsonic.log',
+                    filemode='w')
         # launch as a daemon and write the pid file
         import daemon
         daemon.daemonize(pid)
+    else:
+        # log to console
+        logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s %(levelname)s %(message)s')
     kwargs = {}
     kwargs['pool'] = pool = multiprocessing.Pool(processes=processes)
     if static:
