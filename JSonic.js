@@ -684,7 +684,14 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         // don't play if we've stopped in the meantime
         if(this._args != args) return;
         // clone the node, might be in use elsewhere
-        node = dojo.clone(node);
+        if(dojo.isOpera) {
+            // opera fails doing a clone; do it manually
+            var node2 = dojo.create('audio');
+            node2.src = node.src;
+            node = node2;
+        } else {
+            node = dojo.clone(node);
+        }
         this._audioNode = node;
         // set volume immediately, but not on chrome
         if(!dojo.isChrome) {
@@ -709,7 +716,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         args.audio.addCallback(dojo.hitch(this, '_playAudioNode', this._args));
         args.audio.addErrback(dojo.hitch(this, '_onSynthError', this._args));
     },
-    
+
     _play: function(args) {
         this._busy = true;
         this._kind = 'play';
@@ -726,7 +733,6 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         if(this._audioNode) {
             didPause = true;
             this._audioNode.pause();
-            //this._audioNode = null;
         }
         this._queue = [];
         args.defs.after.callback();
@@ -861,9 +867,15 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         };
         if(this._properties.loop) {
             // start playing again, loop attr not implemented well in browsers
-            this._audioNode.load();
-            this._audioNode.play();
-            // @todo: should this come first?
+            if(dojo.isOpera) {
+                setTimeout(dojo.hitch(this, function() {
+                    this._audioNode.currentTime = 0;
+                    this._audioNode.play();
+                }), 0);
+            } else {
+                this._audioNode.load();
+                this._audioNode.play();
+            }
             // don't listen to start events anymore for this sound
             dojo.disconnect(this._aconnects[0]);
             return;
