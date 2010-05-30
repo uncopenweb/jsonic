@@ -20,7 +20,8 @@ We've tested JSonic successfully on the following browsers. It should work on an
 
 * Firefox 3.6, 3.7
 * Safari 4
-* Chrome 5.0.375.29 beta 
+* Chrome 5.0.375.55
+* Opera 10.53
 
 Is this a clone of WebAnywhere?
 -------------------------------
@@ -35,6 +36,8 @@ No. See above.
 Where's the JSonic server located?
 ----------------------------------
 
+Wherever you'd like to run one. :)
+
 I don't run a server for public use. You can run your own server by following the instructions in the documentation linked above.
 
 License
@@ -45,13 +48,7 @@ All rights reserved.
 
 http://creativecommons.org/licenses/BSD/
 
-Todo
-====
+Plans and issues
+================
 
-Not necessarily in this order:
-
-* local storage utterance tracking
-* smarter LRU node vs filename caching
-* dynamic server engines, encoders
-* server tracking of app utterances
-* jsonp interface
+See the issues tracker on github for planned features and outstanding bugs.
