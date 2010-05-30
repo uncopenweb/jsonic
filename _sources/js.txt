@@ -510,12 +510,12 @@ To execute the callback as the :const:`default` channel starts speaking an utter
 
 .. sourcecode:: javascript
 
-   js.say({text : 'I am a banana.'}).addBefore(onEvent).anyAfter(onEvent);
+   js.say({text : 'I am a banana.'}).callBefore(onEvent).anyAfter(onEvent);
 
 To execute the callback with the voice configured on the :const:`default` channel immediately and when the command is processed by the channel, do the following:
 
 .. sourcecode:: javascript
 
-   js.getProperty({name : 'voice'}).addBefore(onEvent).addAfter(onEvent);
+   js.getProperty({name : 'voice'}).callBefore(onEvent).addAfter(onEvent);
 
 .. _dojo.Deferred: http://dojotoolkit.org/reference-guide/dojo/Deferred.html#dojo-deferred

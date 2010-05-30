@@ -5,13 +5,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>The JavaScript API &mdash; JSonic v0.2 documentation</title>
+    <title>The JavaScript API &mdash; JSonic v0.3 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '#',
-        VERSION:     '0.2',
+        VERSION:     '0.3',
         COLLAPSE_MODINDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -19,7 +19,7 @@
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="JSonic v0.2 documentation" href="index.html" />
+    <link rel="top" title="JSonic v0.3 documentation" href="index.html" />
     <link rel="next" title="About caching" href="cache.html" />
     <link rel="prev" title="Getting Started" href="start.html" /> 
   </head>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="start.html" title="Getting Started"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">JSonic v0.2 documentation</a> &raquo;</li> 
+        <li><a href="index.html">JSonic v0.3 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -700,11 +700,11 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 </pre></div>
 </div>
 <p>To execute the callback as the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel starts speaking an utterance and either finishes speaking or encounters an error speaking, do the following:</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s1">&#39;I am a banana.&#39;</span><span class="p">}).</span><span class="nx">addBefore</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">).</span><span class="nx">anyAfter</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">);</span>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s1">&#39;I am a banana.&#39;</span><span class="p">}).</span><span class="nx">callBefore</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">).</span><span class="nx">anyAfter</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>To execute the callback with the voice configured on the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel immediately and when the command is processed by the channel, do the following:</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">getProperty</span><span class="p">({</span><span class="nx">name</span> <span class="o">:</span> <span class="s1">&#39;voice&#39;</span><span class="p">}).</span><span class="nx">addBefore</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">).</span><span class="nx">addAfter</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">);</span>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">getProperty</span><span class="p">({</span><span class="nx">name</span> <span class="o">:</span> <span class="s1">&#39;voice&#39;</span><span class="p">}).</span><span class="nx">callBefore</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">).</span><span class="nx">addAfter</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -784,7 +784,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
         <li class="right" >
           <a href="start.html" title="Getting Started"
              >previous</a> |</li>
-        <li><a href="index.html">JSonic v0.2 documentation</a> &raquo;</li> 
+        <li><a href="index.html">JSonic v0.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
