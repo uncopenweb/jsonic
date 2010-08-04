@@ -167,6 +167,8 @@ class SynthHandler(JSonicHandler):
             "description" : <unicode>
         }
         '''
+        if self.application.settings['debug']:
+            self.start_time = time.time()
         args = json_decode(self.request.body)
         pool = self.application.settings['pool']
         engine = synthesizer.get_class(args.get('engine', 'espeak'))
@@ -184,6 +186,8 @@ class SynthHandler(JSonicHandler):
     def on_synth_complete(self, response):
         # protect against IOErrors bubbling up to worker pool
         try:
+            if self.application.settings['debug']:
+                response['time'] = time.time() - self.start_time
             if response['success']:
                 #self.set_header('Content-Type', 'application/json')
                 self.write(response)
