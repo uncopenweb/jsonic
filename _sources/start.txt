@@ -29,7 +29,7 @@ Obtaining the JSonic source code
 
 To get the latest stable release of JSonic:
 
-#. Visit http://github.com/parente/jsonic/downloads.
+#. Visit http://github.com/uncopenweb/jsonic/downloads.
 #. Download the latest version.
 
 To get the latest development code:
@@ -39,7 +39,7 @@ To get the latest development code:
 
    .. sourcecode:: bash
    
-      git clone git://github.com/parente/jsonic.git
+      git clone git://github.com/uncopenweb/jsonic.git
 
 Running the Tornado server
 --------------------------

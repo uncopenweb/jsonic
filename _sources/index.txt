@@ -20,5 +20,5 @@ This documentation describes JSonic v |release| and was rendered on |today|. The
 * `Source on GitHub`__
 * `Documentation on GitHub`__
 
-__ http://github.com/parente/jsonic
-__ http://parente.github.com/jsonic
+__ http://github.com/uncopenweb/jsonic
+__ http://uncopenweb.github.com/jsonic
