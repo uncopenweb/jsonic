@@ -8,7 +8,7 @@ JSonic
 Documentation
 =============
 
-See http://parente.github.com/jsonic/ for help getting started and full API documentation.
+See http://uncopenweb.github.com/jsonic/ for help getting started and full API documentation.
 
 FAQ
 ===
