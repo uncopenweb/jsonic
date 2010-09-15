@@ -9,7 +9,7 @@
             isDebug: false, 
             parseOnLoad: false,
             baseUrl: './',
-            modulePaths: {'info.mindtrove' : '..'}
+            modulePaths: {'uow.audio' : '..'}
         };
     </script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/dojo/1.4.1/dojo/dojo.xd.js"></script>
@@ -28,7 +28,7 @@
     var getModOpts = function(args) {
       return {
          setup: function() {
-             this.js = info.mindtrove.initJSonic(args);
+             this.js = uow.audio.initJSonic(args);
          },
          teardown: function() {
              this.js._cache.resetCache();
@@ -36,12 +36,12 @@
          }
       }
     };
-    dojo.require('info.mindtrove.JSonic');
-    dojo.require('info.mindtrove.tests.creation');
-    dojo.require('info.mindtrove.tests.simple');
-    dojo.require('info.mindtrove.tests.interrupt');
-    dojo.require('info.mindtrove.tests.sequential');
-    dojo.require('info.mindtrove.tests.concurrent');
+    dojo.require('uow.audio.JSonic');
+    dojo.require('uow.audio.tests.creation');
+    dojo.require('uow.audio.tests.simple');
+    dojo.require('uow.audio.tests.interrupt');
+    dojo.require('uow.audio.tests.sequential');
+    dojo.require('uow.audio.tests.concurrent');
     // start qunit on page load
     dojo.ready(start);
     </script>

@@ -1,4 +1,4 @@
-dojo.provide('info.mindtrove.tests.simple');
+dojo.provide('uow.audio.tests.simple');
 
 (function() {
     var mods = [

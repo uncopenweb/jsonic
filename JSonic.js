@@ -5,42 +5,42 @@
  * :copyright: Peter Parente 2010
  * :license: BSD
 **/
-dojo.provide('info.mindtrove.JSonic');
+dojo.provide('uow.audio.JSonic');
 dojo.require('dijit._Widget');
 
 // client api version
-info.mindtrove._jsonicVersion = '0.3';
+uow.audio._jsonicVersion = '0.3';
 // singleton instance
-info.mindtrove._jsonicInstance = null;
+uow.audio._jsonicInstance = null;
 
 // factory to build a JSonic instance
-info.mindtrove.initJSonic = function(args) {
-    if(!info.mindtrove._jsonicInstance) {
-        return new info.mindtrove.JSonic(args);
+uow.audio.initJSonic = function(args) {
+    if(!uow.audio._jsonicInstance) {
+        return new uow.audio.JSonic(args);
     }
-    return info.mindtrove._jsonicInstance;
+    return uow.audio._jsonicInstance;
 };
 
 /**
  * JSonic widget for application use.
  */
-dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
+dojo.declare('uow.audio.JSonic', dijit._Widget, {
     // root of the JSonic server REST API, defaults to /
     jsonicURI: '/',
     // cache speech / sounds by default or not? defaults to false for privacy
     defaultCaching: false,
     constructor: function() {
-        if(info.mindtrove._jsonicInstance) {
+        if(uow.audio._jsonicInstance) {
             throw new Error('JSonic instance already exists');
         }
-        info.mindtrove._jsonicInstance = this;
+        uow.audio._jsonicInstance = this;
     },
 
     postMixInProperties: function() {
         // created audio channels
         this._channels = {};
         // channel-shared cache of sounds and speech
-        this._cache = new info.mindtrove.JSonicCache({
+        this._cache = new uow.audio.JSonicCache({
             jsonicURI : this.jsonicURI
         });
     },
@@ -53,7 +53,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
             this._channels[ch].destroy();
         }
         this._cache.destroy();
-        info.mindtrove._jsonicInstance = null;
+        uow.audio._jsonicInstance = null;
     },
 
     /**
@@ -77,7 +77,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
      * :rtype: string
      */
     getClientVersion: function() {
-        return info.mindtrove._jsonicVersion;
+        return uow.audio._jsonicVersion;
     },
     
     /**
@@ -291,7 +291,7 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
         id = id || 'default';
         var ch = this._channels[id];
         if(ch === undefined) {
-            ch = new info.mindtrove.JSonicChannel({
+            ch = new uow.audio.JSonicChannel({
                 id : 'jsonic.'+id, 
                 cache : this._cache
             });
@@ -304,9 +304,9 @@ dojo.declare('info.mindtrove.JSonic', dijit._Widget, {
 /**
  * Helper class. Contains two dojo.Deferreds for callbacks and errbacks before 
  * and after a command is processed. Instances returned by many methods in 
- * info.mindtrove.JSonic.
+ * uow.audio.JSonic.
  */
-dojo.declare('info.mindtrove.JSonicDeferred', null, {
+dojo.declare('uow.audio.JSonicDeferred', null, {
     constructor: function() {
         this.before = new dojo.Deferred();
         this.after = new dojo.Deferred();
@@ -381,7 +381,7 @@ dojo.declare('info.mindtrove.JSonicDeferred', null, {
  * 2. Filenames of speech utterances already synthesized on the server
  * 3. Utterance / sound frequency tracking for cache warming
  */
-dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
+dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
     jsonicURI: null,
     postMixInProperties: function() {
         // speech engines and their details
@@ -391,7 +391,7 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
         // cache of speech filenames
         if(localStorage) {
             // clear the cache if versions don't match
-            if(localStorage['jsonic.version'] != info.mindtrove._jsonicVersion) {
+            if(localStorage['jsonic.version'] != uow.audio._jsonicVersion) {
                 // reset the cache
                 this.resetCache();
             }
@@ -430,7 +430,7 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
             // clear out the cache
             delete localStorage['jsonic.cache'];
             // update the version number
-            localStorage['jsonic.version'] = info.mindtrove._jsonicVersion;
+            localStorage['jsonic.version'] = uow.audio._jsonicVersion;
         }
         this._speechFiles = {};
         if(args) {
@@ -591,7 +591,7 @@ dojo.declare('info.mindtrove.JSonicCache', dijit._Widget, {
 /**
  * Private. Independent speech / sound channel implementation for JSonic.
  */
-dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
+dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
     cache: null,
     postMixInProperties: function() {
         // current output, sound or speech
@@ -627,7 +627,7 @@ dojo.declare('info.mindtrove.JSonicChannel', dijit._Widget, {
         // copy the args to avoid problems with reuse
         args = dojo.clone(args);
         // create deferred responses in the copy
-        args.defs = new info.mindtrove.JSonicDeferred();
+        args.defs = new uow.audio.JSonicDeferred();
         if(args.method == '_setProperty' && args.immediate) {
             // set property now
             this._setProperty(args);

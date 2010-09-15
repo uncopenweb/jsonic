@@ -1,4 +1,4 @@
-dojo.provide('info.mindtrove.tests.sequential');
+dojo.provide('uow.audio.tests.sequential');
 
 (function() {
     var mods = [

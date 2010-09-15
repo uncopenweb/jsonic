@@ -1,4 +1,4 @@
-.. module:: info.mindtrove
+.. module:: uow.audio
    :synopsis: Namespace for the JSonic client.
 
 The JavaScript API
@@ -361,11 +361,11 @@ volume
 Example code
 ------------
 
-The following examples assume an :class:`info.mindtrove.JSonic` instance with caching disabled by default exists in local variable `js`. The following code creates such an instance.
+The following examples assume an :class:`uow.audio.JSonic` instance with caching disabled by default exists in local variable `js`. The following code creates such an instance.
 
 .. sourcecode:: javascript
 
-   var js = info.mindtrove.JSonic();
+   var js = uow.audio.JSonic();
 
 Speaking text
 ~~~~~~~~~~~~~

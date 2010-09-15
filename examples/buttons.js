@@ -5,7 +5,7 @@
  * :copyright: Peter Parente 2010
  * :license: BSD
 **/
-dojo.require('info.mindtrove.JSonic');
+dojo.require('uow.audio.JSonic');
 var buttonHandlers = {
     stop: function(js) {
         js.stop({channel : 'default'});
@@ -84,7 +84,7 @@ function onEnd(notice) {
 }
 
 dojo.ready(function() {
-    var js = info.mindtrove.initJSonic({defaultCaching : true});
+    var js = uow.audio.initJSonic({defaultCaching : true});
     js.addObserver(onStart)
     dojo.query('button').forEach(function(node) {
         dojo.connect(node, 'onclick', dojo.partial(buttonHandlers[node.id], js));
