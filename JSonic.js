@@ -29,6 +29,8 @@ dojo.declare('uow.audio.JSonic', dijit._Widget, {
     jsonicURI: '/',
     // cache speech / sounds by default or not? defaults to false for privacy
     defaultCaching: false,
+    // audio engine, 'html5' or 'flash'
+    audioEngine: 'html5',
     constructor: function() {
         if(uow.audio._jsonicInstance) {
             throw new Error('JSonic instance already exists');
@@ -41,7 +43,8 @@ dojo.declare('uow.audio.JSonic', dijit._Widget, {
         this._channels = {};
         // channel-shared cache of sounds and speech
         this._cache = new uow.audio.JSonicCache({
-            jsonicURI : this.jsonicURI
+            jsonicURI : this.jsonicURI,
+            audioEngine : this.audioEngine
         });
     },
     
@@ -383,7 +386,10 @@ dojo.declare('uow.audio.JSonicDeferred', null, {
  */
 dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
     jsonicURI: null,
+    audioEngine: '',
     postMixInProperties: function() {
+        // audio engine to use
+        this._audioClass = uow.audio.getAudioNodeImpl(this.audioEngine);
         // speech engines and their details
         this._engineCache = null;
         // cache of speech utterances
@@ -411,14 +417,7 @@ dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
         // cache of requests for speech rendering in progress
         this._speechRenderings = {};
         // determine extension to use
-        var node = dojo.create('audio');
-        if(node.canPlayType('audio/ogg') && node.canPlayType('audio/ogg') != 'no') {
-            this._ext = '.ogg';
-        } else if(node.canPlayType('audio/mpeg') && node.canPlayType('audio/mpeg') != 'no') {
-            this._ext = '.mp3';
-        } else {
-            throw new Error('no known media supported');
-        }
+        this._ext = this._audioClass.getExtension();
     },
     
     _persist: function() {
@@ -484,9 +483,9 @@ dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
         if(audioNode) {
             return audioNode;
         } else {
-            var node = dojo.create('audio');
-            node.autobuffer = true;
-            node.src = args.url+this._ext;
+            var node = new this._audioClass({
+                src : args.url+this._ext
+            });
             if(args.cache) {
                 this._soundCache[args.url] = node;
             }
@@ -571,10 +570,9 @@ dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
 
     _onSpeechSynthed: function(resultDef, args, response) {
         delete this._speechRenderings[args.key];
-        var node = dojo.create('audio');
-        node.autobuffer = true;
-        node.preload = 'auto';
-        node.src = this.jsonicURI+'files/'+response.result.text+this._ext;
+        var node = new this._audioClass({
+            src : this.jsonicURI+'files/'+response.result.text+this._ext
+        });
         // @todo: don't let caches grow unbounded
         // @todo: distinguish levels of caching
         if(args.cache) {
@@ -618,7 +616,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
     
     uninitialize: function() {
         this._args = null;
-        if(this._audioNode && !this._audioNode.paused) {
+        if(this._audioNode && !this._audioNode.isPaused()) {
             this._audioNode.pause();
         }
     },
@@ -684,25 +682,18 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         // don't play if we've stopped in the meantime
         if(this._args != args) return;
         // clone the node, might be in use elsewhere
-        if(dojo.isOpera) {
-            // opera fails doing a clone; do it manually
-            var node2 = dojo.create('audio');
-            node2.src = node.src;
-            node = node2;
-        } else {
-            node = dojo.clone(node);
-        }
+        node = node.clone();
         this._audioNode = node;
         // set volume immediately, but not on chrome
         if(!dojo.isChrome) {
-            this._audioNode.volume = this._properties.volume;
+            this._audioNode.setVolume(this._properties.volume);
         }
         // @todo: not yet supported well in browsers, do our own
         //this._audioNode.loop = this._properties.loop;
-        this._aconnects[0] = dojo.connect(node, 'play', this, '_onStart');
-        this._aconnects[1] = dojo.connect(node, 'pause', this, '_onPause');
-        this._aconnects[2] = dojo.connect(node, 'ended', this, '_onEnd');
-        this._aconnects[3] = dojo.connect(node, 'error', this, '_onMediaError');
+        this._aconnects[0] = dojo.connect(node, 'onPlay', this, '_onStart');
+        this._aconnects[1] = dojo.connect(node, 'onPause', this, '_onPause');
+        this._aconnects[2] = dojo.connect(node, 'onEnded', this, '_onEnd');
+        this._aconnects[3] = dojo.connect(node, 'onError', this, '_onMediaError');
         this._audioNode.play();
     },
     
@@ -747,7 +738,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         this._properties[args.name] = args.value;
         // set local properties now
         if(this._audioNode && args.name == 'volume') {
-            this._audioNode.volume = args.value;
+            this._audioNode.setVolume(args.value);
         }
         args.defs.after.callback(args.value);
     },
@@ -832,11 +823,13 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         // on chrome, audio continues to play sometimes even after the pause
         // set volume to zero to avoid any actual output
         if(this._audioNode) {
-            this._audioNode.volume = 0;
+            this._audioNode.setVolume(0);
         }
         // clear everything before giving the after callbacks
         dojo.forEach(this._aconnects, dojo.disconnect);
-        dojo.destroy(this._audioNode);
+        if(this._audioNode) {
+            this._audioNode.destroy();
+        }
         this._aconnects = [];
         this._args = null;
         this._kind = null;
@@ -869,7 +862,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
             // start playing again, loop attr not implemented well in browsers
             if(dojo.isOpera) {
                 setTimeout(dojo.hitch(this, function() {
-                    this._audioNode.currentTime = 0;
+                    this._audioNode.setCurrentTime(0);
                     this._audioNode.play();
                 }), 0);
             } else {
@@ -880,7 +873,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
             dojo.disconnect(this._aconnects[0]);
             return;
         }
-        dojo.destroy(this._audioNode);
+        this._audioNode.destroy();
         dojo.forEach(this._aconnects, dojo.disconnect);
         this._audioNode = null;
         this._aconnects = [];
@@ -910,3 +903,94 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         this._notify(notice);
     }
 });
+
+uow.audio.getAudioNodeImpl = function(audioEngine) {
+    if(audioEngine == 'flash') {
+        // assert that soundmanager is available
+        if(soundManager.supported()) {
+            return uow.audio.FlashAudioNode;
+        } else {
+            throw new Error('Flash support requires SoundManager2');
+        }
+    } else if(audioEngine == 'html5') {
+        return uow.audio.HTML5AudioNode;
+    } else {
+        throw new Error('unsupported audio engine: ' + audioEngine);
+    }
+};
+
+dojo.declare('uow.audio.HTML5AudioNode', dijit._Widget, {
+    constructor: function(args) {
+        // save args for cloning
+        this._args = args;
+    },
+    
+    postMixInProperties: function() {
+        // build audio node
+        this._audio = dojo.create('audio');
+        this._audio.src = this._args.src;
+        this._audio.autobuffer = true;
+        this._audio.preload = 'auto';
+        this.connect(this._audio, 'play', 'onPlay');
+        this.connect(this._audio, 'pause', 'onPause');
+        this.connect(this._audio, 'ended', 'onEnded');
+        this.connect(this._audio, 'error', 'onError');
+    },
+
+    uninitialize: function() {
+        dojo.destroy(this._audio);
+        //this._audio = null;
+    },
+    
+    clone: function() {
+        return new uow.audio.HTML5AudioNode(this._args);
+    },
+    
+    isPaused: function() {
+        return this._audio.paused;
+    },
+    
+    load: function() {
+        this._audio.load();
+    },
+    
+    play: function() {
+        this._audio.play();
+    },
+    
+    pause: function() {
+        this._audio.pause();
+    },
+    
+    setCurrentTime: function(time) {
+        this._audio.currentTime = time;
+    },
+    
+    setVolume: function(volume) {
+        this._audio.volume = volume;
+    },
+    
+    onPlay : function() {},
+    onPause: function() {},
+    onEnded: function() {},
+    onError: function() {}
+});
+
+uow.audio.HTML5AudioNode.getExtension = function() {
+    var node = dojo.create('audio');
+    if(node.canPlayType('audio/ogg') && node.canPlayType('audio/ogg') != 'no') {
+        return '.ogg';
+    } else if(node.canPlayType('audio/mpeg') && node.canPlayType('audio/mpeg') != 'no') {
+        return '.mp3';
+    } else {
+        throw new Error('no known media supported');
+    }
+};
+
+dojo.declare('uow.audio.FlashAudioNode', null, {
+    
+});
+
+uow.audio.FlashAudioNode.getExtension = function() {
+    return '.mp3';
+};
