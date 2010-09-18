@@ -2,6 +2,8 @@ dojo.provide('uow.audio.tests.interrupt');
 
 (function() {
     var mods = [
+        {n : 'interrupt+flash', args: { defaultCaching: false, audioEngine: 'flash' } },
+        {n : 'interrupt+flash+cache', args: { defaultCaching: true, audioEngine: 'flash' } },
         {n : 'interrupt', args : {defaultCaching : false}},
         {n : 'interrupt+cache', args : {defaultCaching : true}}
     ];

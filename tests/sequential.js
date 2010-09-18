@@ -2,6 +2,8 @@ dojo.provide('uow.audio.tests.sequential');
 
 (function() {
     var mods = [
+        {n : 'sequential+flash', args : {audioEngine: 'flash', defaultCaching : false}},
+        {n : 'sequential+flash+cache', args : {audioEngine: 'flash', defaultCaching : true}},
         {n : 'sequential', args : {defaultCaching : false}},
         {n : 'sequential+cache', args : {defaultCaching : true}}
     ];
@@ -126,6 +128,6 @@ dojo.provide('uow.audio.tests.sequential');
                 ok(after === 1 && completed, 'second sound finished second');
                 start();
             });
-        });   
+        });
     });
 })();

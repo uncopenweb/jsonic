@@ -2,6 +2,8 @@ dojo.provide('uow.audio.tests.simple');
 
 (function() {
     var mods = [
+        {n : 'simple+flash', args: { audioEngine: 'flash', defaultCaching: false}},
+        {n : 'simple+flash+cache', args: { audioEngine: 'flash', defaultCaching: true}},
         {n : 'simple', args : {defaultCaching : false}},
         {n : 'simple+cache', args : {defaultCaching : true}}
     ];

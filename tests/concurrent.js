@@ -2,6 +2,8 @@ dojo.provide('uow.audio.tests.concurrent');
 
 (function() {
     var mods = [
+        {n : 'concurrent+flash', args : {audioEngine: 'flash', defaultCaching : false}},
+        {n : 'concurrent+flash+cache', args : {audioEngine: 'flash', defaultCaching : true}},
         {n : 'concurrent', args : {defaultCaching : false}},
         {n : 'concurrent+cache', args : {defaultCaching : true}}
     ];
