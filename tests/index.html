@@ -16,6 +16,13 @@
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script type="text/javascript" src="http://github.com/jquery/qunit/raw/master/qunit/qunit.js"></script>
     <script type="text/javascript" src='../trace.js'></script>
+    <script type="text/javascript" src="../SoundManager2/script/soundmanager2.js"></script>
+    <script>
+      soundManager.url = '../SoundManager2/swf/';
+      soundManager.flashVersion = 9; // optional: shiny features (default = 8)
+      soundManager.useFlashBlock = false; // optionally, enable when you're ready to dive in
+      soundManager.consoleOnly = true;
+    </script>
     <script type="text/javascript">
     // default timeout for async failure
     var TO = 5000;
@@ -42,8 +49,11 @@
     dojo.require('uow.audio.tests.interrupt');
     dojo.require('uow.audio.tests.sequential');
     dojo.require('uow.audio.tests.concurrent');
+    // assure flash is ready before starting, this should be somewhere else...
+    soundManager.onready(function() {
     // start qunit on page load
     dojo.ready(start);
+    });
     </script>
   </head>
   <body>
