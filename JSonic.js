@@ -970,6 +970,7 @@ dojo.declare('uow.audio.HTML5AudioNode', dijit._Widget, {
         this._audio.volume = volume;
     },
     
+    // extension points for dojo.connect
     onPlay : function() {},
     onPause: function() {},
     onEnded: function() {},
@@ -988,7 +989,52 @@ uow.audio.HTML5AudioNode.getExtension = function() {
 };
 
 dojo.declare('uow.audio.FlashAudioNode', null, {
+    constructor: function(args) {
+        // save args for cloning
+        this._args = args;
+    },
     
+    postMixInProperties: function() {
+        
+    },
+
+    uninitialize: function() {
+        
+    },
+    
+    clone: function() {
+        
+    },
+    
+    isPaused: function() {
+        
+    },
+    
+    load: function() {
+        
+    },
+    
+    play: function() {
+        
+    },
+    
+    pause: function() {
+        
+    },
+    
+    setCurrentTime: function(time) {
+        
+    },
+    
+    setVolume: function(volume) {
+        
+    },
+    
+    // extension points for dojo.connect
+    onPlay : function() {},
+    onPause: function() {},
+    onEnded: function() {},
+    onError: function() {}
 });
 
 uow.audio.FlashAudioNode.getExtension = function() {
