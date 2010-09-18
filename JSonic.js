@@ -999,23 +999,20 @@ dojo.declare('uow.audio.FlashAudioNode', dijit._Widget, {
     
     postMixInProperties: function() {
         this.smID = 'SM' + smCounter++;
-        var self = this;
-        var s = soundManager.createSound({
+        this.smSound = soundManager.createSound({
             id: this.smID,
             url: this._args.src,
             autoLoad: true,
-            debug: false,
             onplay: dojo.hitch(this, function() { this.onPlay({ target: this._args }); }),
             onpause: dojo.hitch(this, function() { this.onPause({ target: this._args }); }),
             onfinish: dojo.hitch(this, function() { this.onEnded({ target: this._args }); }),
             ondataerror: dojo.hitch(this, function() { this.onError({ target: this._args }); }),
-            onload: function() {
-                if (!this.loaded) { // also happens on load from cache, how to tell?
-                    self.onError({ target: self._args });
+            onload: dojo.hitch(this, function(arg) {
+                if (!arg) { // also happens on load from cache (they say), how to tell?
+                    this.onError({ target: this._args });
                 }
-            }
+            })
         });
-        this.smSound = s;
     },
 
     uninitialize: function() {
