@@ -860,6 +860,8 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         };
         if(this._properties.loop) {
             // start playing again, loop attr not implemented well in browsers
+            // don't listen to start events anymore for this sound
+            dojo.disconnect(this._aconnects[0]);
             if(dojo.isOpera) {
                 setTimeout(dojo.hitch(this, function() {
                     this._audioNode.setCurrentTime(0);
@@ -869,8 +871,6 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
                 this._audioNode.load();
                 this._audioNode.play();
             }
-            // don't listen to start events anymore for this sound
-            dojo.disconnect(this._aconnects[0]);
             return;
         }
         this._audioNode.destroy();
@@ -988,46 +988,67 @@ uow.audio.HTML5AudioNode.getExtension = function() {
     }
 };
 
-dojo.declare('uow.audio.FlashAudioNode', null, {
+// when I put this in _jsonicInstance where it belongs it doesn't work...
+var smCounter = 0;
+
+dojo.declare('uow.audio.FlashAudioNode', dijit._Widget, {
     constructor: function(args) {
         // save args for cloning
         this._args = args;
     },
     
     postMixInProperties: function() {
-        
+        this.smID = 'SM' + smCounter++;
+        var self = this;
+        var s = soundManager.createSound({
+            id: this.smID,
+            url: this._args.src,
+            autoLoad: true,
+            debug: false,
+            onplay: dojo.hitch(this, function() { this.onPlay({ target: this._args }); }),
+            onpause: dojo.hitch(this, function() { this.onPause({ target: this._args }); }),
+            onfinish: dojo.hitch(this, function() { this.onEnded({ target: this._args }); }),
+            ondataerror: dojo.hitch(this, function() { this.onError({ target: this._args }); }),
+            onload: function() {
+                if (!this.loaded) { // also happens on load from cache, how to tell?
+                    self.onError({ target: self._args });
+                }
+            }
+        });
+        this.smSound = s;
     },
 
     uninitialize: function() {
-        
+        this.smSound.destruct();
     },
     
     clone: function() {
-        
+        return new uow.audio.FlashAudioNode(this._args);
     },
     
     isPaused: function() {
-        
+        return this.smSound.paused;
     },
     
     load: function() {
-        
+        this.smSound.load();
     },
     
     play: function() {
-        
+        this.smSound.play();
     },
     
     pause: function() {
-        
+        this.smSound.pause();
     },
     
     setCurrentTime: function(time) {
-        
+        this.smSound.position = time; // units?
     },
     
     setVolume: function(volume) {
-        
+        var volume = Math.floor(volume * 100);
+        this.smSound.setVolume(volume);
     },
     
     // extension points for dojo.connect
