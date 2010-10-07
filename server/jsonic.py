@@ -22,6 +22,7 @@ import sys
 import stat
 import optparse
 import logging
+import functools
 
 # current server api version
 VERSION = '0.3'
@@ -180,23 +181,23 @@ class SynthHandler(JSonicHandler):
             self.send_json_error({'description' : 'unknown encoder format'})
             return
         params = (engine, enc, args['utterances'], args['properties'])
-        pool.apply_async(synthesize, params, callback=self.on_synth_complete)
+        pool.apply_async(synthesize, params, callback=self._on_synth_complete)
         #self.on_synth_complete(synthesize(*params))
+
+    def _on_synth_complete(self, response):
+        # schedule callback on the main thread
+		loop = tornado.ioloop.IOLoop.instance()
+		loop.add_callback(functools.partial(self.on_synth_complete, response))
     
     def on_synth_complete(self, response):
-        # protect against IOErrors bubbling up to worker pool
-        try:
-            if self.application.settings['debug']:
-                response['time'] = time.time() - self.start_time
-            if response['success']:
-                #self.set_header('Content-Type', 'application/json')
-                self.write(response)
-                self.finish()
-            else:
-                self.send_json_error(response)
-        except IOError:
-            # doesn't look like we should do any cleanup, but who knows
-            pass
+        if self.application.settings['debug']:
+            response['time'] = time.time() - self.start_time
+        if response['success']:
+            #self.set_header('Content-Type', 'application/json')
+            self.write(response)
+            self.finish()
+        else:
+            self.send_json_error(response)
 
 class VersionHandler(tornado.web.RequestHandler):
     '''
