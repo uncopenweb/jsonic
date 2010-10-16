@@ -25,7 +25,7 @@ uow.audio.initJSonic = function(args) {
  * JSonic widget for application use.
  */
 dojo.declare('uow.audio.JSonic', dijit._Widget, {
-    // root of the JSonic server REST API, defaults to /
+    // root of the JSonic server REST API, defaults to / (read-only)
     jsonicURI: '/',
     // cache speech / sounds by default or not? defaults to false for privacy
     defaultCaching: false,
@@ -54,6 +54,10 @@ dojo.declare('uow.audio.JSonic', dijit._Widget, {
         }
         this._cache.destroy();
         uow.audio._jsonicInstance = null;
+    },
+    
+    _setDefaultCachingAttr: function(value) {
+        this.defaultCaching = value;
     },
 
     /**
@@ -236,6 +240,25 @@ dojo.declare('uow.audio.JSonic', dijit._Widget, {
         args.method = '_reset';
         args = this._getChannel(args.channel).push(args);
         return args.defs;
+    },
+    
+    /**
+     * Queues a reset of all channel properties to their defaults on all
+     * channels.
+     *
+     * :return: Objects with 'before' and 'after' deferreds invoked just 
+     *   before the property reset (parameter: all old properties) and after 
+     *   the reset (parameter: reset property values) on each channel.
+     * :rtype: array of object
+     */
+    resetAll: function() {
+        var rv = [];
+        for(var channel in this._channels) {
+            var args = {method : '_reset'};
+            this._channels[channel].push(args);
+            rv.push(args.defs);
+        }
+        return rv;
     },
 
     /**
