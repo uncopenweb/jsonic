@@ -484,7 +484,7 @@ dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
         if(audioNode) {
             return audioNode;
         } else {
-            var node = dojo.create('audio');
+            var node = {}; //dojo.create('audio');
             node.autobuffer = true;
             node.src = args.url+this._ext;
             if(args.cache) {
@@ -571,7 +571,7 @@ dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
 
     _onSpeechSynthed: function(resultDef, args, response) {
         delete this._speechRenderings[args.key];
-        var node = dojo.create('audio');
+        var node = {}; //dojo.create('audio');
         node.autobuffer = true;
         node.preload = 'auto';
         node.src = this.jsonicURI+'files/'+response.result.text+this._ext;
@@ -608,8 +608,10 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         this._observers = [];
         // current channel properties
         this._properties = null;
-        // current audio node using the channel
+        // audio node in use by the channel
         this._audioNode = null;
+        // audio node buffering data for playback
+        this._bufferNode = dojo.create('audio');
         // callback tokens for the current audio node
         this._aconnects = [];
         // set default properties
@@ -680,18 +682,12 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         }
     },
 
-    _playAudioNode: function(args, node) {
+    _playAudioNode: function(args, nodeProps) {
         // don't play if we've stopped in the meantime
         if(this._args != args) return;
-        // clone the node, might be in use elsewhere
-        if(dojo.isOpera) {
-            // opera fails doing a clone; do it manually
-            var node2 = dojo.create('audio');
-            node2.src = node.src;
-            node = node2;
-        } else {
-            node = dojo.clone(node);
-        }
+        // set the properties on the node
+        var node = this._bufferNode;
+        dojo.mixin(node, nodeProps);
         this._audioNode = node;
         // set volume immediately, but not on chrome
         if(!dojo.isChrome) {
@@ -703,6 +699,10 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         this._aconnects[1] = dojo.connect(node, 'pause', this, '_onPause');
         this._aconnects[2] = dojo.connect(node, 'ended', this, '_onEnd');
         this._aconnects[3] = dojo.connect(node, 'error', this, '_onMediaError');
+        // need to force a load call in FF
+        if(dojo.isFF) {
+            this._audioNode.load();
+        }
         this._audioNode.play();
     },
     
