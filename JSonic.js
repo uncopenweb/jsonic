@@ -800,6 +800,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         }
         // clear everything before the callback
         var cargs = this._args;
+        dojo.forEach(this._aconnects, dojo.disconnect);
         this._args = null;
         this._busy = false;
         this._name = null;
@@ -816,6 +817,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
             description: error.message
         };
         // clear everything before after callback
+        dojo.forEach(this._aconnects, dojo.disconnect);
         this._args = null;
         this._busy = false;
         this._name = null;
@@ -836,7 +838,6 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         }
         // clear everything before giving the after callbacks
         dojo.forEach(this._aconnects, dojo.disconnect);
-        dojo.destroy(this._audioNode);
         this._aconnects = [];
         this._args = null;
         this._kind = null;
@@ -880,7 +881,6 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
             dojo.disconnect(this._aconnects[0]);
             return;
         }
-        dojo.destroy(this._audioNode);
         dojo.forEach(this._aconnects, dojo.disconnect);
         this._audioNode = null;
         this._aconnects = [];
