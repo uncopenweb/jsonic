@@ -7,7 +7,7 @@ dojo.provide('uow.audio.tests.simple');
     ];
     dojo.forEach(mods, function(mod) {
         module(mod.n, getModOpts(mod.args));
-        test('say', function () {
+        test('say', 2, function () {
             stop(TO);
             var def = this.js.say({text : UT1});
             def.callBefore(function() {
