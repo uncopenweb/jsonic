@@ -723,9 +723,8 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         this._aconnects[2] = dojo.connect(node, 'ended', this, '_onEnd');
         this._aconnects[3] = dojo.connect(node, 'error', this, '_onMediaError');
         // need to force a load call in FF
-        if(dojo.isFF) {
-            this._audioNode.load();
-        }
+        this._audioNode.load();
+        // start playing it
         this._audioNode.play();
     },
     
