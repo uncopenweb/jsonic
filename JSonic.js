@@ -715,6 +715,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         var node = this._bufferNode;
         dojo.mixin(node, nodeProps);
         this._audioNode = node;
+        this._args.origSrc = node.src;
         // set volume immediately, but not on chrome
         if(!dojo.isChrome) {
             this._audioNode.volume = this._properties.volume;
@@ -811,6 +812,11 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
     },
     
     _onMediaError: function(event) {
+        // ignore late events
+        if(!this._args || event.target.src != this._args.origSrc) { 
+            return; 
+        }
+
         var notice = {
             action : 'error',
             url : event.target.src,
@@ -853,6 +859,11 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
     },
     
     _onPause: function(event) {
+        // ignore late events
+        if(!this._args || event.target.src != this._args.origSrc) { 
+            return; 
+        }
+
         var cargs = this._args;
         var cname = this._name;
         var ckind = this._kind;
@@ -884,6 +895,10 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
     },
 
     _onEnd: function(event) {
+        // ignore late events
+        if(!this._args || event.target.src != this._args.origSrc) { 
+            return; 
+        }
         var notice = {
             url : event.target.src,
             action : 'finished-'+this._kind, 
@@ -920,6 +935,11 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
     },
     
     _onStart: function(event) {
+        // ignore late events
+        if(!this._args || event.target.src != this._args.origSrc) { 
+            return; 
+        }
+
         var notice = {
             url : event.target.src,
             action : 'started-'+this._kind, 
