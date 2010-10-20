@@ -503,17 +503,20 @@ dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
     },
     
     getSound: function(args) {
-        var audioNode = this._soundCache[args.url];
-        if(audioNode) {
-            return audioNode;
+        var resultDef = new dojo.Deferred();
+        var node = this._soundCache[args.url];
+        if(node) {
+            resultDef.callback(node);
+            return resultDef;
         } else {
-            var node = {}; //dojo.create('audio');
+            node = {}; //dojo.create('audio');
             node.autobuffer = true;
             node.src = args.url+this._ext;
             if(args.cache) {
                 this._soundCache[args.url] = node;
             }
-            return node;
+            resultDef.callback(node);
+            return resultDef;
         }
     },
 
@@ -746,7 +749,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         if(!args.audio) {
             args.audio = this.cache.getSound(args);
         }
-        this._playAudioNode(args, args.audio);
+        args.audio.addCallback(dojo.hitch(this, '_playAudioNode', this._args));
     },
     
     _stop: function(args) {
