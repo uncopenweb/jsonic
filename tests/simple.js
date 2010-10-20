@@ -49,6 +49,7 @@ dojo.provide('uow.audio.tests.simple');
         });
         test('say rate', 3, function() {
             stop(TO*2);
+            var tok;
             var js = this.js;
             var def1 = this.js.setProperty({name: 'rate', value: 800});
             def1.callBefore(function(value) {
@@ -58,8 +59,9 @@ dojo.provide('uow.audio.tests.simple');
             });
             var def2 = this.js.say({text : UT1});
             def2.callBefore(function() {
-                setTimeout(function() {js.stop();}, 1000);
+                tok = setTimeout(function() {js.stop();}, 1000);
             }).callAfter(function(completed) {
+                clearTimeout(tok);
                 ok(completed, 'fast say completed before stop');
                 start();
             });
