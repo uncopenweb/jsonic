@@ -38,7 +38,6 @@
     };
     QUnit.moduleDone = function(name) {
         if(uow.audio.initJSonic) {
-            console.log('destroying jsonic');
             // cleanup JSonic singleton before next module runs
             var js = uow.audio.initJSonic();
             js.destroyRecursive();
