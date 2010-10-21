@@ -637,9 +637,13 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         // audio node in use by the channel
         this._audioNode = null;
         // audio node buffering data for playback
-        this._bufferNode = dojo.create('audio');
+        var node = this._bufferNode = dojo.create('audio');
         // callback tokens for the current audio node
         this._aconnects = [];
+        this._aconnects[0] = dojo.connect(node, 'play', this, '_onStart');
+        this._aconnects[1] = dojo.connect(node, 'pause', this, '_onPause');
+        this._aconnects[2] = dojo.connect(node, 'ended', this, '_onEnd');
+        this._aconnects[3] = dojo.connect(node, 'error', this, '_onMediaError');
         // set default properties
         this._reset();
     },
@@ -649,6 +653,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         if(this._audioNode && !this._audioNode.paused) {
             this._audioNode.pause();
         }
+        dojo.forEach(this._aconnects, dojo.disconnect);
     },
     
     push: function(args) {
@@ -722,10 +727,6 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         }
         // @todo: not yet supported well in browsers, do our own
         //this._audioNode.loop = this._properties.loop;
-        this._aconnects[0] = dojo.connect(node, 'play', this, '_onStart');
-        this._aconnects[1] = dojo.connect(node, 'pause', this, '_onPause');
-        this._aconnects[2] = dojo.connect(node, 'ended', this, '_onEnd');
-        this._aconnects[3] = dojo.connect(node, 'error', this, '_onMediaError');
         // need to force a load call in FF
         this._audioNode.load();
         // start playing it
@@ -831,7 +832,6 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         }
         // clear everything before the callback
         var cargs = this._args;
-        dojo.forEach(this._aconnects, dojo.disconnect);
         this._args = null;
         this._busy = false;
         this._name = null;
@@ -848,7 +848,6 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
             description: error.message
         };
         // clear everything before after callback
-        dojo.forEach(this._aconnects, dojo.disconnect);
         this._args = null;
         this._busy = false;
         this._name = null;
@@ -873,8 +872,6 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
             this._audioNode.volume = 0;
         }
         // clear everything before giving the after callbacks
-        dojo.forEach(this._aconnects, dojo.disconnect);
-        this._aconnects = [];
         this._args = null;
         this._kind = null;
         this._name = null;
@@ -918,12 +915,10 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
                 this._audioNode.play();
             }
             // don't listen to start events anymore for this sound
-            dojo.disconnect(this._aconnects[0]);
+            this._args.inloop = true
             return;
         }
-        dojo.forEach(this._aconnects, dojo.disconnect);
         this._audioNode = null;
-        this._aconnects = [];
         // clear everything before after callback
         var cargs = this._args;
         this._args = null;
@@ -935,8 +930,9 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
     },
     
     _onStart: function(event) {
-        // ignore late events
-        if(!this._args || event.target.src != this._args.origSrc) { 
+        // ignore late events or looping restart events
+        if(!this._args || event.target.src != this._args.origSrc ||
+           this._args.inloop) { 
             return; 
         }
 
