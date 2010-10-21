@@ -9,7 +9,7 @@ dojo.provide('uow.audio.JSonic');
 dojo.require('dijit._Widget');
 
 // client api version
-uow.audio._jsonicVersion = '0.3';
+uow.audio._jsonicVersion = '0.4';
 // singleton instance
 uow.audio._jsonicInstance = null;
 

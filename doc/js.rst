@@ -41,7 +41,9 @@ The JSonic interface
 
    .. attribute:: defaultCaching
    
-      Read-only. True if caching is enabled by default for all to :meth:`say` and :meth:`play` calls. False if caching is disabled by default.
+      True if caching is enabled by default for all to :meth:`say` and :meth:`play` calls. False if caching is disabled by default.
+      
+      .. versionchanged:: 0.4
       
    .. attribute:: jsonicURI
    
@@ -143,6 +145,14 @@ The JSonic interface
       
       :type args: object
       :rtype: :class:`JSonicDeferred`
+   
+   .. method:: resetAll()
+   
+      Resets all channel :ref:`audio properties <property>` of all channels to their defaults.
+      
+      :rtype: array of :class:`JSonicDeferred`
+      
+      .. versionadded:: 0.4
    
    .. method:: say(args)
    

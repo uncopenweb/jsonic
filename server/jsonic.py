@@ -25,7 +25,7 @@ import logging
 import functools
 
 # current server api version
-VERSION = '0.3'
+VERSION = '0.4'
 # path containing synthed and encoded speech files
 CACHE_PATH = os.path.join(os.path.dirname(__file__), 'files')
 try:
