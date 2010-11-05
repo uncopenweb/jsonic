@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -10,14 +12,15 @@
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '#',
+        URL_ROOT:    '',
         VERSION:     '0.3',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="JSonic v0.3 documentation" href="index.html" />
     <link rel="prev" title="The REST API" href="rest.html" /> 
@@ -30,8 +33,8 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="rest.html" title="The REST API"
              accesskey="P">previous</a> |</li>
@@ -46,20 +49,28 @@
             
   <div class="section" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="version-0-4">
+<h2>Version 0.4<a class="headerlink" href="#version-0-4" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Migrated to <a class="reference internal" href="js.html#module-uow.audio" title="uow.audio: Namespace for the JSonic client."><tt class="xref py py-mod docutils literal"><span class="pre">uow.audio</span></tt></a> namespace.</li>
+<li>Added the <a class="reference internal" href="js.html#uow.audio.JSonic.resetAll" title="uow.audio.JSonic.resetAll"><tt class="xref py py-meth docutils literal"><span class="pre">uow.audio.JSonic.resetAll</span></tt></a> method.</li>
+<li>Made the <a class="reference internal" href="js.html#uow.audio.JSonic.defaultCaching" title="uow.audio.JSonic.defaultCaching"><tt class="xref py py-attr docutils literal"><span class="pre">uow.audio.JSonic.defaultCaching</span></tt></a> attribute settable.</li>
+</ul>
+</div>
 <div class="section" id="version-0-3">
 <h2>Version 0.3<a class="headerlink" href="#version-0-3" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Corrected <a title="info.mindtrove.JSonicDeferred.callBefore" class="reference external" href="js.html#info.mindtrove.JSonicDeferred.callBefore"><tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonicDeferred.callBefore</span></tt></a> and <a title="info.mindtrove.JSonicDeferred.callAfter" class="reference external" href="js.html#info.mindtrove.JSonicDeferred.callAfter"><tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonicDeferred.callAfter</span></tt></a> method names and examples.</li>
-<li>Added better enforcement of singleton nature of <a title="info.mindtrove.JSonic" class="reference external" href="js.html#info.mindtrove.JSonic"><tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonic</span></tt></a>.</li>
-<li>Invoking the <tt class="xref docutils literal"><span class="pre">dijit._Widget.destroyRecursive</span></tt> method on the JSonic singleton is now possible. Enables destruction of the singleton to make way for the creation of a new singleton with different options.</li>
+<li>Corrected <a class="reference internal" href="js.html#uow.audio.JSonicDeferred.callBefore" title="uow.audio.JSonicDeferred.callBefore"><tt class="xref py py-meth docutils literal"><span class="pre">uow.audio.JSonicDeferred.callBefore</span></tt></a> and <a class="reference internal" href="js.html#uow.audio.JSonicDeferred.callAfter" title="uow.audio.JSonicDeferred.callAfter"><tt class="xref py py-meth docutils literal"><span class="pre">uow.audio.JSonicDeferred.callAfter</span></tt></a> method names and examples.</li>
+<li>Added better enforcement of singleton nature of <a class="reference internal" href="js.html#uow.audio.JSonic" title="uow.audio.JSonic"><tt class="xref py py-class docutils literal"><span class="pre">uow.audio.JSonic</span></tt></a>.</li>
+<li>Invoking the <tt class="xref py py-meth docutils literal"><span class="pre">dijit._Widget.destroyRecursive</span></tt> method on the JSonic singleton is now possible. Enables destruction of the singleton to make way for the creation of a new singleton with different options.</li>
 <li>Various JavaScript bug fixes for all browsers.</li>
 </ul>
 </div>
 <div class="section" id="version-0-2">
 <h2>Version 0.2<a class="headerlink" href="#version-0-2" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Changed <a title="info.mindtrove.JSonic" class="reference external" href="js.html#info.mindtrove.JSonic"><tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonic</span></tt></a> to a singleton.</li>
-<li>Added <a title="info.mindtrove.initJSonic" class="reference external" href="js.html#info.mindtrove.initJSonic"><tt class="xref docutils literal"><span class="pre">info.mindtrove.initJSonic</span></tt></a> to create or get the singleton.</li>
+<li>Changed <a class="reference internal" href="js.html#uow.audio.JSonic" title="uow.audio.JSonic"><tt class="xref py py-class docutils literal"><span class="pre">uow.audio.JSonic</span></tt></a> to a singleton.</li>
+<li>Added <a class="reference internal" href="js.html#uow.audio.initJSonic" title="uow.audio.initJSonic"><tt class="xref py py-func docutils literal"><span class="pre">uow.audio.initJSonic</span></tt></a> to create or get the singleton.</li>
 </ul>
 </div>
 <div class="section" id="version-0-1">
@@ -74,37 +85,38 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#">Changelog</a><ul>
-<li><a class="reference external" href="#version-0-3">Version 0.3</a></li>
-<li><a class="reference external" href="#version-0-2">Version 0.2</a></li>
-<li><a class="reference external" href="#version-0-1">Version 0.1</a></li>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Changelog</a><ul>
+<li><a class="reference internal" href="#version-0-4">Version 0.4</a></li>
+<li><a class="reference internal" href="#version-0-3">Version 0.3</a></li>
+<li><a class="reference internal" href="#version-0-2">Version 0.2</a></li>
+<li><a class="reference internal" href="#version-0-1">Version 0.1</a></li>
 </ul>
 </li>
 </ul>
 
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="rest.html"
-                                  title="previous chapter">The REST API</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="_sources/changelog.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="rest.html"
+                        title="previous chapter">The REST API</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/changelog.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -116,7 +128,7 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
+          <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="rest.html" title="The REST API"
@@ -125,8 +137,8 @@
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2010, Peter Parente.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+        &copy; Copyright 2010, Peter Parente.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>
 </html>

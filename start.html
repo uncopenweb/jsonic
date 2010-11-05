@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -10,14 +12,15 @@
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '#',
+        URL_ROOT:    '',
         VERSION:     '0.3',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="JSonic v0.3 documentation" href="index.html" />
     <link rel="next" title="The JavaScript API" href="js.html" />
@@ -31,8 +34,8 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="js.html" title="The JavaScript API"
              accesskey="N">next</a> |</li>
@@ -121,12 +124,12 @@ python jsonic.py
 <div class="section" id="loading-the-jsonic-dojo-module">
 <h2>Loading the JSonic Dojo module<a class="headerlink" href="#loading-the-jsonic-dojo-module" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
-<li>Place the <tt class="docutils literal"><span class="pre">JSonic.js</span></tt> file in a web accessible location.</li>
+<li>Place the <tt class="file docutils literal"><span class="pre">JSonic.js</span></tt> file in a web accessible location.</li>
 <li>Include <a class="reference external" href="http://dojotoolkit.org/">Dojo</a> in your web application.</li>
-<li>Inform Dojo of the location of the <a title="Namespace for the JSonic client." class="reference external" href="js.html#module-info.mindtrove"><tt class="xref docutils literal"><span class="pre">info.mindtrove</span></tt></a> namespace on disk.</li>
-<li>Use <tt class="xref docutils literal"><span class="pre">dojo.require</span></tt> to load the JSonic module.</li>
+<li>Inform Dojo of the location of the <a class="reference internal" href="js.html#module-uow.audio" title="uow.audio: Namespace for the JSonic client."><tt class="xref py py-mod docutils literal"><span class="pre">uow.audio</span></tt></a> namespace on disk.</li>
+<li>Use <tt class="xref py py-func docutils literal"><span class="pre">dojo.require</span></tt> to load the JSonic module.</li>
 </ol>
-<p>See the HTML files in the <tt class="docutils literal"><span class="pre">examples/</span></tt> folder for complete applications satisfying these requirements. You can run the examples by visiting the <tt class="docutils literal"><span class="pre">http://yourdomain:8888/static/examples/</span></tt> URL of the JSonic server if you start the server with the <cite>&#8211;static</cite> parameter.</p>
+<p>See the HTML files in the <tt class="file docutils literal"><span class="pre">examples/</span></tt> folder for complete applications satisfying these requirements. You can run the examples by visiting the <tt class="file docutils literal"><span class="pre">http://yourdomain:8888/static/examples/</span></tt> URL of the JSonic server if you start the server with the <cite>&#8211;static</cite> parameter.</p>
 </div>
 <div class="section" id="speaking-hello-world">
 <h2>Speaking &#8220;Hello world!&#8221;<a class="headerlink" href="#speaking-hello-world" title="Permalink to this headline">¶</a></h2>
@@ -137,11 +140,11 @@ python jsonic.py
 </div>
 </li>
 <li><p class="first">Create an instance of the JSonic class</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">js</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">info</span><span class="p">.</span><span class="nx">mindtrove</span><span class="p">.</span><span class="nx">JSonic</span><span class="p">(</span><span class="nx">args</span><span class="p">);</span>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">js</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">uow</span><span class="p">.</span><span class="nx">audio</span><span class="p">.</span><span class="nx">JSonic</span><span class="p">(</span><span class="nx">args</span><span class="p">);</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first">Invoke the <tt class="xref docutils literal"><span class="pre">JSonic.say</span></tt> method.</p>
+<li><p class="first">Invoke the <tt class="xref py py-meth docutils literal"><span class="pre">JSonic.say</span></tt> method.</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s1">&#39;Hello world!&#39;</span><span class="p">})</span>
 </pre></div>
 </div>
@@ -156,42 +159,42 @@ python jsonic.py
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#">Getting Started</a><ul>
-<li><a class="reference external" href="#requirements">Requirements</a></li>
-<li><a class="reference external" href="#obtaining-the-jsonic-source-code">Obtaining the JSonic source code</a></li>
-<li><a class="reference external" href="#running-the-tornado-server">Running the Tornado server</a></li>
-<li><a class="reference external" href="#loading-the-jsonic-dojo-module">Loading the JSonic Dojo module</a></li>
-<li><a class="reference external" href="#speaking-hello-world">Speaking &#8220;Hello world!&#8221;</a></li>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Getting Started</a><ul>
+<li><a class="reference internal" href="#requirements">Requirements</a></li>
+<li><a class="reference internal" href="#obtaining-the-jsonic-source-code">Obtaining the JSonic source code</a></li>
+<li><a class="reference internal" href="#running-the-tornado-server">Running the Tornado server</a></li>
+<li><a class="reference internal" href="#loading-the-jsonic-dojo-module">Loading the JSonic Dojo module</a></li>
+<li><a class="reference internal" href="#speaking-hello-world">Speaking &#8220;Hello world!&#8221;</a></li>
 </ul>
 </li>
 </ul>
 
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="index.html"
-                                  title="previous chapter">JSonic - JavaScript text-to-speech</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="js.html"
-                                  title="next chapter">The JavaScript API</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="_sources/start.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">JSonic - JavaScript text-to-speech</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="js.html"
+                        title="next chapter">The JavaScript API</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/start.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -203,7 +206,7 @@ python jsonic.py
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
+          <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="js.html" title="The JavaScript API"
@@ -215,8 +218,8 @@ python jsonic.py
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2010, Peter Parente.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+        &copy; Copyright 2010, Peter Parente.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>
 </html>

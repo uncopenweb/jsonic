@@ -68,7 +68,7 @@ Loading the JSonic Dojo module
 
 #. Place the :file:`JSonic.js` file in a web accessible location.
 #. Include `Dojo`_ in your web application.
-#. Inform Dojo of the location of the :mod:`info.mindtrove` namespace on disk.
+#. Inform Dojo of the location of the :mod:`uow.audio` namespace on disk.
 #. Use :func:`dojo.require` to load the JSonic module.
 
 See the HTML files in the :file:`examples/` folder for complete applications satisfying these requirements. You can run the examples by visiting the :file:`http://yourdomain:8888/static/examples/` URL of the JSonic server if you start the server with the `--static` parameter.
@@ -86,7 +86,7 @@ Speaking "Hello world!"
 
    .. sourcecode:: javascript
    
-      var js = new info.mindtrove.JSonic(args);
+      var js = new uow.audio.JSonic(args);
 
 #. Invoke the :meth:`JSonic.say` method.
 

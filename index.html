@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -10,14 +12,15 @@
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '#',
+        URL_ROOT:    '',
         VERSION:     '0.3',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="JSonic v0.3 documentation" href="#" />
     <link rel="next" title="Getting Started" href="start.html" /> 
@@ -30,8 +33,8 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="start.html" title="Getting Started"
              accesskey="N">next</a> |</li>
@@ -46,48 +49,51 @@
             
   <div class="section" id="jsonic-javascript-text-to-speech">
 <h1>JSonic - JavaScript text-to-speech<a class="headerlink" href="#jsonic-javascript-text-to-speech" title="Permalink to this headline">¶</a></h1>
-<p>This documentation describes JSonic v 0.3 and was rendered on September 14, 2010. The documented APIs and behaviors are <strong>unstable</strong> until v 1.0.</p>
+<p>This documentation describes JSonic v 0.3 and was rendered on November 05, 2010. The documented APIs and behaviors are <strong>unstable</strong> until v 1.0.</p>
 <p class="rubric">Table of Contents</p>
+<div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference external" href="start.html">Getting Started</a><ul>
-<li class="toctree-l2"><a class="reference external" href="start.html#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference external" href="start.html#obtaining-the-jsonic-source-code">Obtaining the JSonic source code</a></li>
-<li class="toctree-l2"><a class="reference external" href="start.html#running-the-tornado-server">Running the Tornado server</a></li>
-<li class="toctree-l2"><a class="reference external" href="start.html#loading-the-jsonic-dojo-module">Loading the JSonic Dojo module</a></li>
-<li class="toctree-l2"><a class="reference external" href="start.html#speaking-hello-world">Speaking &#8220;Hello world!&#8221;</a></li>
+<li class="toctree-l1"><a class="reference internal" href="start.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="start.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="start.html#obtaining-the-jsonic-source-code">Obtaining the JSonic source code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="start.html#running-the-tornado-server">Running the Tornado server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="start.html#loading-the-jsonic-dojo-module">Loading the JSonic Dojo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="start.html#speaking-hello-world">Speaking &#8220;Hello world!&#8221;</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference external" href="js.html">The JavaScript API</a><ul>
-<li class="toctree-l2"><a class="reference external" href="js.html#client-concepts">Client concepts</a></li>
-<li class="toctree-l2"><a class="reference external" href="js.html#the-jsonic-factory">The JSonic factory</a></li>
-<li class="toctree-l2"><a class="reference external" href="js.html#the-jsonic-interface">The JSonic interface</a></li>
-<li class="toctree-l2"><a class="reference external" href="js.html#before-and-after-deferred-notification">Before and after deferred notification</a></li>
-<li class="toctree-l2"><a class="reference external" href="js.html#channel-notifications">Channel notifications</a></li>
-<li class="toctree-l2"><a class="reference external" href="js.html#channel-properties">Channel properties</a></li>
-<li class="toctree-l2"><a class="reference external" href="js.html#example-code">Example code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="js.html">The JavaScript API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="js.html#client-concepts">Client concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="js.html#the-jsonic-factory">The JSonic factory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="js.html#the-jsonic-interface">The JSonic interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="js.html#before-and-after-deferred-notification">Before and after deferred notification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="js.html#channel-notifications">Channel notifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="js.html#channel-properties">Channel properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="js.html#example-code">Example code</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference external" href="cache.html">About caching</a><ul>
-<li class="toctree-l2"><a class="reference external" href="cache.html#url-caching">URL caching</a></li>
-<li class="toctree-l2"><a class="reference external" href="cache.html#node-caching">Node caching</a></li>
-<li class="toctree-l2"><a class="reference external" href="cache.html#browser-caching">Browser caching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cache.html">About caching</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cache.html#url-caching">URL caching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cache.html#node-caching">Node caching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cache.html#browser-caching">Browser caching</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference external" href="rest.html">The REST API</a><ul>
-<li class="toctree-l2"><a class="reference external" href="rest.html#get-version">GET /version</a></li>
-<li class="toctree-l2"><a class="reference external" href="rest.html#get-engine">GET /engine</a></li>
-<li class="toctree-l2"><a class="reference external" href="rest.html#get-engine-id">GET /engine/[id]</a></li>
-<li class="toctree-l2"><a class="reference external" href="rest.html#post-synth">POST /synth</a></li>
-<li class="toctree-l2"><a class="reference external" href="rest.html#get-files-id">GET /files/[id]</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest.html">The REST API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rest.html#get-version">GET /version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest.html#get-engine">GET /engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest.html#get-engine-id">GET /engine/[id]</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest.html#post-synth">POST /synth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rest.html#get-files-id">GET /files/[id]</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference external" href="changelog.html">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference external" href="changelog.html#version-0-3">Version 0.3</a></li>
-<li class="toctree-l2"><a class="reference external" href="changelog.html#version-0-2">Version 0.2</a></li>
-<li class="toctree-l2"><a class="reference external" href="changelog.html#version-0-1">Version 0.1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-0-4">Version 0.4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-0-3">Version 0.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-0-2">Version 0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog.html#version-0-1">Version 0.1</a></li>
 </ul>
 </li>
 </ul>
+</div>
 <p class="rubric">Project Links</p>
 <ul class="simple">
 <li><a class="reference external" href="http://github.com/uncopenweb/jsonic">Source on GitHub</a></li>
@@ -101,27 +107,27 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h4>Next topic</h4>
-            <p class="topless"><a href="start.html"
-                                  title="next chapter">Getting Started</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="_sources/index.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="start.html"
+                        title="next chapter">Getting Started</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -133,7 +139,7 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
+          <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="start.html" title="Getting Started"
@@ -142,8 +148,8 @@
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2010, Peter Parente.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+        &copy; Copyright 2010, Peter Parente.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>
 </html>

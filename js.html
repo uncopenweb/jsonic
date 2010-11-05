@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -10,14 +12,15 @@
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '#',
+        URL_ROOT:    '',
         VERSION:     '0.3',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="JSonic v0.3 documentation" href="index.html" />
     <link rel="next" title="About caching" href="cache.html" />
@@ -31,8 +34,8 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="cache.html" title="About caching"
              accesskey="N">next</a> |</li>
@@ -48,31 +51,34 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="the-javascript-api">
-<span id="module-info.mindtrove"></span><h1>The JavaScript API<a class="headerlink" href="#the-javascript-api" title="Permalink to this headline">¶</a></h1>
+  <span class="target" id="module-uow.audio"></span><div class="section" id="the-javascript-api">
+<h1>The JavaScript API<a class="headerlink" href="#the-javascript-api" title="Permalink to this headline">¶</a></h1>
 <p>The client implements a JavaScript interface allowing web applications to speak text, play sounds, change playback properties, queue commands, manage independent audio channels, and cache results for low-latency playback.</p>
 <div class="section" id="client-concepts">
 <h2>Client concepts<a class="headerlink" href="#client-concepts" title="Permalink to this headline">¶</a></h2>
-<p>The client consists of a set of named <em class="xref">channels</em> that maintain independent <em class="xref">queues</em> of <em class="xref">commands</em>. A channel processes its queue sequentially in first in, first out order, though some commands are processed immediately (e.g., stop). Multiple channels can process commands at the same time, however. For example, the <cite>default</cite> channel might have one speech utterance queued while it is speaking another. At the same time, the <cite>secondary</cite> channel might process a volume change command followed by a command to play a sound.</p>
-<p>Channels send <em class="xref">notifications</em> of important events as they occur in two manners. First, channels invoke callback functions registered by an application for one or more kinds of notifications. Second, the channels return deferred results for each command before and after it is processed. The former technique is useful for listeners that need information across many commands. The latter is useful when an application wants information about particular commands.</p>
+<p>The client consists of a set of named <em class="xref std std-term">channels</em> that maintain independent <em class="xref std std-term">queues</em> of <em class="xref std std-term">commands</em>. A channel processes its queue sequentially in first in, first out order, though some commands are processed immediately (e.g., stop). Multiple channels can process commands at the same time, however. For example, the <cite>default</cite> channel might have one speech utterance queued while it is speaking another. At the same time, the <cite>secondary</cite> channel might process a volume change command followed by a command to play a sound.</p>
+<p>Channels send <em class="xref std std-term">notifications</em> of important events as they occur in two manners. First, channels invoke callback functions registered by an application for one or more kinds of notifications. Second, the channels return deferred results for each command before and after it is processed. The former technique is useful for listeners that need information across many commands. The latter is useful when an application wants information about particular commands.</p>
 </div>
 <div class="section" id="the-jsonic-factory">
 <h2>The JSonic factory<a class="headerlink" href="#the-jsonic-factory" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="info.mindtrove.initJSonic">
-<tt class="descclassname">info.mindtrove.</tt><tt class="descname">initJSonic</tt><big>(</big><big>)</big><a class="headerlink" href="#info.mindtrove.initJSonic" title="Permalink to this definition">¶</a></dt>
+<dt id="uow.audio.initJSonic">
+<tt class="descclassname">uow.audio.</tt><tt class="descname">initJSonic</tt><big>(</big><big>)</big><a class="headerlink" href="#uow.audio.initJSonic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes the client API.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>args</em> (object) &#8211; <p>Object with the following properties:</p>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
 <p>defaultCaching (optional)</p>
 <blockquote>
-True to enable all levels of caching as the default for calls to <tt class="xref docutils literal"><span class="pre">say</span></tt> and <tt class="xref docutils literal"><span class="pre">play</span></tt>. False to disable all caching except browser caching as the default for those methods. Defaults to false.</blockquote>
+True to enable all levels of caching as the default for calls to <tt class="xref py py-meth docutils literal"><span class="pre">say</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">play</span></tt>. False to disable all caching except browser caching as the default for those methods. Defaults to false.</blockquote>
 <p>jsonicURI (optional)</p>
 <blockquote>
 String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cite>.</blockquote>
+</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -83,35 +89,39 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <div class="section" id="the-jsonic-interface">
 <h2>The JSonic interface<a class="headerlink" href="#the-jsonic-interface" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="info.mindtrove.JSonic">
-<em class="property">class </em><tt class="descclassname">info.mindtrove.</tt><tt class="descname">JSonic</tt><a class="headerlink" href="#info.mindtrove.JSonic" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a title="info.mindtrove.JSonic" class="reference internal" href="#info.mindtrove.JSonic"><tt class="xref docutils literal"><span class="pre">JSonic</span></tt></a> class implements the entire client API. Only one instance is allowed per page and should be constructed using the <a title="info.mindtrove.initJSonic" class="reference internal" href="#info.mindtrove.initJSonic"><tt class="xref docutils literal"><span class="pre">initJSonic</span></tt></a> factory function.</p>
+<dt id="uow.audio.JSonic">
+<em class="property">class </em><tt class="descclassname">uow.audio.</tt><tt class="descname">JSonic</tt><a class="headerlink" href="#uow.audio.JSonic" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="#uow.audio.JSonic" title="uow.audio.JSonic"><tt class="xref py py-class docutils literal"><span class="pre">JSonic</span></tt></a> class implements the entire client API. Only one instance is allowed per page and should be constructed using the <a class="reference internal" href="#uow.audio.initJSonic" title="uow.audio.initJSonic"><tt class="xref py py-func docutils literal"><span class="pre">initJSonic</span></tt></a> factory function.</p>
 <dl class="attribute">
-<dt id="info.mindtrove.JSonic.defaultCaching">
-<tt class="descname">defaultCaching</tt><a class="headerlink" href="#info.mindtrove.JSonic.defaultCaching" title="Permalink to this definition">¶</a></dt>
-<dd>Read-only. True if caching is enabled by default for all to <a title="info.mindtrove.JSonic.say" class="reference internal" href="#info.mindtrove.JSonic.say"><tt class="xref docutils literal"><span class="pre">say</span></tt></a> and <a title="info.mindtrove.JSonic.play" class="reference internal" href="#info.mindtrove.JSonic.play"><tt class="xref docutils literal"><span class="pre">play</span></tt></a> calls. False if caching is disabled by default.</dd></dl>
+<dt id="uow.audio.JSonic.defaultCaching">
+<tt class="descname">defaultCaching</tt><a class="headerlink" href="#uow.audio.JSonic.defaultCaching" title="Permalink to this definition">¶</a></dt>
+<dd><p>True if caching is enabled by default for all to <a class="reference internal" href="#uow.audio.JSonic.say" title="uow.audio.JSonic.say"><tt class="xref py py-meth docutils literal"><span class="pre">say</span></tt></a> and <a class="reference internal" href="#uow.audio.JSonic.play" title="uow.audio.JSonic.play"><tt class="xref py py-meth docutils literal"><span class="pre">play</span></tt></a> calls. False if caching is disabled by default.</p>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.4.</span></p>
+</dd></dl>
 
 <dl class="attribute">
-<dt id="info.mindtrove.JSonic.jsonicURI">
-<tt class="descname">jsonicURI</tt><a class="headerlink" href="#info.mindtrove.JSonic.jsonicURI" title="Permalink to this definition">¶</a></dt>
-<dd>Read-only. The root of the JSonic REST API.</dd></dl>
+<dt id="uow.audio.JSonic.jsonicURI">
+<tt class="descname">jsonicURI</tt><a class="headerlink" href="#uow.audio.JSonic.jsonicURI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read-only. The root of the JSonic REST API.</p>
+</dd></dl>
 
 <dl class="method">
-<dt id="info.mindtrove.JSonic.addObserver">
-<tt class="descname">addObserver</tt><big>(</big><em>func</em>, <em>channel</em>, <em>actions</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.addObserver" title="Permalink to this definition">¶</a></dt>
+<dt id="uow.audio.JSonic.addObserver">
+<tt class="descname">addObserver</tt><big>(</big><em>func</em>, <em>channel</em>, <em>actions</em><big>)</big><a class="headerlink" href="#uow.audio.JSonic.addObserver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a listener for speech and sound <a class="reference internal" href="#notification"><em>notifications</em></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(notice)</span></tt>) &#8211; Callback function</li>
-<li><em>channel</em> (string) &#8211; Name of the channel to observe. Defaults to <tt class="xref docutils literal"><span class="pre">default</span></tt> if not defined.</li>
-<li><em>actions</em> (array) &#8211; List of string <a class="reference internal" href="#notification"><em>notification</em></a> actions to observe. Defaults to all actions if not defined.</li>
+<li><strong>func</strong> (<tt class="xref py py-func docutils literal"><span class="pre">function(notice)</span></tt>) &#8211; Callback function</li>
+<li><strong>channel</strong> (<em>string</em>) &#8211; Name of the channel to observe. Defaults to <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> if not defined.</li>
+<li><strong>actions</strong> (<em>array</em>) &#8211; List of string <a class="reference internal" href="#notification"><em>notification</em></a> actions to observe. Defaults to all actions if not defined.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Token to use to unregister the callback later using <a title="info.mindtrove.JSonic.removeObserver" class="reference internal" href="#info.mindtrove.JSonic.removeObserver"><tt class="xref docutils literal"><span class="pre">removeObserver</span></tt></a></p>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Token to use to unregister the callback later using <a class="reference internal" href="#uow.audio.JSonic.removeObserver" title="uow.audio.JSonic.removeObserver"><tt class="xref py py-meth docutils literal"><span class="pre">removeObserver</span></tt></a></p>
 </td>
 </tr>
 <tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">object</p>
@@ -122,8 +132,8 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 </dd></dl>
 
 <dl class="method">
-<dt id="info.mindtrove.JSonic.getClientVersion">
-<tt class="descname">getClientVersion</tt><big>(</big><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.getClientVersion" title="Permalink to this definition">¶</a></dt>
+<dt id="uow.audio.JSonic.getClientVersion">
+<tt class="descname">getClientVersion</tt><big>(</big><big>)</big><a class="headerlink" href="#uow.audio.JSonic.getClientVersion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the version number of the client API implemented by this instance.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -136,14 +146,14 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 </dd></dl>
 
 <dl class="method">
-<dt id="info.mindtrove.JSonic.getEngines">
-<tt class="descname">getEngines</tt><big>(</big><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.getEngines" title="Permalink to this definition">¶</a></dt>
+<dt id="uow.audio.JSonic.getEngines">
+<tt class="descname">getEngines</tt><big>(</big><big>)</big><a class="headerlink" href="#uow.audio.JSonic.getEngines" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the names of the text to speech engines installed on the server.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with an object matching the <a class="reference external" href="rest.html#engine-schema"><em>/engine schema</em></a> or an errback with an <tt class="xref docutils literal"><span class="pre">Error</span></tt> object</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with an object matching the <a class="reference internal" href="rest.html#engine-schema"><em>/engine schema</em></a> or an errback with an <tt class="xref py py-class docutils literal"><span class="pre">Error</span></tt> object</td>
 </tr>
 <tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://dojotoolkit.org/reference-guide/dojo/Deferred.html#dojo-deferred">dojo.Deferred</a></td>
 </tr>
@@ -152,57 +162,67 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 </dd></dl>
 
 <dl class="method">
-<dt id="info.mindtrove.JSonic.getEngineInfo">
-<tt class="descname">getEngineInfo</tt><big>(</big><em>id</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.getEngineInfo" title="Permalink to this definition">¶</a></dt>
+<dt id="uow.audio.JSonic.getEngineInfo">
+<tt class="descname">getEngineInfo</tt><big>(</big><em>id</em><big>)</big><a class="headerlink" href="#uow.audio.JSonic.getEngineInfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets detailed information about a particular text to speech engine.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>id</em> (string) &#8211; Identifier associated with the engine as returned by <a title="info.mindtrove.JSonic.getEngines" class="reference internal" href="#info.mindtrove.JSonic.getEngines"><tt class="xref docutils literal"><span class="pre">getEngines</span></tt></a>.</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>id</strong> (<em>string</em>) &#8211; Identifier associated with the engine as returned by <a class="reference internal" href="#uow.audio.JSonic.getEngines" title="uow.audio.JSonic.getEngines"><tt class="xref py py-meth docutils literal"><span class="pre">getEngines</span></tt></a>.</li>
+</ul>
+</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with an object matching the <a class="reference external" href="rest.html#engine-info-schema"><em>/engine/[id] schema</em></a> or an errback with an <tt class="xref docutils literal"><span class="pre">Error</span></tt> object</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A deferred callback with an object matching the <a class="reference internal" href="rest.html#engine-info-schema"><em>/engine/[id] schema</em></a> or an errback with an <tt class="xref py py-class docutils literal"><span class="pre">Error</span></tt> object</p>
+</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://dojotoolkit.org/reference-guide/dojo/Deferred.html#dojo-deferred">dojo.Deferred</a></td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://dojotoolkit.org/reference-guide/dojo/Deferred.html#dojo-deferred">dojo.Deferred</a></p>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="info.mindtrove.JSonic.getProperty">
-<tt class="descname">getProperty</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.getProperty" title="Permalink to this definition">¶</a></dt>
+<dt id="uow.audio.JSonic.getProperty">
+<tt class="descname">getProperty</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#uow.audio.JSonic.getProperty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the current value of one of the supported <a class="reference internal" href="#property"><em>audio properties</em></a>, immediately and at the time this command is processed in the queue.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>args</em> (object) &#8211; <p>Object with the following properties:</p>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
 <dl class="docutils">
 <dt>name (required)</dt>
 <dd>String name of the <a class="reference internal" href="#property"><em>property</em></a> to get</dd>
 <dt>channel (optional)</dt>
-<dd>String name of the channel. Defaults to <tt class="xref docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
+<dd>String name of the channel. Defaults to <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
 </dl>
+</li>
+</ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with the property value at the time this command is received (before) and when the command is processed in the queue (after)</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A deferred callback with the property value at the time this command is received (before) and when the command is processed in the queue (after)</p>
+</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="info.mindtrove.JSonic.getServerVersion">
-<tt class="descname">getServerVersion</tt><big>(</big><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.getServerVersion" title="Permalink to this definition">¶</a></dt>
+<dt id="uow.audio.JSonic.getServerVersion">
+<tt class="descname">getServerVersion</tt><big>(</big><big>)</big><a class="headerlink" href="#uow.audio.JSonic.getServerVersion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the version number of the server API currently in use by this instance.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with an object matching the <a class="reference external" href="rest.html#version-schema"><em>/version schema</em></a> or an errback with an <tt class="xref docutils literal"><span class="pre">Error</span></tt> object</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with an object matching the <a class="reference internal" href="rest.html#version-schema"><em>/version schema</em></a> or an errback with an <tt class="xref py py-class docutils literal"><span class="pre">Error</span></tt> object</td>
 </tr>
 <tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://dojotoolkit.org/reference-guide/dojo/Deferred.html#dojo-deferred">dojo.Deferred</a></td>
 </tr>
@@ -211,105 +231,140 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 </dd></dl>
 
 <dl class="method">
-<dt id="info.mindtrove.JSonic.play">
-<tt class="descname">play</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.play" title="Permalink to this definition">¶</a></dt>
+<dt id="uow.audio.JSonic.play">
+<tt class="descname">play</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#uow.audio.JSonic.play" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plays a sound.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>args</em> (object) &#8211; <p>Object with the following properties:</p>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
 <dl class="docutils">
 <dt>url (required)</dt>
-<dd>String URL of the sound to play. Either <tt class="xref docutils literal"><span class="pre">ogg</span></tt> or <tt class="xref docutils literal"><span class="pre">mp3</span></tt> will be appended to the end of the URL depending on which format the browser supports.</dd>
+<dd>String URL of the sound to play. Either <tt class="xref py py-const docutils literal"><span class="pre">ogg</span></tt> or <tt class="xref py py-const docutils literal"><span class="pre">mp3</span></tt> will be appended to the end of the URL depending on which format the browser supports.</dd>
 <dt>cache (optional)</dt>
-<dd>Boolean true to cache the sound audio node in memory for faster playback in the future, false to avoid caching. Defaults to <a title="info.mindtrove.JSonic.defaultCaching" class="reference internal" href="#info.mindtrove.JSonic.defaultCaching"><tt class="xref docutils literal"><span class="pre">defaultCaching</span></tt></a> if not specified.</dd>
+<dd>Boolean true to cache the sound audio node in memory for faster playback in the future, false to avoid caching. Defaults to <a class="reference internal" href="#uow.audio.JSonic.defaultCaching" title="uow.audio.JSonic.defaultCaching"><tt class="xref py py-attr docutils literal"><span class="pre">defaultCaching</span></tt></a> if not specified.</dd>
 <dt>channel (optional)</dt>
-<dd>String name of the channel. Defaults to <tt class="xref docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
+<dd>String name of the channel. Defaults to <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
 </dl>
+</li>
+</ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with a <a class="reference internal" href="#started-play-notice"><em>play notification</em></a> when the sound command is processed (before) and a <a class="reference internal" href="#finished-play-notice"><em>play notification</em></a> when the sound finishes playing (after)</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A deferred callback with a <a class="reference internal" href="#started-play-notice"><em>play notification</em></a> when the sound command is processed (before) and a <a class="reference internal" href="#finished-play-notice"><em>play notification</em></a> when the sound finishes playing (after)</p>
+</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="info.mindtrove.JSonic.removeObserver">
-<tt class="descname">removeObserver</tt><big>(</big><em>token</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.removeObserver" title="Permalink to this definition">¶</a></dt>
+<dt id="uow.audio.JSonic.removeObserver">
+<tt class="descname">removeObserver</tt><big>(</big><em>token</em><big>)</big><a class="headerlink" href="#uow.audio.JSonic.removeObserver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes a listener for speech and sound <a class="reference internal" href="#notification"><em>notifications</em></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>token</em> (object) &#8211; Token returned when registering the observer with <a title="info.mindtrove.JSonic.addObserver" class="reference internal" href="#info.mindtrove.JSonic.addObserver"><tt class="xref docutils literal"><span class="pre">addObserver</span></tt></a></td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>token</strong> (<em>object</em>) &#8211; Token returned when registering the observer with <a class="reference internal" href="#uow.audio.JSonic.addObserver" title="uow.audio.JSonic.addObserver"><tt class="xref py py-meth docutils literal"><span class="pre">addObserver</span></tt></a></li>
+</ul>
+</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref docutils literal"><span class="pre">undefined</span></tt></td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="xref py py-const docutils literal"><span class="pre">undefined</span></tt></p>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="info.mindtrove.JSonic.reset">
-<tt class="descname">reset</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.reset" title="Permalink to this definition">¶</a></dt>
+<dt id="uow.audio.JSonic.reset">
+<tt class="descname">reset</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#uow.audio.JSonic.reset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resets all channel <a class="reference internal" href="#property"><em>audio properties</em></a> to their defaults.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>args</em> (object) &#8211; <p>Object with the following properties:</p>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
 <dl class="docutils">
 <dt>channel (optional)</dt>
-<dd>String name of the channel. Defaults to <tt class="xref docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
+<dd>String name of the channel. Defaults to <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
 </dl>
+</li>
+</ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="info.mindtrove.JSonic.say">
-<tt class="descname">say</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.say" title="Permalink to this definition">¶</a></dt>
+<dt id="uow.audio.JSonic.resetAll">
+<tt class="descname">resetAll</tt><big>(</big><big>)</big><a class="headerlink" href="#uow.audio.JSonic.resetAll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets all channel <a class="reference internal" href="#property"><em>audio properties</em></a> of all channels to their defaults.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">array of <a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.4.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="uow.audio.JSonic.say">
+<tt class="descname">say</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#uow.audio.JSonic.say" title="Permalink to this definition">¶</a></dt>
 <dd><p>Speaks an utterance.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>args</em> (object) &#8211; <p>Object with the following properties:</p>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
 <dl class="docutils">
 <dt>text (required)</dt>
 <dd>String text to speak.</dd>
 <dt>cache (optional)</dt>
-<dd>Boolean true to cache the sound audio node in memory and the utterance file URL in localStorage for faster playback in the future, false to avoid caching. Defaults to <a title="info.mindtrove.JSonic.defaultCaching" class="reference internal" href="#info.mindtrove.JSonic.defaultCaching"><tt class="xref docutils literal"><span class="pre">defaultCaching</span></tt></a> if not specified.</dd>
+<dd>Boolean true to cache the sound audio node in memory and the utterance file URL in localStorage for faster playback in the future, false to avoid caching. Defaults to <a class="reference internal" href="#uow.audio.JSonic.defaultCaching" title="uow.audio.JSonic.defaultCaching"><tt class="xref py py-attr docutils literal"><span class="pre">defaultCaching</span></tt></a> if not specified.</dd>
 <dt>channel (optional)</dt>
-<dd>String name of the channel. Defaults to <tt class="xref docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
+<dd>String name of the channel. Defaults to <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
 </dl>
+</li>
+</ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with a <a class="reference internal" href="#started-say-notice"><em>say notification</em></a> when the speech command is processed (before) and a <a class="reference internal" href="#finished-say-notice"><em>say notification</em></a> when the speech utterance finishes (after)</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A deferred callback with a <a class="reference internal" href="#started-say-notice"><em>say notification</em></a> when the speech command is processed (before) and a <a class="reference internal" href="#finished-say-notice"><em>say notification</em></a> when the speech utterance finishes (after)</p>
+</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="info.mindtrove.JSonic.setProperty">
-<tt class="descname">setProperty</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.setProperty" title="Permalink to this definition">¶</a></dt>
+<dt id="uow.audio.JSonic.setProperty">
+<tt class="descname">setProperty</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#uow.audio.JSonic.setProperty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the current value of one of the supported <a class="reference internal" href="#property"><em>audio properties</em></a> either immediately or when the command is processed in the queue.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>args</em> (object) &#8211; <p>Object with the following properties:</p>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
 <dl class="docutils">
 <dt>name (required)</dt>
 <dd>String name of the <a class="reference internal" href="#property"><em>property</em></a> to set</dd>
@@ -318,36 +373,45 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <dt>immediate (optional)</dt>
 <dd>Boolean true to execute the change immediately instead of queuing the command, false to queue the property change like all other commands. Defaults to false if not specified.</dd>
 <dt>channel (optional)</dt>
-<dd>String name of the channel. Defaults to <tt class="xref docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
+<dd>String name of the channel. Defaults to <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
 </dl>
+</li>
+</ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with the value of the property before it is processed (before) and the value of the property after the change is made (after)</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A deferred callback with the value of the property before it is processed (before) and the value of the property after the change is made (after)</p>
+</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="info.mindtrove.JSonic.stop">
-<tt class="descname">stop</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonic.stop" title="Permalink to this definition">¶</a></dt>
+<dt id="uow.audio.JSonic.stop">
+<tt class="descname">stop</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#uow.audio.JSonic.stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Immediately stops all output from a channel and clears all queued commands for that channel.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>args</em> (object) &#8211; <p>Object with the following properties:</p>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
 <dl class="docutils">
 <dt>channel (optional)</dt>
-<dd>String name of the channel. Defaults to <tt class="xref docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
+<dd>String name of the channel. Defaults to <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
 </dl>
+</li>
+</ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with no parameters invoked before the stop is processed (before) and after the stop is processed (after)</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A deferred callback with no parameters invoked before the stop is processed (before) and after the stop is processed (after)</p>
+</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -359,112 +423,142 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <div class="section" id="before-and-after-deferred-notification">
 <h2>Before and after deferred notification<a class="headerlink" href="#before-and-after-deferred-notification" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="info.mindtrove.JSonicDeferred">
-<em class="property">class </em><tt class="descclassname">info.mindtrove.</tt><tt class="descname">JSonicDeferred</tt><a class="headerlink" href="#info.mindtrove.JSonicDeferred" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a> class wraps two <a class="reference external" href="http://dojotoolkit.org/reference-guide/dojo/Deferred.html#dojo-deferred">dojo.Deferred</a> instances. A channel invokes the <tt class="xref docutils literal"><span class="pre">callback</span></tt> or <tt class="xref docutils literal"><span class="pre">errback</span></tt> method on the <cite>before</cite> deferred before a command is processed in the channel queue. A channel invokes the <tt class="xref docutils literal"><span class="pre">callback</span></tt> or <tt class="xref docutils literal"><span class="pre">errback</span></tt> method on the <cite>after</cite> deferred after the channel has finished processing the command.</p>
+<dt id="uow.audio.JSonicDeferred">
+<em class="property">class </em><tt class="descclassname">uow.audio.</tt><tt class="descname">JSonicDeferred</tt><a class="headerlink" href="#uow.audio.JSonicDeferred" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a> class wraps two <a class="reference external" href="http://dojotoolkit.org/reference-guide/dojo/Deferred.html#dojo-deferred">dojo.Deferred</a> instances. A channel invokes the <tt class="xref py py-meth docutils literal"><span class="pre">callback</span></tt> or <tt class="xref py py-meth docutils literal"><span class="pre">errback</span></tt> method on the <cite>before</cite> deferred before a command is processed in the channel queue. A channel invokes the <tt class="xref py py-meth docutils literal"><span class="pre">callback</span></tt> or <tt class="xref py py-meth docutils literal"><span class="pre">errback</span></tt> method on the <cite>after</cite> deferred after the channel has finished processing the command.</p>
 <dl class="method">
-<dt id="info.mindtrove.JSonicDeferred.callAfter">
-<tt class="descname">callAfter</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.callAfter" title="Permalink to this definition">¶</a></dt>
+<dt id="uow.audio.JSonicDeferred.callAfter">
+<tt class="descname">callAfter</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#uow.audio.JSonicDeferred.callAfter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a function to be called once after a command is processed successfully.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(notice)</span></tt>) &#8211; Callback function</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>func</strong> (<tt class="xref py py-func docutils literal"><span class="pre">function(notice)</span></tt>) &#8211; Callback function</li>
+</ul>
+</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">This instance for call chaining</p>
+</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="info.mindtrove.JSonicDeferred.callBefore">
-<tt class="descname">callBefore</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.callBefore" title="Permalink to this definition">¶</a></dt>
+<dt id="uow.audio.JSonicDeferred.callBefore">
+<tt class="descname">callBefore</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#uow.audio.JSonicDeferred.callBefore" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a function to be called once before a command is processed successfully.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(notice)</span></tt>) &#8211; Callback function</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>func</strong> (<tt class="xref py py-func docutils literal"><span class="pre">function(notice)</span></tt>) &#8211; Callback function</li>
+</ul>
+</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">This instance for call chaining</p>
+</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="info.mindtrove.JSonicDeferred.anyAfter">
-<tt class="descname">anyAfter</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.anyAfter" title="Permalink to this definition">¶</a></dt>
+<dt id="uow.audio.JSonicDeferred.anyAfter">
+<tt class="descname">anyAfter</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#uow.audio.JSonicDeferred.anyAfter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a function to be called once after a command is processed successfully or if an error occurs.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(noticeOrError)</span></tt>) &#8211; Callback function</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>func</strong> (<tt class="xref py py-func docutils literal"><span class="pre">function(noticeOrError)</span></tt>) &#8211; Callback function</li>
+</ul>
+</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">This instance for call chaining</p>
+</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="info.mindtrove.JSonicDeferred.anyBefore">
-<tt class="descname">anyBefore</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.anyBefore" title="Permalink to this definition">¶</a></dt>
+<dt id="uow.audio.JSonicDeferred.anyBefore">
+<tt class="descname">anyBefore</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#uow.audio.JSonicDeferred.anyBefore" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a function to be called once before a command is processed successfully or if an error occurs.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(noticeOrError)</span></tt>) &#8211; Callback function</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>func</strong> (<tt class="xref py py-func docutils literal"><span class="pre">function(noticeOrError)</span></tt>) &#8211; Callback function</li>
+</ul>
+</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">This instance for call chaining</p>
+</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="info.mindtrove.JSonicDeferred.errAfter">
-<tt class="descname">errAfter</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.errAfter" title="Permalink to this definition">¶</a></dt>
+<dt id="uow.audio.JSonicDeferred.errAfter">
+<tt class="descname">errAfter</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#uow.audio.JSonicDeferred.errAfter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a function to be called once after a command is processed but an error occurs.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(error)</span></tt>) &#8211; Callback function</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>func</strong> (<tt class="xref py py-func docutils literal"><span class="pre">function(error)</span></tt>) &#8211; Callback function</li>
+</ul>
+</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">This instance for call chaining</p>
+</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="info.mindtrove.JSonicDeferred.errBefore">
-<tt class="descname">errBefore</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#info.mindtrove.JSonicDeferred.errBefore" title="Permalink to this definition">¶</a></dt>
+<dt id="uow.audio.JSonicDeferred.errBefore">
+<tt class="descname">errBefore</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#uow.audio.JSonicDeferred.errBefore" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a function to be called once before a command is processed but an error occurs.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameter:</th><td class="field-body"><em>func</em> (<tt class="xref docutils literal"><span class="pre">function(error)</span></tt>) &#8211; Callback function</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>func</strong> (<tt class="xref py py-func docutils literal"><span class="pre">function(error)</span></tt>) &#8211; Callback function</li>
+</ul>
+</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">This instance for call chaining</p>
+</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a title="info.mindtrove.JSonicDeferred" class="reference internal" href="#info.mindtrove.JSonicDeferred"><tt class="xref docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -479,17 +573,22 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <span class="target" id="started-say-notice"></span><dl class="describe">
 <dt>
 <tt class="descname">action : started-say</tt></dt>
-<dd><p>Occurs when a channel starts processing a <a title="info.mindtrove.JSonic.say" class="reference internal" href="#info.mindtrove.JSonic.say"><tt class="xref docutils literal"><span class="pre">JSonic.say</span></tt></a> command (i.e., when it starts synthesizing the utterance).</p>
+<dd><p>Occurs when a channel starts processing a <a class="reference internal" href="#uow.audio.JSonic.say" title="uow.audio.JSonic.say"><tt class="xref py py-meth docutils literal"><span class="pre">JSonic.say</span></tt></a> command (i.e., when it starts synthesizing the utterance).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><em>channel</em> (string) &#8211; Name of the channel</li>
-<li><em>url</em> (string) &#8211; URL of the synthesized speech file</li>
-<li><em>name</em> (string) &#8211; Application name assigned to the utterance</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Param channel:</th><td class="field-body">Name of the channel</td>
+</tr>
+<tr class="field"><th class="field-name">Type channel:</th><td class="field-body">string</td>
+</tr>
+<tr class="field"><th class="field-name">Param url:</th><td class="field-body">URL of the synthesized speech file</td>
+</tr>
+<tr class="field"><th class="field-name">Type url:</th><td class="field-body">string</td>
+</tr>
+<tr class="field"><th class="field-name">Param name:</th><td class="field-body">Application name assigned to the utterance</td>
+</tr>
+<tr class="field"><th class="field-name">Type name:</th><td class="field-body">string</td>
 </tr>
 </tbody>
 </table>
@@ -498,18 +597,27 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <span class="target" id="finished-say-notice"></span><dl class="describe">
 <dt>
 <tt class="descname">action : finished-say</tt></dt>
-<dd><p>Occurs when a channel finishes processing a <a title="info.mindtrove.JSonic.say" class="reference internal" href="#info.mindtrove.JSonic.say"><tt class="xref docutils literal"><span class="pre">JSonic.say</span></tt></a> command (i.e., when it finishes speaking the utterance).</p>
+<dd><p>Occurs when a channel finishes processing a <a class="reference internal" href="#uow.audio.JSonic.say" title="uow.audio.JSonic.say"><tt class="xref py py-meth docutils literal"><span class="pre">JSonic.say</span></tt></a> command (i.e., when it finishes speaking the utterance).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><em>channel</em> (string) &#8211; Name of the channel</li>
-<li><em>url</em> (string) &#8211; URL of the synthesized speech file</li>
-<li><em>name</em> (string) &#8211; Application name assigned to the utterance</li>
-<li><em>completed</em> (boolean) &#8211; True if the speech finished in its entirety, false if it was interrupted before it could finish</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Param channel:</th><td class="field-body">Name of the channel</td>
+</tr>
+<tr class="field"><th class="field-name">Type channel:</th><td class="field-body">string</td>
+</tr>
+<tr class="field"><th class="field-name">Param url:</th><td class="field-body">URL of the synthesized speech file</td>
+</tr>
+<tr class="field"><th class="field-name">Type url:</th><td class="field-body">string</td>
+</tr>
+<tr class="field"><th class="field-name">Param name:</th><td class="field-body">Application name assigned to the utterance</td>
+</tr>
+<tr class="field"><th class="field-name">Type name:</th><td class="field-body">string</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Param completed:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">True if the speech finished in its entirety, false if it was interrupted before it could finish</td>
+</tr>
+<tr class="field"><th class="field-name">Type completed:</th><td class="field-body">boolean</td>
 </tr>
 </tbody>
 </table>
@@ -518,17 +626,22 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <span class="target" id="started-play-notice"></span><dl class="describe">
 <dt>
 <tt class="descname">action : started-play</tt></dt>
-<dd><p>Occurs when a channel starts processing a <a title="info.mindtrove.JSonic.play" class="reference internal" href="#info.mindtrove.JSonic.play"><tt class="xref docutils literal"><span class="pre">JSonic.play</span></tt></a> command (i.e., when it starts streaming the sound).</p>
+<dd><p>Occurs when a channel starts processing a <a class="reference internal" href="#uow.audio.JSonic.play" title="uow.audio.JSonic.play"><tt class="xref py py-meth docutils literal"><span class="pre">JSonic.play</span></tt></a> command (i.e., when it starts streaming the sound).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><em>channel</em> (string) &#8211; Name of the channel</li>
-<li><em>url</em> (string) &#8211; URL of the sound file</li>
-<li><em>name</em> (string) &#8211; Application name assigned to the sound</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Param channel:</th><td class="field-body">Name of the channel</td>
+</tr>
+<tr class="field"><th class="field-name">Type channel:</th><td class="field-body">string</td>
+</tr>
+<tr class="field"><th class="field-name">Param url:</th><td class="field-body">URL of the sound file</td>
+</tr>
+<tr class="field"><th class="field-name">Type url:</th><td class="field-body">string</td>
+</tr>
+<tr class="field"><th class="field-name">Param name:</th><td class="field-body">Application name assigned to the sound</td>
+</tr>
+<tr class="field"><th class="field-name">Type name:</th><td class="field-body">string</td>
 </tr>
 </tbody>
 </table>
@@ -537,18 +650,27 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <span class="target" id="finished-play-notice"></span><dl class="describe">
 <dt>
 <tt class="descname">action : finished-play</tt></dt>
-<dd><p>Occurs when a channel finishes processing a <a title="info.mindtrove.JSonic.play" class="reference internal" href="#info.mindtrove.JSonic.play"><tt class="xref docutils literal"><span class="pre">JSonic.play</span></tt></a> command (i.e., when it finishes playing the sound).</p>
+<dd><p>Occurs when a channel finishes processing a <a class="reference internal" href="#uow.audio.JSonic.play" title="uow.audio.JSonic.play"><tt class="xref py py-meth docutils literal"><span class="pre">JSonic.play</span></tt></a> command (i.e., when it finishes playing the sound).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><em>channel</em> (string) &#8211; Name of the channel</li>
-<li><em>url</em> (string) &#8211; URL of the sound file</li>
-<li><em>name</em> (string) &#8211; Application name assigned to the sound</li>
-<li><em>completed</em> (boolean) &#8211; True if the sound finished in its entirety, false if it was interrupted before it could finish</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Param channel:</th><td class="field-body">Name of the channel</td>
+</tr>
+<tr class="field"><th class="field-name">Type channel:</th><td class="field-body">string</td>
+</tr>
+<tr class="field"><th class="field-name">Param url:</th><td class="field-body">URL of the sound file</td>
+</tr>
+<tr class="field"><th class="field-name">Type url:</th><td class="field-body">string</td>
+</tr>
+<tr class="field"><th class="field-name">Param name:</th><td class="field-body">Application name assigned to the sound</td>
+</tr>
+<tr class="field"><th class="field-name">Type name:</th><td class="field-body">string</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Param completed:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">True if the sound finished in its entirety, false if it was interrupted before it could finish</td>
+</tr>
+<tr class="field"><th class="field-name">Type completed:</th><td class="field-body">boolean</td>
 </tr>
 </tbody>
 </table>
@@ -562,12 +684,19 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><em>channel</em> (string) &#8211; Name of the channel</li>
-<li><em>name</em> (string) &#8211; Application name assigned to the command that caused the error</li>
-<li><em>description</em> (string) &#8211; English description of the problem that occurred</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Param channel:</th><td class="field-body">Name of the channel</td>
+</tr>
+<tr class="field"><th class="field-name">Type channel:</th><td class="field-body">string</td>
+</tr>
+<tr class="field"><th class="field-name">Param name:</th><td class="field-body">Application name assigned to the command that caused the error</td>
+</tr>
+<tr class="field"><th class="field-name">Type name:</th><td class="field-body">string</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Param description:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">English description of the problem that occurred</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Type description:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">string</td>
 </tr>
 </tbody>
 </table>
@@ -578,7 +707,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <span id="property"></span><h2>Channel properties<a class="headerlink" href="#channel-properties" title="Permalink to this headline">¶</a></h2>
 <dl class="docutils">
 <dt>engine</dt>
-<dd>Text to speech engine used to synthesize speech on the channel. A string matching one of the engine names listed by <a title="info.mindtrove.JSonic.getEngines" class="reference internal" href="#info.mindtrove.JSonic.getEngines"><tt class="xref docutils literal"><span class="pre">JSonic.getEngines</span></tt></a>.</dd>
+<dd>Text to speech engine used to synthesize speech on the channel. A string matching one of the engine names listed by <a class="reference internal" href="#uow.audio.JSonic.getEngines" title="uow.audio.JSonic.getEngines"><tt class="xref py py-meth docutils literal"><span class="pre">JSonic.getEngines</span></tt></a>.</dd>
 <dt>loop</dt>
 <dd>Flag controlling if speech or sound output on the channel loops indefinitely or not. A boolean.</dd>
 <dt>pitch</dt>
@@ -586,20 +715,20 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <dt>rate</dt>
 <dd>Rate of speech synthesized and output on the channel. An integer words per minute greater than zero.</dd>
 <dt>voice</dt>
-<dd>Voice used to synthesize speech on the channel. A string matching one of the voice identifiers supported by an engine indicated by <a title="info.mindtrove.JSonic.getEngineInfo" class="reference internal" href="#info.mindtrove.JSonic.getEngineInfo"><tt class="xref docutils literal"><span class="pre">JSonic.getEngineInfo</span></tt></a>.</dd>
+<dd>Voice used to synthesize speech on the channel. A string matching one of the voice identifiers supported by an engine indicated by <a class="reference internal" href="#uow.audio.JSonic.getEngineInfo" title="uow.audio.JSonic.getEngineInfo"><tt class="xref py py-meth docutils literal"><span class="pre">JSonic.getEngineInfo</span></tt></a>.</dd>
 <dt>volume</dt>
 <dd>Volume of speech and sound output on the channel. A floating point number in the inclusive range [0.0, 1.0].</dd>
 </dl>
 </div>
 <div class="section" id="example-code">
 <h2>Example code<a class="headerlink" href="#example-code" title="Permalink to this headline">¶</a></h2>
-<p>The following examples assume an <a title="info.mindtrove.JSonic" class="reference internal" href="#info.mindtrove.JSonic"><tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonic</span></tt></a> instance with caching disabled by default exists in local variable <cite>js</cite>. The following code creates such an instance.</p>
-<div class="highlight-javascript"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">js</span> <span class="o">=</span> <span class="nx">info</span><span class="p">.</span><span class="nx">mindtrove</span><span class="p">.</span><span class="nx">JSonic</span><span class="p">();</span>
+<p>The following examples assume an <a class="reference internal" href="#uow.audio.JSonic" title="uow.audio.JSonic"><tt class="xref py py-class docutils literal"><span class="pre">uow.audio.JSonic</span></tt></a> instance with caching disabled by default exists in local variable <cite>js</cite>. The following code creates such an instance.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">js</span> <span class="o">=</span> <span class="nx">uow</span><span class="p">.</span><span class="nx">audio</span><span class="p">.</span><span class="nx">JSonic</span><span class="p">();</span>
 </pre></div>
 </div>
 <div class="section" id="speaking-text">
 <h3>Speaking text<a class="headerlink" href="#speaking-text" title="Permalink to this headline">¶</a></h3>
-<p>To say an utterance on the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel and not cache the result, do the following:</p>
+<p>To say an utterance on the <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> channel and not cache the result, do the following:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s2">&quot;This is some text to speak.&quot;</span><span class="p">});</span>
 </pre></div>
 </div>
@@ -607,12 +736,12 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s2">&quot;This is some text to speak.&quot;</span><span class="p">,</span> <span class="nx">cache</span> <span class="o">:</span> <span class="kc">true</span><span class="p">});</span>
 </pre></div>
 </div>
-<p>To queue two sequential utterances on the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel, do the following:</p>
+<p>To queue two sequential utterances on the <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> channel, do the following:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s2">&quot;This is some text to speak.&quot;</span><span class="p">});</span>
 <span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s2">&quot;I wait my turn.&quot;</span><span class="p">});</span>
 </pre></div>
 </div>
-<p>To say two utterances simultaneously, one of the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel and the other on the <tt class="xref docutils literal"><span class="pre">custom</span></tt> channel, do the following:</p>
+<p>To say two utterances simultaneously, one of the <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> channel and the other on the <tt class="xref py py-const docutils literal"><span class="pre">custom</span></tt> channel, do the following:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s2">&quot;This is some text to speak.&quot;</span><span class="p">});</span>
 <span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s2">&quot;Ha! I like to interrupt.&quot;</span><span class="p">,</span> <span class="nx">channel</span> <span class="o">:</span> <span class="s1">&#39;custom&#39;</span><span class="p">});</span>
 </pre></div>
@@ -624,66 +753,66 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">play</span><span class="p">({</span><span class="nx">url</span> <span class="o">:</span> <span class="s1">&#39;http://somewhere.com/sounds/sound_effect&#39;</span><span class="p">});</span>
 </pre></div>
 </div>
-<p>where a file named <tt class="docutils literal"><span class="pre">sound_effect.mp3</span></tt> and/or <tt class="docutils literal"><span class="pre">sound_effect.ogg</span></tt> exists at the given URL.</p>
+<p>where a file named <tt class="file docutils literal"><span class="pre">sound_effect.mp3</span></tt> and/or <tt class="file docutils literal"><span class="pre">sound_effect.ogg</span></tt> exists at the given URL.</p>
 </div>
 <div class="section" id="interrupting">
 <h3>Interrupting<a class="headerlink" href="#interrupting" title="Permalink to this headline">¶</a></h3>
-<p>To cease output on the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel and clear its queued commands, do the following:</p>
+<p>To cease output on the <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> channel and clear its queued commands, do the following:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">stop</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="changing-voices">
 <h3>Changing voices<a class="headerlink" href="#changing-voices" title="Permalink to this headline">¶</a></h3>
-<p>To query the <tt class="xref docutils literal"><span class="pre">espeak</span></tt> engine for its available voices, do the following:</p>
+<p>To query the <tt class="xref py py-const docutils literal"><span class="pre">espeak</span></tt> engine for its available voices, do the following:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">getEngineInfo</span><span class="p">(</span><span class="s1">&#39;espeak&#39;</span><span class="p">).</span><span class="nx">addAfter</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
    <span class="kd">var</span> <span class="nx">voices</span> <span class="o">=</span> <span class="nx">response</span><span class="p">.</span><span class="nx">voices</span><span class="p">.</span><span class="nx">values</span><span class="p">;</span>
 <span class="p">});</span>
 </pre></div>
 </div>
-<p>To set an Italian voice for all following speech commands on the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel, do the following:</p>
+<p>To set an Italian voice for all following speech commands on the <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> channel, do the following:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">setProperty</span><span class="p">({</span><span class="nx">name</span> <span class="o">:</span> <span class="s1">&#39;voice&#39;</span><span class="p">,</span> <span class="nx">value</span> <span class="o">:</span> <span class="s1">&#39;it&#39;</span><span class="p">});</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="changing-speech-rate">
 <h3>Changing speech rate<a class="headerlink" href="#changing-speech-rate" title="Permalink to this headline">¶</a></h3>
-<p>To query the <tt class="xref docutils literal"><span class="pre">espeak</span></tt> engine for its range of speech rates, do the following:</p>
+<p>To query the <tt class="xref py py-const docutils literal"><span class="pre">espeak</span></tt> engine for its range of speech rates, do the following:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">getEngineInfo</span><span class="p">(</span><span class="s1">&#39;espeak&#39;</span><span class="p">).</span><span class="nx">addCallback</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
    <span class="kd">var</span> <span class="nx">min</span> <span class="o">=</span> <span class="nx">response</span><span class="p">.</span><span class="nx">rate</span><span class="p">.</span><span class="nx">minimum</span><span class="p">;</span>
    <span class="kd">var</span> <span class="nx">max</span> <span class="o">=</span> <span class="nx">response</span><span class="p">.</span><span class="nx">rate</span><span class="p">.</span><span class="nx">maximum</span><span class="p">;</span>
 <span class="p">});</span>
 </pre></div>
 </div>
-<p>To set the rate for all following speech commands on the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel, do the following:</p>
+<p>To set the rate for all following speech commands on the <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> channel, do the following:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">setProperty</span><span class="p">({</span><span class="nx">name</span> <span class="o">:</span> <span class="s1">&#39;rate&#39;</span><span class="p">,</span> <span class="nx">value</span> <span class="o">:</span> <span class="mi">250</span><span class="p">});</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="changing-volume">
 <h3>Changing volume<a class="headerlink" href="#changing-volume" title="Permalink to this headline">¶</a></h3>
-<p>To set the volume for all following audio output on the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel, do the following:</p>
+<p>To set the volume for all following audio output on the <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> channel, do the following:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">setProperty</span><span class="p">({</span><span class="nx">name</span> <span class="o">:</span> <span class="s1">&#39;volume&#39;</span><span class="p">,</span> <span class="nx">value</span> <span class="o">:</span> <span class="mf">0.5</span><span class="p">});</span>
 </pre></div>
 </div>
-<p>To set the volume for the current audio output and all following commands on the <tt class="xref docutils literal"><span class="pre">custom</span></tt> channel, do the following:</p>
+<p>To set the volume for the current audio output and all following commands on the <tt class="xref py py-const docutils literal"><span class="pre">custom</span></tt> channel, do the following:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">setProperty</span><span class="p">({</span><span class="nx">name</span> <span class="o">:</span> <span class="s1">&#39;volume&#39;</span><span class="p">,</span> <span class="nx">value</span> <span class="o">:</span> <span class="mf">0.25</span><span class="p">,</span> <span class="nx">immediate</span> <span class="o">:</span> <span class="kc">true</span><span class="p">});</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="listening-for-events">
 <h3>Listening for events<a class="headerlink" href="#listening-for-events" title="Permalink to this headline">¶</a></h3>
-<p>Say you have a JSonic event callback named <tt class="xref docutils literal"><span class="pre">onEvent</span></tt> implemented as follows:</p>
+<p>Say you have a JSonic event callback named <tt class="xref py py-func docutils literal"><span class="pre">onEvent</span></tt> implemented as follows:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="kd">function</span> <span class="nx">onEvent</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">event</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>To register the callback for all events on the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel, do the following:</p>
+<p>To register the callback for all events on the <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> channel, do the following:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">tok1</span> <span class="o">=</span> <span class="nx">js</span><span class="p">.</span><span class="nx">addObserver</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>To register the callback only for sound start and error events on the <tt class="xref docutils literal"><span class="pre">custom</span></tt> channel, do the following:</p>
+<p>To register the callback only for sound start and error events on the <tt class="xref py py-const docutils literal"><span class="pre">custom</span></tt> channel, do the following:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">tok2</span> <span class="o">=</span> <span class="nx">js</span><span class="p">.</span><span class="nx">addObserver</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">,</span> <span class="s1">&#39;custom&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;start-play&#39;</span><span class="p">,</span> <span class="s1">&#39;error&#39;</span><span class="p">]);</span>
 </pre></div>
 </div>
@@ -694,16 +823,16 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 </div>
 <div class="section" id="taking-action-before-after-a-command">
 <h3>Taking action before / after a command<a class="headerlink" href="#taking-action-before-after-a-command" title="Permalink to this headline">¶</a></h3>
-<p>Say you have the <tt class="xref docutils literal"><span class="pre">onEvent</span></tt> function described above. You want it to execute in response to certain commands.</p>
-<p>To execute the callback as the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel finishes speaking an utterance completely, do the following:</p>
+<p>Say you have the <tt class="xref py py-func docutils literal"><span class="pre">onEvent</span></tt> function described above. You want it to execute in response to certain commands.</p>
+<p>To execute the callback as the <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> channel finishes speaking an utterance completely, do the following:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s1">&#39;I am a banana.&#39;</span><span class="p">}).</span><span class="nx">addAfter</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>To execute the callback as the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel starts speaking an utterance and either finishes speaking or encounters an error speaking, do the following:</p>
+<p>To execute the callback as the <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> channel starts speaking an utterance and either finishes speaking or encounters an error speaking, do the following:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s1">&#39;I am a banana.&#39;</span><span class="p">}).</span><span class="nx">callBefore</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">).</span><span class="nx">anyAfter</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>To execute the callback with the voice configured on the <tt class="xref docutils literal"><span class="pre">default</span></tt> channel immediately and when the command is processed by the channel, do the following:</p>
+<p>To execute the callback with the voice configured on the <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> channel immediately and when the command is processed by the channel, do the following:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">getProperty</span><span class="p">({</span><span class="nx">name</span> <span class="o">:</span> <span class="s1">&#39;voice&#39;</span><span class="p">}).</span><span class="nx">callBefore</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">).</span><span class="nx">addAfter</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -717,54 +846,54 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#">The JavaScript API</a><ul>
-<li><a class="reference external" href="#client-concepts">Client concepts</a></li>
-<li><a class="reference external" href="#the-jsonic-factory">The JSonic factory</a></li>
-<li><a class="reference external" href="#the-jsonic-interface">The JSonic interface</a></li>
-<li><a class="reference external" href="#before-and-after-deferred-notification">Before and after deferred notification</a></li>
-<li><a class="reference external" href="#channel-notifications">Channel notifications</a></li>
-<li><a class="reference external" href="#channel-properties">Channel properties</a></li>
-<li><a class="reference external" href="#example-code">Example code</a><ul>
-<li><a class="reference external" href="#speaking-text">Speaking text</a></li>
-<li><a class="reference external" href="#playing-a-sound">Playing a sound</a></li>
-<li><a class="reference external" href="#interrupting">Interrupting</a></li>
-<li><a class="reference external" href="#changing-voices">Changing voices</a></li>
-<li><a class="reference external" href="#changing-speech-rate">Changing speech rate</a></li>
-<li><a class="reference external" href="#changing-volume">Changing volume</a></li>
-<li><a class="reference external" href="#listening-for-events">Listening for events</a></li>
-<li><a class="reference external" href="#taking-action-before-after-a-command">Taking action before / after a command</a></li>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">The JavaScript API</a><ul>
+<li><a class="reference internal" href="#client-concepts">Client concepts</a></li>
+<li><a class="reference internal" href="#the-jsonic-factory">The JSonic factory</a></li>
+<li><a class="reference internal" href="#the-jsonic-interface">The JSonic interface</a></li>
+<li><a class="reference internal" href="#before-and-after-deferred-notification">Before and after deferred notification</a></li>
+<li><a class="reference internal" href="#channel-notifications">Channel notifications</a></li>
+<li><a class="reference internal" href="#channel-properties">Channel properties</a></li>
+<li><a class="reference internal" href="#example-code">Example code</a><ul>
+<li><a class="reference internal" href="#speaking-text">Speaking text</a></li>
+<li><a class="reference internal" href="#playing-a-sound">Playing a sound</a></li>
+<li><a class="reference internal" href="#interrupting">Interrupting</a></li>
+<li><a class="reference internal" href="#changing-voices">Changing voices</a></li>
+<li><a class="reference internal" href="#changing-speech-rate">Changing speech rate</a></li>
+<li><a class="reference internal" href="#changing-volume">Changing volume</a></li>
+<li><a class="reference internal" href="#listening-for-events">Listening for events</a></li>
+<li><a class="reference internal" href="#taking-action-before-after-a-command">Taking action before / after a command</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="start.html"
-                                  title="previous chapter">Getting Started</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="cache.html"
-                                  title="next chapter">About caching</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="_sources/js.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="start.html"
+                        title="previous chapter">Getting Started</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="cache.html"
+                        title="next chapter">About caching</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/js.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -776,7 +905,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
+          <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="cache.html" title="About caching"
@@ -788,8 +917,8 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2010, Peter Parente.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+        &copy; Copyright 2010, Peter Parente.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>
 </html>

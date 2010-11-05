@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -10,14 +12,15 @@
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '#',
+        URL_ROOT:    '',
         VERSION:     '0.3',
-        COLLAPSE_MODINDEX: false,
+        COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="JSonic v0.3 documentation" href="index.html" />
     <link rel="next" title="The REST API" href="rest.html" />
@@ -31,8 +34,8 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
-             accesskey="M">modules</a> |</li>
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="rest.html" title="The REST API"
              accesskey="N">next</a> |</li>
@@ -50,7 +53,7 @@
             
   <div class="section" id="about-caching">
 <h1>About caching<a class="headerlink" href="#about-caching" title="Permalink to this headline">¶</a></h1>
-<p>The JSonic client makes use of various levels of caching to lower the time delay between a call to <a title="info.mindtrove.JSonic.say" class="reference external" href="js.html#info.mindtrove.JSonic.say"><tt class="xref docutils literal"><span class="pre">info.mindtrove.JSonic.say</span></tt></a> and actual audio output.</p>
+<p>The JSonic client makes use of various levels of caching to lower the time delay between a call to <a class="reference internal" href="js.html#uow.audio.JSonic.say" title="uow.audio.JSonic.say"><tt class="xref py py-meth docutils literal"><span class="pre">uow.audio.JSonic.say</span></tt></a> and actual audio output.</p>
 <div class="section" id="url-caching">
 <h2>URL caching<a class="headerlink" href="#url-caching" title="Permalink to this headline">¶</a></h2>
 <p>The JSonic client caches string URLs of synthesized speech files in memory the first time they are spoken by an application instance. If the user&#8217;s browser supports HTML5 local storage, JSonic also stores the utterance text and its file URL in the persistent store to eliminate the synthesis request to the server the next time the application loads.</p>
@@ -73,40 +76,40 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-            <h3><a href="index.html">Table Of Contents</a></h3>
-            <ul>
-<li><a class="reference external" href="#">About caching</a><ul>
-<li><a class="reference external" href="#url-caching">URL caching</a></li>
-<li><a class="reference external" href="#node-caching">Node caching</a></li>
-<li><a class="reference external" href="#browser-caching">Browser caching</a></li>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">About caching</a><ul>
+<li><a class="reference internal" href="#url-caching">URL caching</a></li>
+<li><a class="reference internal" href="#node-caching">Node caching</a></li>
+<li><a class="reference internal" href="#browser-caching">Browser caching</a></li>
 </ul>
 </li>
 </ul>
 
-            <h4>Previous topic</h4>
-            <p class="topless"><a href="js.html"
-                                  title="previous chapter">The JavaScript API</a></p>
-            <h4>Next topic</h4>
-            <p class="topless"><a href="rest.html"
-                                  title="next chapter">The REST API</a></p>
-            <h3>This Page</h3>
-            <ul class="this-page-menu">
-              <li><a href="_sources/cache.txt"
-                     rel="nofollow">Show Source</a></li>
-            </ul>
-          <div id="searchbox" style="display: none">
-            <h3>Quick search</h3>
-              <form class="search" action="search.html" method="get">
-                <input type="text" name="q" size="18" />
-                <input type="submit" value="Go" />
-                <input type="hidden" name="check_keywords" value="yes" />
-                <input type="hidden" name="area" value="default" />
-              </form>
-              <p class="searchtip" style="font-size: 90%">
-              Enter search terms or a module, class or function name.
-              </p>
-          </div>
-          <script type="text/javascript">$('#searchbox').show(0);</script>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="js.html"
+                        title="previous chapter">The JavaScript API</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="rest.html"
+                        title="next chapter">The REST API</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/cache.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -118,7 +121,7 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="modindex.html" title="Global Module Index"
+          <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
           <a href="rest.html" title="The REST API"
@@ -130,8 +133,8 @@
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2010, Peter Parente.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.5.
+        &copy; Copyright 2010, Peter Parente.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
     </div>
   </body>
 </html>
