@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>JSonic on a Tablet</title>
+    <script type="text/javascript">
+        var djConfig = {
+            isDebug: false, 
+            parseOnLoad: false,
+            baseUrl: './',
+            modulePaths: {'uow.audio' : '..'}
+        };
+    </script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/dojo/1.5.0/dojo/dojo.xd.js"></script>
+    <script type="text/javascript">
+      dojo.require('uow.audio.JSonic');
+      var js = null;
+      
+      var console = {
+        log : function(text) {
+          var c = dojo.byId('console');
+          var val = c.innerHTML;
+          c.innerHTML = text + '\n' + val;
+        }
+      };
+      
+      function _onClick(event) {
+        // a.src = 'sounds/9081__tigersound__disappear.mp3';
+        //a.play();
+        //js.play({url : 'sounds/18382__inferno__hvylas'});
+        //js.play({url : 'http://192.168.1.131/local/jsonic/examples/sounds/18382__inferno__hvylas'});
+        js.say({text : 'this is a test'});
+        dojo.stopEvent(event);
+      }
+      
+      function _onTouchStart(event) {
+        console.log(event.touches.length + ' touching (start)');
+        js.say({text : event.touches.length + ' touching'});
+        dojo.stopEvent(event);
+      }    
+    
+      function _onTouchEnd(event) {
+        console.log(event.touches.length + ' touching (end)');
+        js.say({text : event.touches.length + ' touching'});
+        dojo.stopEvent(event);
+      }
+      
+      dojo.ready(function() {
+        js = uow.audio.initJSonic({defaultCaching : true});
+        var b = dojo.doc;
+        var p = dojo.query('h1')[0];
+        //dojo.connect(p, 'onclick', '_onClick');
+        dojo.connect(b, 'ontouchstart', '_onTouchStart');
+        dojo.connect(b, 'ontouchend', '_onTouchEnd');
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Speech on a tablet</h1>
+    <p>Touch / gesture and release for speech.</p>
+    <textarea id="console" style="width: 100px; height: 300px;"></textarea>
+  </body>
+</html>
