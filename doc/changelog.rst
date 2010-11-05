@@ -4,7 +4,7 @@ Changelog
 Version 0.4
 -----------
 
-* Migrated to uow.audio namespace.
+* Migrated to :mod:`uow.audio` namespace.
 * Added the :meth:`uow.audio.JSonic.resetAll` method.
 * Made the :attr:`uow.audio.JSonic.defaultCaching` attribute settable.
 
