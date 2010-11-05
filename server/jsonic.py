@@ -2,7 +2,7 @@
 Speech server implementation for JSonic using Tornado web server and Mongo 
 database.
 
-:requires: Python 2.6, Tornado 0.2
+:requires: Python 2.6, Tornado 1.0
 :copyright: Peter Parente 2010
 :license: BSD
 '''

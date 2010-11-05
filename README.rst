@@ -19,9 +19,9 @@ What browsers does JSonic support?
 We've tested JSonic successfully on the following browsers. It should work on any browser supporting the HTML5 audio spec, however.
 
 * Firefox 3.6, 3.7
-* Safari 4
-* Chrome 5.0.375.55
-* Opera 10.53
+* Safari 4, 5
+* Chrome 5, 6, 7 (barring Chrome bugs)
+* Opera 10
 
 Is this a clone of WebAnywhere?
 -------------------------------
