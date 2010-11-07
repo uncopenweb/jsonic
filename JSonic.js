@@ -637,13 +637,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         // audio node in use by the channel
         this._audioNode = null;
         // audio node buffering data for playback
-        var node = this._bufferNode = dojo.create('audio');
-        // callback tokens for the current audio node
-        this._aconnects = [];
-        this._aconnects[0] = dojo.connect(node, 'play', this, '_onStart');
-        this._aconnects[1] = dojo.connect(node, 'pause', this, '_onPause');
-        this._aconnects[2] = dojo.connect(node, 'ended', this, '_onEnd');
-        this._aconnects[3] = dojo.connect(node, 'error', this, '_onMediaError');
+        this._bufferNode = this._createNode();
         // set default properties
         this._reset();
     },
@@ -654,6 +648,17 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
             this._audioNode.pause();
         }
         dojo.forEach(this._aconnects, dojo.disconnect);
+    },
+    
+    _createNode: function() {
+        var node = dojo.create('audio');
+        // callback tokens for the current audio node
+        this._aconnects = [];
+        this._aconnects[0] = dojo.connect(node, 'play', this, '_onStart');
+        this._aconnects[1] = dojo.connect(node, 'pause', this, '_onPause');
+        this._aconnects[2] = dojo.connect(node, 'ended', this, '_onEnd');
+        this._aconnects[3] = dojo.connect(node, 'error', this, '_onMediaError');
+        return node;
     },
     
     push: function(args) {
