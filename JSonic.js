@@ -652,6 +652,8 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
     
     _createNode: function() {
         var node = dojo.create('audio');
+        node.src = ''; // i* devices want us to touch this
+        node.load();
         // callback tokens for the current audio node
         this._aconnects = [];
         this._aconnects[0] = dojo.connect(node, 'play', this, '_onStart');
