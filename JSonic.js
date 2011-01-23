@@ -114,7 +114,7 @@ dojo.declare('uow.audio.JSonic', dijit._Widget, {
     },
     
     /**
-     * Queues speech on a channel. The args parameter supports the following
+     * Queues sound on a channel. The args parameter supports the following
      * name / value pairs.
      *
      * :param url: URL of the sound to play minus the extension. The extension
