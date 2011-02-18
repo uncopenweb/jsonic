@@ -11,7 +11,9 @@ import encoder
 import tornado.httpserver
 import tornado.ioloop
 import tornado.web
+import tornado.options
 from tornado.escape import json_encode, json_decode
+import logging
 import multiprocessing
 import email.utils
 import mimetypes
@@ -20,9 +22,13 @@ import time
 import os
 import sys
 import stat
-import optparse
-import logging
 import functools
+
+opt = tornado.options
+opt.define('port', type=int, default=8888, help='server port (default: 8888)')
+opt.define('workers', type=int, default=4, help='worker size pool (default: 4)')
+opt.define('debug', type=bool, default=False, help='debug mode (default: False)')
+opt.define('static', type="bool", default="False", help='serve static content (default: False)')
 
 # current server api version
 VERSION = '0.4'
@@ -354,7 +360,7 @@ class FilesHandler(tornado.web.StaticFileHandler):
         finally:
             fh.close()
 
-def run(port=8888, processes=4, debug=False, static=False, pid=None):
+def run(port=8888, processes=4, debug=False, static=False):
     '''
     Runs an instance of the JSonic server.
     
@@ -371,23 +377,7 @@ def run(port=8888, processes=4, debug=False, static=False, pid=None):
         False to disable static file sharing when this server should handle the
         JSonic REST API only.
     :type static: bool
-    :param pid: Name of a pid file to write if launching as a daemon or None
-        to run in the foreground
-    :type pid: string
     '''
-    if pid is not None:
-        # log to file
-        logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s %(levelname)s %(message)s',
-                    filename='jsonic.log',
-                    filemode='w')
-        # launch as a daemon and write the pid file
-        import daemon
-        daemon.daemonize(pid)
-    else:
-        # log to console
-        logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s %(levelname)s %(message)s')
     kwargs = {}
     kwargs['pool'] = pool = multiprocessing.Pool(processes=processes)
     if static:
@@ -402,6 +392,7 @@ def run(port=8888, processes=4, debug=False, static=False, pid=None):
     ], debug=debug, **kwargs)
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(port)
+    logging.info('jsonic server started on port: %d', port)
     ioloop = tornado.ioloop.IOLoop.instance()
     ioloop.start()
 
@@ -410,20 +401,11 @@ def run_from_args():
     Runs an instance of the JSonic server with options pulled from the command
     line.
     '''
-    parser = optparse.OptionParser()
-    parser.add_option("-p", "--port", dest="port", default=8888,
-        help="server port number", type="int")
-    parser.add_option("-w", "--workers", dest="workers", default=4,
-        help="size of the worker pool", type="int")
-    parser.add_option("--debug", dest="debug", action="store_true", 
-        default=False, help="enable Tornado debug mode w/ automatic loading (default=false)")
-    parser.add_option("--static", dest="static", action="store_true", 
-        default=False, help="enable Tornado sharing of the jsonic root folder (default=false)")
-    parser.add_option("--pid", dest="pid", default=None, type="str",
-        help="launch as a daemon and write to the given pid file (default=None)")
-    (options, args) = parser.parse_args()
+    tornado.options.parse_command_line()
+    options = tornado.options.options
+    
     # run the server
-    run(options.port, options.workers, options.debug, options.static, options.pid)
+    run(options.port, options.workers, options.debug, options.static)
     
 if __name__ == '__main__':
     run_from_args()
