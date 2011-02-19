@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Bug tests</title>
+    <script type="text/javascript">
+        var djConfig = {
+            isDebug: false, 
+            parseOnLoad: false,
+            baseUrl: './',
+            modulePaths: {'uow.audio' : '..'}
+        };
+    </script>
+    <script src="http://ajax.googleapis.com/ajax/libs/dojo/1.5/dojo/dojo.xd.js"></script>
+    <script>
+      dojo.require('uow.audio.JSonic');
+      dojo.ready(function() {
+        var js = uow.audio.initJSonic({defaultCaching : true});
+        //var cache = uow.audio.JSonicCache({jsonicURI : '/'});
+        js.say({text : 'test'});
+        freeze_keydown = function(event) {
+          this.i = this.i || 0;
+          js.stop();
+          // var props = dojo.clone(js._channels['default']._properties);
+          // console.log(props)
+          // cache.getSpeech({text : 'saying ' + i}, props);
+          js.say({text : 'saying ' + i});
+          this.i = (this.i + 1) % 10;
+        };    
+      });
+    </script>
+  </head>
+  <body>
+    <div tabindex="0" onkeydown="freeze_keydown(event);">
+      <h1>Chrome 9 Freeze</h1>
+      <p>Click me to give focus. Then press an arrow key rapidly to say / stop speech quickly.</p>
+    </div>
+  </body>
+</html>
