@@ -69,6 +69,9 @@ dojo.declare('uow.audio.JSonic', dijit._Widget, {
     getServerVersion: function() {
         var request = {
             url : this.jsonicURI+'version',
+            headers : {
+                'Content-Type' : 'application/json;charset=UTF-8'
+            },
             handleAs: 'json'
         };
         return dojo.xhrGet(request);
@@ -474,6 +477,9 @@ dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
             request = {
                 url : this.jsonicURI+'engine',
                 handleAs: 'json',
+                headers : {
+                    'Content-Type' : 'application/json;charset=UTF-8'
+                },
                 load: dojo.hitch(this, function(response) {
                     this._engineCache = {};
                     dojo.forEach(response.result, 'this._engineCache[item] = null;', this);
@@ -493,6 +499,9 @@ dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
             request = {
                 url : this.jsonicURI+'engine/'+name,
                 handleAs: 'json',
+                headers : {
+                    'Content-Type' : 'application/json;charset=UTF-8'
+                },
                 load: dojo.hitch(this, function(response) {
                     this._engineCache[name] = response.result;
                 })
@@ -573,6 +582,9 @@ dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
             url : this.jsonicURI+'synth',
             handleAs: 'json',
             postData : dojo.toJson(speechParams),
+            headers : {
+                'Content-Type' : 'application/json;charset=UTF-8'
+            },
             load: dojo.hitch(this, '_onSpeechSynthed', resultDef, args),
             error: dojo.hitch(this, '_onSynthError', resultDef, args)
         };

@@ -116,7 +116,7 @@ class JSonicHandler(tornado.web.RequestHandler):
         '''
         self.clear()
         self.set_status(500)
-        #self.set_header('Content-Type', 'application/json')
+        self.set_header('Content-Type', 'application/json;charset=UTF8')
         response['success'] = False
         message = self.write(response)
         self.finish(message)
@@ -199,7 +199,7 @@ class SynthHandler(JSonicHandler):
         if self.application.settings['debug']:
             response['time'] = time.time() - self.start_time
         if response['success']:
-            #self.set_header('Content-Type', 'application/json')
+            self.set_header('Content-Type', 'application/json;charset=UTF8')
             self.write(response)
             self.finish()
         else:
