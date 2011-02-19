@@ -878,7 +878,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
     
     _onPause: function(event) {
         // ignore late events
-        if(!this._args || event.target.src != this._args.origSrc) { 
+        if(!this._args || (event && (event.target.src != this._args.origSrc))) { 
             return; 
         }
 
