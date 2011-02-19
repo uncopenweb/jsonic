@@ -5,12 +5,13 @@ test('fast start/stop freeze', function() {
     var i = 0;
     var self = this;
     var cb = function() {
-        if(i < 50) {
+        if(i < 200) {
             self.js.stop();
             self.js.say({text : 'saying '+i});
-            setTimeout(cb, 100);
+            var wait = 50*Math.random();
+            setTimeout(cb, wait);
         } else {
-            setTimeout(start, 1000);
+            setTimeout(start, 3000);
         }
         i++;
     };
