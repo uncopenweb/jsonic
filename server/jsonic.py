@@ -31,7 +31,7 @@ opt.define('debug', type=bool, default=False, help='debug mode (default: False)'
 opt.define('static', type="bool", default="False", help='serve static content (default: False)')
 
 # current server api version
-VERSION = '0.4'
+VERSION = '0.5'
 # path containing synthed and encoded speech files
 CACHE_PATH = os.path.join(os.path.dirname(__file__), 'files')
 try:
