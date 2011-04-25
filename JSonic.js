@@ -5,6 +5,7 @@
  * :copyright: Peter Parente 2010
  * :license: BSD
 **/
+/*global dojo dijit localStorage uow*/
 dojo.provide('uow.audio.JSonic');
 dojo.require('dijit._Widget');
 
@@ -109,8 +110,10 @@ dojo.declare('uow.audio.JSonic', dijit._Widget, {
      * :rtype: object
      */
     say: function(args) {
-        if(!args || !args.text) throw new Error('args.text required');
-        args.cache = (args.cache == undefined) ? this.defaultCaching : args.cache;
+        if(!args || !args.text) {
+            throw new Error('args.text required');
+        }
+        args.cache = (args.cache === undefined) ? this.defaultCaching : args.cache;
         args.method = '_say';
         args = this._getChannel(args.channel).push(args);
         return args.defs;
@@ -140,8 +143,10 @@ dojo.declare('uow.audio.JSonic', dijit._Widget, {
      * :rtype: object
      */
     play: function(args) {
-        if(!args || !args.url) throw new Error('args.url required');
-        args.cache = (args.cache == undefined) ? this.defaultCaching : args.cache;
+        if(!args || !args.url) {
+            throw new Error('args.url required');
+        }
+        args.cache = (args.cache === undefined) ? this.defaultCaching : args.cache;
         args.method = '_play';
         args = this._getChannel(args.channel).push(args);
         return args.defs;
@@ -197,7 +202,9 @@ dojo.declare('uow.audio.JSonic', dijit._Widget, {
      * :rtype: object
      */
     setProperty: function(args) {
-        if(!args || !args.name) throw new Error('args.name required');
+        if(!args || !args.name) {
+            throw new Error('args.name required');
+        }
         args.method = '_setProperty';
         args = this._getChannel(args.channel).push(args);
         return args.defs;
@@ -220,7 +227,9 @@ dojo.declare('uow.audio.JSonic', dijit._Widget, {
      * :rtype: object
      */
     getProperty: function(args) {
-        if(!args || !args.name) throw new Error('args.name required');
+        if(!args || !args.name) {
+            throw new Error('args.name required');
+        }
         args.method = '_getProperty';
         args = this._getChannel(args.channel).push(args);
         return args.defs;
@@ -417,7 +426,7 @@ dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
         // cache of speech filenames
         if(localStorage) {
             // clear the cache if versions don't match
-            if(localStorage['jsonic.version'] != uow.audio._jsonicVersion) {
+            if(localStorage['jsonic.version'] !== uow.audio._jsonicVersion) {
                 // reset the cache
                 this.resetCache();
             }
@@ -438,9 +447,9 @@ dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
         this._speechRenderings = {};
         // determine extension to use
         var node = dojo.create('audio');
-        if(node.canPlayType('audio/ogg') && node.canPlayType('audio/ogg') != 'no') {
+        if(node.canPlayType('audio/ogg') && node.canPlayType('audio/ogg') !== 'no') {
             this._ext = '.ogg';
-        } else if(node.canPlayType('audio/mpeg') && node.canPlayType('audio/mpeg') != 'no') {
+        } else if(node.canPlayType('audio/mpeg') && node.canPlayType('audio/mpeg') !== 'no') {
             this._ext = '.mp3';
         } else {
             throw new Error('no known media supported');
@@ -535,7 +544,7 @@ dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
         // @todo: would be nice not to recompute every time, but how to
         //  store if we prefetch speech and are peeking into the queue?
         for(var name in props) {
-            if(name == 'volume' || name == 'loop') continue;
+            if(name === 'volume' || name === 'loop') {continue;}
             names.push(name);
         } 
         names.sort();
@@ -603,7 +612,7 @@ dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
         } catch(e) {
             desc = '';
         }
-        if(resultDef) resultDef.errback(desc);
+        if(resultDef) {resultDef.errback(desc);}
         return err;
     },
 
@@ -621,7 +630,7 @@ dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
             // cache the speech file url and properties for server caching
             this._speechFiles[args.key] = dojo.toJson(response);
         }
-        if(resultDef) resultDef.callback(node);
+        if(resultDef) {resultDef.callback(node);}
         return node;
     }
 });
@@ -680,27 +689,27 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         args = dojo.clone(args);
         // create deferred responses in the copy
         args.defs = new uow.audio.JSonicDeferred();
-        if(args.method == '_setProperty' && args.immediate) {
+        if(args.method === '_setProperty' && args.immediate) {
             // set property now
             this._setProperty(args);
             return args;
-        } else if(args.method == '_stop') {
+        } else if(args.method === '_stop') {
             // stop immediately
             this._stop(args);
             return args;
-        } else if(args.method == '_play') {
+        } else if(args.method === '_play') {
             // pre-load sound
             args.audio = this.cache.getSound(args);
-        } else if(args.method == '_say') {
+        } else if(args.method === '_say') {
             // pre-synth speech with any props ahead in the queue
             var props = dojo.clone(this._properties);
             var changes = dojo.forEach(this._queue, function(args) {
-                if(args.method == '_setProperty') {
+                if(args.method === '_setProperty') {
                     props[args.name] = args.value;
                 }
             });
             args.audio = this.cache.getSpeech(args, props);
-        } else if(args.method == '_getProperty') {
+        } else if(args.method === '_getProperty') {
             args.defs.before.callback(this._properties[args.name]);
         }
         this._queue.push(args);
@@ -717,7 +726,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
     removeObserver: function(ob) {
         var obs = this._observers;
         for(var i=0; i < obs.length; i++) {
-            if(obs[i] == ob) {
+            if(obs[i] === ob) {
                 this._observers = obs.slice(0, i).concat(obs.slice(i+1));
                 break;
             }
@@ -734,7 +743,9 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
 
     _playAudioNode: function(args, nodeProps) {
         // don't play if we've stopped in the meantime
-        if(this._args != args) return;
+        if(this._args !== args) {
+            return;
+        }
         // set the properties on the node
         var node = this._bufferNode;
         dojo.mixin(node, nodeProps);
@@ -792,7 +803,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         args.defs.before.callback(this._properties[args.name]);
         this._properties[args.name] = args.value;
         // set local properties now
-        if(this._audioNode && args.name == 'volume') {
+        if(this._audioNode && args.name === 'volume') {
             this._audioNode.volume = args.value;
         }
         args.defs.after.callback(args.value);
@@ -804,7 +815,9 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
     },
     
     _reset: function(args) {
-        if(args) args.defs.before.callback(this._properties);
+        if(args) {
+            args.defs.before.callback(this._properties);
+        }
         this._properties = {
             pitch : 0.5,
             rate: 200,
@@ -813,14 +826,16 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
             engine : 'espeak',
             voice: 'default'
         };
-        if(args) args.defs.after.callback(this._properties);
+        if(args) {
+            args.defs.after.callback(this._properties);
+        }
     },
 
     _notify: function(notice) {
         var obs = this._observers;
         for(var i=0; i < obs.length; i++) {
             var ob = obs[i];
-            if(!ob.actions || dojo.indexOf(ob.actions, notice.action) != -1) {
+            if(!ob.actions || dojo.indexOf(ob.actions, notice.action) !== -1) {
                 try {
                     ob.func(notice);
                 } catch(e) {
@@ -833,7 +848,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
     
     _onMediaError: function(event) {
         // ignore late events
-        if(!this._args || event.target.src != this._args.origSrc) { 
+        if(!this._args || event.target.src !== this._args.origSrc) { 
             return; 
         }
 
@@ -844,7 +859,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
             name : this._name,
             description: event.target.error
         };
-        if(this._kind == 'say') {
+        if(this._kind === 'say') {
             // if speech, dump the entire local cache assuming we need a
             // resynth of everything
             this.cache.resetCache(this._args);
@@ -878,7 +893,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
     
     _onPause: function(event) {
         // ignore late events
-        if(!this._args || (event && (event.target.src != this._args.origSrc))) { 
+        if(!this._args || (event && (event.target.src !== this._args.origSrc))) { 
             return; 
         }
 
@@ -912,7 +927,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
 
     _onEnd: function(event) {
         // ignore late events
-        if(!this._args || event.target.src != this._args.origSrc) { 
+        if(!this._args || event.target.src !== this._args.origSrc) { 
             return; 
         }
         var notice = {
@@ -934,7 +949,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
                 this._audioNode.play();
             }
             // don't listen to start events anymore for this sound
-            this._args.inloop = true
+            this._args.inloop = true;
             return;
         }
         this._audioNode = null;
@@ -950,7 +965,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
     
     _onStart: function(event) {
         // ignore late events or looping restart events
-        if(!this._args || event.target.src != this._args.origSrc ||
+        if(!this._args || event.target.src !== this._args.origSrc ||
            this._args.inloop) { 
             return; 
         }
