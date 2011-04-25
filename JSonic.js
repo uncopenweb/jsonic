@@ -156,7 +156,7 @@ dojo.declare('uow.audio.JSonic', dijit._Widget, {
      * Immediately stops output on a channel and clears the channel queue.
      * The args parameter supports the following name / value pairs.
      *
-     * :param channel: Channel name to stop. Defaults to 'default.
+     * :param channel: Channel name to stop. Defaults to 'default'.
      * :type channel: string
      * :return: Object with 'before' and 'after' deferreds invoked just before
      *   audio stops and right after.
