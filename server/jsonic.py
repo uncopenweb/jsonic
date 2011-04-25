@@ -28,7 +28,7 @@ opt = tornado.options
 opt.define('port', type=int, default=8888, help='server port (default: 8888)')
 opt.define('workers', type=int, default=4, help='worker size pool (default: 4)')
 opt.define('debug', type=bool, default=False, help='debug mode (default: False)')
-opt.define('static', type="bool", default="False", help='serve static content (default: False)')
+opt.define('static', type=bool, default="False", help='serve static content (default: False)')
 
 # current server api version
 VERSION = '0.5'
