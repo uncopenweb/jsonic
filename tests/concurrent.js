@@ -151,8 +151,9 @@ dojo.provide('uow.audio.tests.concurrent');
             });
         });
         
-        test('stop say 1 while say 2', 1, function() {
+        test('stop say 1 while say 2', 4, function() {
             stop(TO);
+            var js = this.js;
             var ch1 = [0,0];
             var ch2 = [0,0];
             var def1 = this.js.say({text : UT1});
@@ -160,7 +161,7 @@ dojo.provide('uow.audio.tests.concurrent');
             def1.callBefore(function() {
                 ok(!ch1[0] && !ch1[1], 'utterance started on default channel');
                 ch1[0]++;
-                this.js.stop();
+                js.stop();
             }).callAfter(function(completed) {
                 ok(ch1[0] && !ch1[1] && !completed, 'utterance interrupted on default channel');
                 ch1[1]++
@@ -176,8 +177,9 @@ dojo.provide('uow.audio.tests.concurrent');
             });
         });
         
-        test('stop play 2 while play 1', 1, function() {
+        test('stop play 2 while play 1', 4, function() {
             stop(TO);
+            var js = this.js;
             var ch1 = [0,0];
             var ch2 = [0,0];
             var def1 = this.js.play({url : SND1});
@@ -193,7 +195,7 @@ dojo.provide('uow.audio.tests.concurrent');
             def2.callBefore(function() {
                 ok(!ch2[0] && !ch2[1], 'sound 2 started on other channel');
                 ch2[0]++;
-                this.js.stop({channel : 'other'});
+                js.stop({channel : 'other'});
             }).callAfter(function(completed) {
                 ok(ch2[0] && !ch2[1] && !completed, 'sound 2 interrupted on other channel');
                 ch2[1]++
@@ -201,8 +203,9 @@ dojo.provide('uow.audio.tests.concurrent');
             });
         });
         
-        test('stop play while say', 1, function() {
+        test('stop play while say', 4, function() {
             stop(TO);
+            var js = this.js;
             var ch1 = [0,0];
             var ch2 = [0,0];
             var def1 = this.js.say({text : UT1});
@@ -218,7 +221,7 @@ dojo.provide('uow.audio.tests.concurrent');
             def2.callBefore(function() {
                 ok(!ch2[0] && !ch2[1], 'sound 2 started on other channel');
                 ch2[0]++;
-                this.js.stop({channel : 'other'});
+                js.stop({channel : 'other'});
             }).callAfter(function(completed) {
                 ok(ch2[0] && !ch2[1] && !completed, 'sound 2 interrupted on other channel');
                 ch2[1]++
@@ -226,8 +229,9 @@ dojo.provide('uow.audio.tests.concurrent');
             });
         });
 
-        test('stop say while play', 1, function() {
+        test('stop say while play', 4, function() {
             stop(TO);
+            var js = this.js;
             var ch1 = [0,0];
             var ch2 = [0,0];
             var def1 = this.js.say({text : UT1});
@@ -235,7 +239,7 @@ dojo.provide('uow.audio.tests.concurrent');
             def1.callBefore(function() {
                 ok(!ch1[0] && !ch1[1], 'speech 1 started on default channel');
                 ch1[0]++;
-                this.js.stop();
+                js.stop();
             }).callAfter(function(completed) {
                 ok(ch1[0] && !ch1[1] && !completed, 'speech 1 interrupted on default channel');
                 ch1[1]++
@@ -251,8 +255,9 @@ dojo.provide('uow.audio.tests.concurrent');
             });
         });
 
-        test('stop all while say and play', 1, function() {
+        test('stop all while say and play', 4, function() {
             stop(TO);
+            var js = this.js;
             var ch1 = [0,0];
             var ch2 = [0,0];
             var def1 = this.js.say({text : UT1});
@@ -272,11 +277,13 @@ dojo.provide('uow.audio.tests.concurrent');
                 ok(ch2[0] && !ch2[1] && !completed, 'sound 2 interrupted on other channel');
                 ch2[1]++
                 if(ch1[1] && ch2[1]) {start();}
-            });            
-            this.js.stopAll();
+            });
+            setTimeout(function() {
+                js.stopAll();
+            }, 500);
         });
 
-        test('stop all while play', 1, function() {
+        test('stop all while play', 4, function() {
             stop(TO);
             var ch1 = [0,0];
             var ch2 = [0,0];
@@ -301,12 +308,13 @@ dojo.provide('uow.audio.tests.concurrent');
             this.js.stopAll();       
         });
 
-        test('stop all while say', 1, function() {
+        test('stop all while say', 4, function() {
             stop(TO);
+            var js = this.js;
             var ch1 = [0,0];
             var ch2 = [0,0];
-            var def1 = this.js.play({text : UT1});
-            var def2 = this.js.play({text : UT2, channel : 'other'});
+            var def1 = this.js.say({text : UT1});
+            var def2 = this.js.say({text : UT2, channel : 'other'});
             def1.callBefore(function() {
                 ok(!ch1[0] && !ch1[1], 'speech 1 started on default channel');
                 ch1[0]++;
@@ -323,7 +331,9 @@ dojo.provide('uow.audio.tests.concurrent');
                 ch2[1]++
                 if(ch1[1] && ch2[1]) {start();}
             });
-            this.js.stopAll();       
+            setTimeout(function() {
+                js.stopAll();
+            }, 500);
         });
     });
 })();
