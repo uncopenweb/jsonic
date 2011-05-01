@@ -153,6 +153,32 @@ dojo.declare('uow.audio.JSonic', dijit._Widget, {
     },
     
     /**
+     * Queues silence on the channel. The args parameter supports the following
+     * name / value pairs.
+     *
+     * :param duration: Duration of the period of silence in milliseconds.
+     * :type duration: int
+     * :param channel: Channel name on which to queue the silence. Defaults to
+     *   'default'.
+     * :type channel: string
+     * :param name: Name to associate with the silence. Included in any
+     *   callbacks. Defaults to null.
+     * :type name: string
+     * :return: Object with 'before' and 'after' deferreds invoked just before
+     *   silence starts and when it finishes (parameter: true) or is stopped 
+     *   (parameter: false).
+     * :rtype: object
+     */
+    wait: function(args) {
+        if(!args || !args.duration) {
+            throw new Error('args.duration required');
+        }
+        args._method = '_wait';
+        args = this._getChannel(args.channel).push(args);
+        return args.defs;
+    },
+
+    /**
      * Immediately stops output on a channel and clears the channel queue.
      * The args parameter supports the following name / value pairs.
      *
@@ -677,9 +703,9 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         node.load();
         // callback tokens for the current audio node
         this._aconnects = [];
-        this._aconnects[0] = dojo.connect(node, 'play', this, '_onStart');
+        this._aconnects[0] = dojo.connect(node, 'play', this, '_onStartMedia');
         this._aconnects[1] = dojo.connect(node, 'pause', this, '_onPause');
-        this._aconnects[2] = dojo.connect(node, 'ended', this, '_onEnd');
+        this._aconnects[2] = dojo.connect(node, 'ended', this, '_onEndMedia');
         this._aconnects[3] = dojo.connect(node, 'error', this, '_onMediaError');
         return node;
     },
@@ -782,6 +808,11 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
             args.audio = this.cache.getSound(args);
         }
         args.audio.addCallback(dojo.hitch(this, '_playAudioNode', this._args));
+    },
+    
+    _wait: function(args) {
+        this._busy = true;
+        this._args = args;
     },
     
     _stop: function(args) {
@@ -925,7 +956,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         this._pump();
     },
 
-    _onEnd: function(event) {
+    _onEndMedia: function(event) {
         // ignore late events
         if(!this._args || event.target.src !== this._args.origSrc) { 
             return; 
@@ -963,7 +994,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         this._pump();
     },
     
-    _onStart: function(event) {
+    _onStartMedia: function(event) {
         // ignore late events or looping restart events
         if(!this._args || event.target.src !== this._args.origSrc ||
            this._args.inloop) { 
@@ -983,5 +1014,33 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         this._args.started = true;
         this._args.defs.before.callback();
         this._notify(notice);
+    },
+    
+    _onStartWait: function() {
+        var notice = {
+            action : 'started-wait', 
+            channel : this.id,
+            name : this._name
+        };
+        this._args.started = true;
+        this._args.defs.before.callback();
+        this._notify(notice);        
+    },
+    
+    _onEndWait: function() {
+        var notice = {
+            action : 'finished-wait', 
+            channel : this.id,
+            name : this._name,
+            completed: true
+        };
+        // clear everything before after callback
+        var cargs = this._args;
+        this._args = null;
+        this._busy = false;
+        this._name = null;
+        cargs.defs.after.callback(notice.completed);
+        this._notify(notice);
+        this._pump();
     }
 });
