@@ -168,7 +168,24 @@ dojo.declare('uow.audio.JSonic', dijit._Widget, {
         args = this._getChannel(args.channel).push(args);
         return args.defs;
     },
-    
+
+    /**
+     * Immediately stops output on all channels and clears all channel queues.
+     *
+     * :return: Objects with 'before' and 'after' deferreds invoked just before
+     *   audio stops and right after.
+     * :rtype: array of object
+     */
+    stopAll: function() {
+        var rv = [];
+        for(var channel in this._channels) {
+            var args = {method : '_stop'};
+            this._channels[channel].push(args);
+            rv.push(args.defs);
+        }
+        return rv;
+    },
+
     /**
      * Executes or queues a change in channel property that affects all speech 
      * and sound output following it. All channels support the following
