@@ -869,7 +869,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         this._args = null;
         this._busy = false;
         this._name = null;
-        cargs.defs.after.errback();
+        cargs.defs.after.errback(notice);
         this._notify(notice);
         this._pump();        
     },
@@ -885,8 +885,8 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         this._args = null;
         this._busy = false;
         this._name = null;
-        args.defs.before.errback();
-        args.defs.after.errback();
+        args.defs.before.errback(notice);
+        args.defs.after.errback(notice);
         this._notify(notice);
         this._pump();
     },
