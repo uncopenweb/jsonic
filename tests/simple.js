@@ -124,7 +124,7 @@ dojo.provide('uow.audio.tests.simple');
             def.callBefore(function() {
                 ok(true, 'before deferred invoked');
             }).errAfter(function(err) {
-                ok(err.name == 'Error', 'after deferred invoked on error');
+                ok(err.action == 'error', 'after deferred invoked on error');
                 start();
             });        
         });
