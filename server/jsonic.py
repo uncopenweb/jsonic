@@ -380,9 +380,13 @@ def run(port=8888, processes=4, debug=False, static=False):
     '''
     kwargs = {}
     kwargs['pool'] = pool = multiprocessing.Pool(processes=processes)
+    localDir = os.path.dirname(__file__)
+    logging.info('jsonic server starting in: %s', localDir)
+    logging.info('debug mode enabled: %s', debug)
     if static:
         # serve static files for debugging purposes
-        kwargs['static_path'] = os.path.join(os.path.dirname(__file__), "../")
+        kwargs['static_path'] = os.path.abspath(os.path.join(localDir, "../"))
+        logging.info('serving static files in %s at: http://localhost:%d/static', kwargs['static_path'], port)
     application = tornado.web.Application([
         (r'/engine', EngineHandler),
         (r'/engine/([a-zA-Z0-9]+)', EngineHandler),
@@ -392,8 +396,8 @@ def run(port=8888, processes=4, debug=False, static=False):
     ], debug=debug, **kwargs)
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(port)
-    logging.info('jsonic server started on port: %d', port)
     ioloop = tornado.ioloop.IOLoop.instance()
+    logging.info('listening on port: %s', port)
     ioloop.start()
 
 def run_from_args():
