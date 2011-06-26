@@ -832,7 +832,8 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         this._args = args;
         this._kind = 'wait';
         this._onStartWait();
-        setTimeout(dojo.hitch(this, '_onEndWait'), args.duration);
+        var tok = setTimeout(dojo.hitch(this, '_onEndWait'), args.duration);
+        this._args.timeout = tok;
     },
     
     _stop: function(args) {
@@ -972,6 +973,9 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
             };
             cargs.defs.after.callback(false);
             this._notify(notice);
+            if(cargs.timeout) {
+                clearTimeout(cargs.timeout);
+            }
         }
         this._pump();
     },

@@ -7,7 +7,7 @@ dojo.provide('uow.audio.tests.interrupt');
     ];
     dojo.forEach(mods, function(mod) {
         module(mod.n, getModOpts(mod.args));
-        test('stop while say', function () {
+        test('stop while say', 2, function () {
             stop(TO);
             var js = this.js;
             var def = this.js.say({text : UT1});
@@ -19,7 +19,7 @@ dojo.provide('uow.audio.tests.interrupt');
                 start();
             });
         });
-        test('stop then say', function () {
+        test('stop then say', 2, function () {
             stop(TO);
             var js = this.js;
             this.js.stop();
@@ -32,7 +32,7 @@ dojo.provide('uow.audio.tests.interrupt');
                 start();
             });
         });
-        test('stop, say, stop', function () {
+        test('stop, say, stop', 2, function () {
             stop(TO);
             var js = this.js;
             this.js.stop();
@@ -229,6 +229,62 @@ dojo.provide('uow.audio.tests.interrupt');
             }).callAfter(function(completed) {
                 ok(after === 0 && !completed, 'first sound finished first');
                 after += 1;
+            });
+        });        
+        test('stop while wait', 2, function () {
+            stop(TO);
+            var js = this.js;
+            var def = this.js.wait({duration : 1000});
+            def.callBefore(function() {
+                ok(true, 'before deferred invoked');
+                setTimeout(function() {js.stop();}, 10);
+            }).callAfter(function(completed) {
+                ok(!completed, 'after deferred invoked on interrupt');
+                start();
+            });
+        });
+        test('stop then wait', 2, function () {
+            stop(TO);
+            var js = this.js;
+            this.js.stop();
+            var def = this.js.wait({duration : 1000});
+            def.callBefore(function() {
+                ok(true, 'before deferred invoked');
+            }).callAfter(function(completed) {
+                ok(completed, 'after deferred invoked w/o interrupt');
+                start();
+            });
+        });
+        test('stop, wait, stop', 2, function () {
+            stop(TO);
+            var js = this.js;
+            this.js.stop();
+            var def = this.js.wait({duration : 1000});
+            def.callBefore(function() {
+                ok(true, 'before deferred invoked');
+                setTimeout(function() {js.stop();}, 10);
+            }).callAfter(function(completed) {
+                ok(!completed, 'after deferred invoked on interrupt');
+                start();
+            });
+        });
+        test('wait, stop, wait', 4, function () {
+            stop(TO);
+            var js = this.js;
+            var def = this.js.wait({duration : 1000});
+            var def2;
+            def.callBefore(function() {
+                ok(true, 'before first deferred invoked');
+                setTimeout(function() {js.stop();}, 10);
+            }).callAfter(function(completed) {
+                ok(!completed, 'after first deferred invoked on interrupt');
+                def2 = js.wait({duration: 1000});
+                def2.callBefore(function() {
+                    ok(true, 'before second deferred invoked');
+                }).callAfter(function(completed) {
+                    ok(completed, 'before second deferred invoked w/o interrupt');
+                    start();
+                });
             });
         });
     });
