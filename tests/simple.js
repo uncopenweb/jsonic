@@ -128,6 +128,21 @@ dojo.provide('uow.audio.tests.simple');
                 start();
             });        
         });
+        test('wait', 3, function () {
+            stop(TO);
+            var def = this.js.wait({duration : 4000});
+            var fired = false;
+            def.callBefore(function() {
+                ok(true, 'before deferred invoked');
+                setTimeout(function() {
+                    ok(!fired, '3s interval fired before wait deferred');
+                    fired = true;
+                }, 3000);
+            }).callAfter(function(completed) {
+                ok(completed && fired, 'after deferred invoked on complete');
+                start();
+            });
+        });
     });
 })();
 
