@@ -5,6 +5,7 @@ Version 0.5
 -----------
 
 * Added the :meth:`uow.audio.JSonic.stopAll` method.
+* Added the :meth:`uow.audio.JSonic.wait` method.
 
 Version 0.4
 -----------

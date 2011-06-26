@@ -216,6 +216,24 @@ The JSonic interface
       :rtype: array of :class:`JSonicDeferred`
       
       .. versionadded:: 0.5
+
+   .. method:: wait(args)
+   
+      Queues silence on a channel.
+
+      :param args: Object with the following properties:
+
+         duration (required)
+            Integer duration of the silence in milliseconds
+
+         channel (optional)
+            String name of the channel. Defaults to :const:`default` if not specified.
+
+      :type args: object
+      :return: A deferred callback with a invoked with no parameters when the wait command is processed (before) and invoked with a complete flag (true/false) when the wait duration elapses (after)
+      :rtype: :class:`JSonicDeferred`
+      
+      .. versionadded:: 0.5
       
 Before and after deferred notification
 --------------------------------------
