@@ -207,6 +207,15 @@ The JSonic interface
       :type args: object
       :return: A deferred callback with no parameters invoked before the stop is processed (before) and after the stop is processed (after)
       :rtype: :class:`JSonicDeferred`
+
+   .. method:: stopAll()
+   
+      Immediately stops all output on all channels and clear all queued commands on all channels.
+
+      :return: An array of deferred callbacks with no parameters invoked before the stop is processed (before) and after the stop is processed (after)
+      :rtype: array of :class:`JSonicDeferred`
+      
+      .. versionadded:: 0.5
       
 Before and after deferred notification
 --------------------------------------
