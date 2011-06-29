@@ -177,6 +177,40 @@ dojo.declare('uow.audio.JSonic', dijit._Widget, {
         args = this._getChannel(args.channel).push(args);
         return args.defs;
     },
+    
+    pause: function(args) {
+        args = args || {};
+        args.method = '_pause';
+        args = this._getChannel(args.channel).push(args);
+        return args.defs;
+    },
+    
+    unpause: function(args) {
+        args = args || {};
+        args.method = '_unpause';
+        args = this._getChannel(args.channel).push(args);
+        return args.defs;        
+    },
+    
+    pauseAll: function() {
+        var rv = [];
+        for(var channel in this._channels) {
+            var args = {method : '_pause'};
+            this._channels[channel].push(args);
+            rv.push(args.defs);
+        }
+        return rv;        
+    },
+    
+    unpauseAll: function() {
+        var rv = [];
+        for(var channel in this._channels) {
+            var args = {method : '_unpause'};
+            this._channels[channel].push(args);
+            rv.push(args.defs);
+        }
+        return rv;
+    },
 
     /**
      * Immediately stops output on a channel and clears the channel queue.
@@ -740,6 +774,12 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
             // stop immediately
             this._stop(args);
             return args;
+        } else if(args.method === '_pause') {
+            this._pause(args);
+            return args;
+        } else if(args.method === '_unpause') {
+            this._unpause(args);
+            return args;
         } else if(args.method === '_play') {
             // pre-load sound
             args.audio = this.cache.getSound(args);
@@ -836,6 +876,29 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         this._args.timeout = tok;
     },
     
+    _pause: function(args) {
+        args.defs.before.callback();
+        // set flag so event handler knows it's not a stop, just a pause
+        // @todo: what happens if the audio actually ends before our pause
+        //   method callback is invoked? timing problem?
+        this._paused = true;
+        if(this._audioNode) {
+            this._audioNode.pause();
+        }
+        // @todo: also need to pause a wait
+        args.defs.after.callback();
+    },
+    
+    _unpause: function(args) {
+        args.defs.before.callback();
+        if(this._audioNode) {
+            this._audioNode.play();
+        }
+        // @todo: also need to unpause a wait
+        this._paused = false;
+        args.defs.after.callback();        
+    },
+    
     _stop: function(args) {
         args.defs.before.callback();
         var didPause = false;
@@ -849,6 +912,8 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
             // never playing, simulate the pause event
             this._onPause();
         }
+        // @todo: is this enough?
+        this._paused = false;
     },
     
     _setProperty: function(args) {
@@ -944,9 +1009,11 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
     },
     
     _onPause: function(event) {
-        // ignore late events
-        if(!this._args || (event && (event.target.src !== this._args.origSrc))) { 
-            return; 
+        // ignore late events and event caused by an explicit pause
+        if(!this._args || 
+            this._paused || 
+            (event && (event.target.src !== this._args.origSrc))) { 
+            return;
         }
 
         var cargs = this._args;
@@ -1019,9 +1086,11 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
     },
     
     _onStartMedia: function(event) {
-        // ignore late events or looping restart events
-        if(!this._args || event.target.src !== this._args.origSrc ||
-           this._args.inloop) { 
+        // ignore late events, looping restart events, or explicit unpause
+        if(!this._args || 
+            this._paused ||
+            event.target.src !== this._args.origSrc ||
+            this._args.inloop) { 
             return; 
         }
 
