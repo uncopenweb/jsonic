@@ -842,8 +842,10 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         //this._audioNode.loop = this._properties.loop;
         // need to force a load call in FF
         this._audioNode.load();
-        // start playing it
-        this._audioNode.play();
+        if(!this._paused) {
+            // start playing it
+            this._audioNode.play();
+        }
     },
     
     _say: function(args) {
@@ -895,7 +897,6 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
             this._audioNode.play();
         }
         // @todo: also need to unpause a wait
-        this._paused = false;
         args.defs.after.callback();        
     },
     
@@ -1088,10 +1089,12 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
     _onStartMedia: function(event) {
         // ignore late events, looping restart events, or explicit unpause
         if(!this._args || 
-            this._paused ||
             event.target.src !== this._args.origSrc ||
             this._args.inloop) { 
             return; 
+        } else if(this._args.started && this._paused) {
+            this._paused = false;
+            return;
         }
 
         var notice = {
