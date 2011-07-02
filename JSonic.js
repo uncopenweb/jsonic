@@ -745,6 +745,9 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         if(this._audioNode && !this._audioNode.paused) {
             this._audioNode.pause();
         }
+        if(this._args && this._args.timeout) {
+            clearTimeout(this._args.timeout);
+        }
         dojo.forEach(this._aconnects, dojo.disconnect);
     },
     
@@ -892,7 +895,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         this._paused = true;
         if(this._audioNode) {
             this._audioNode.pause();
-        } else if(this._args.timeout) {
+        } else if(this._args && this._args.timeout) {
             // stop wait timer
             clearTimeout(this._args.timeout);
             // compute elapsed
@@ -927,18 +930,17 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
     _stop: function(args) {
         args.defs.before.callback();
         var didPause = false;
-        if(this._audioNode) {
+        if(this._audioNode && !this._paused) {
             didPause = true;
             this._audioNode.pause();
         }
+        this._paused = false;
         this._queue = [];
         args.defs.after.callback();
-        if(!didPause) {
-            // never playing, simulate the pause event
-            this._onPause();
+        if(!didPause && this._busy) {
+            // never playing, simulate the async pause event
+            setTimeout(dojo.hitch(this, '_onPause'), 0);
         }
-        // @todo: is this enough?
-        this._paused = false;
     },
     
     _setProperty: function(args) {
@@ -1116,8 +1118,11 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
             event.target.src !== this._args.origSrc ||
             this._args.inloop) { 
             return; 
-        } else if(this._args.started && this._paused) {
-            this._paused = false;
+        } 
+        // assumes we're always unpausing if we get this callback
+        this._paused = false;
+        if(this._args.started) {
+            // if already started, no need to notify again, resuming
             return;
         }
 

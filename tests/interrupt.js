@@ -287,5 +287,144 @@ dojo.provide('uow.audio.tests.interrupt');
                 });
             });
         });
+        test('say, say, pause, unpause', 6, function() {
+            stop(TO*2);
+            var js = this.js;
+            var before = 0;
+            var after = 0;
+            var def1 = this.js.say({text : UT1});
+            var def2 = this.js.say({text : UT2});
+            var def3 = this.js.pause();
+            setTimeout(function() {js.unpause();}, 1000);
+            def1.callBefore(function() {
+                ok(before === 0, 'first utterance started first');
+                before = 1;
+            }).callAfter(function(completed) {
+                console.log(completed);
+                ok(after === 0 && completed, 'first utterance finished first');
+                after = 1;
+            });
+            def2.callBefore(function() {
+                ok(before === 1, 'second utterance started second');
+            }).callAfter(function(completed) {
+                ok(after === 1 && completed, 'second utterance finished second');
+                start();
+            });
+            def3.callBefore(function() {
+                ok(true, 'before pause');
+            }).callAfter(function(completed) {
+                ok(true, 'after pause');
+            });            
+        });
+        test('say, pause, say, unpause', 6, function() {
+            stop(TO*2);
+            var js = this.js;
+            var before = 0;
+            var after = 0;
+            var def1 = this.js.say({text : UT1});
+            var def3 = this.js.pause();
+            var def2 = this.js.say({text : UT2});
+            setTimeout(function() {js.unpause();}, 1000);
+            def1.callBefore(function() {
+                ok(before === 0, 'first utterance started first');
+                before = 1;
+            }).callAfter(function(completed) {
+                console.log(completed);
+                ok(after === 0 && completed, 'first utterance finished first');
+                after = 1;
+            });
+            def2.callBefore(function() {
+                ok(before === 1, 'second utterance started second');
+            }).callAfter(function(completed) {
+                ok(after === 1 && completed, 'second utterance finished second');
+                start();
+            });
+            def3.callBefore(function() {
+                ok(true, 'before pause');
+            }).callAfter(function(completed) {
+                ok(true, 'after pause');
+            });            
+        });
+        test('pause, say, say, unpause', 6, function() {
+            stop(TO*2);
+            var js = this.js;
+            var before = 0;
+            var after = 0;
+            var def3 = this.js.pause();
+            var def1 = this.js.say({text : UT1});
+            var def2 = this.js.say({text : UT2});
+            setTimeout(function() {js.unpause();}, 1000);
+            def1.callBefore(function() {
+                ok(before === 0, 'first utterance started first');
+                before = 1;
+            }).callAfter(function(completed) {
+                ok(after === 0 && completed, 'first utterance finished first');
+                after = 1;
+            });
+            def2.callBefore(function() {
+                ok(before === 1, 'second utterance started second');
+            }).callAfter(function(completed) {
+                ok(after === 1 && completed, 'second utterance finished second');
+                start();
+            });
+            def3.callBefore(function() {
+                ok(true, 'before pause');
+            }).callAfter(function(completed) {
+                ok(true, 'after pause');
+            });            
+        });        
+        test('say, pause, stop, unpause, say', 13, function() {
+            stop(TO*2);
+            var js = this.js;
+            var seq = [
+                'say1_before', 
+                'pause_before', 
+                'pause_after', 
+                'stop_before',
+                'stop_after',
+                'unpause_before',
+                'unpause_after',
+                'say1_after',
+                'say2_before',
+                'say2_after'
+            ];
+            js.say({text : UT1}).callBefore(function() {
+                equal(seq.shift(), 'say1_before');
+            }).callAfter(function(completed) {
+                equal(seq.shift(), 'say1_after');
+                ok(!completed, 'say1 interrupted');
+            });
+            setTimeout(function() {
+                js.pause().callBefore(function() {
+                    equal(seq.shift(), 'pause_before');
+                }).callAfter(function(completed) {
+                    equal(seq.shift(), 'pause_after')
+                });  
+                setTimeout(function() {
+                    js.stop().callBefore(function() {
+                        equal(seq.shift(), 'stop_before')
+                    }).callAfter(function() {
+                        equal(seq.shift(), 'stop_after')
+                    });
+                    js.unpause().callBefore(function() {
+                        equal(seq.shift(), 'unpause_before')
+                    }).callAfter(function(success) {
+                        equal(seq.shift(), 'unpause_after')
+                        ok(!success, 'unpause disallowed');
+                    });
+                    js.say({text : UT2}).callBefore(function() {
+                        equal(seq.shift(), 'say2_before')
+                    }).callAfter(function(completed) {
+                        equal(seq.shift(), 'say2_after')
+                        ok(completed, 'say2 completed');
+                        start();
+                    });
+                }, 1000);
+            }, 1000);
+        });
+        // test('wait, wait, pause, unpause', 1, function {});
+        // test('wait, pause, wait, unpause', 1, function {});
+        // test('pause, wait, wait, unpause', 1, function {});
+        // test('wait, pause, stop, unpause, wait', 1, function {});
     });
-})();
+}());
