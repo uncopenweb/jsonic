@@ -1,3 +1,4 @@
+/*global dojo TO UT1 UT2 ok getModOpts module test stop start SND1 SND2*/
 dojo.provide('uow.audio.tests.interrupt');
 
 (function() {
@@ -97,10 +98,10 @@ dojo.provide('uow.audio.tests.interrupt');
                         ok(before === 1 && after === 1, 'second utterance started second');
                         before += 1;
                     }).callAfter(function(completed) {
-                        ok(after === 1 && before == 2 && completed, 'second utterance finished second');
+                        ok(after === 1 && before === 2 && completed, 'second utterance finished second');
                         start();
                     });
-                }, 50)
+                }, 50);
             }).callAfter(function(completed) {
                 ok(after === 0 && !completed, 'first utterance finished first');
                 after += 1;
@@ -122,10 +123,10 @@ dojo.provide('uow.audio.tests.interrupt');
                         ok(before === 1 && after === 1, 'second utterance started second');
                         before += 1;
                     }).callAfter(function(completed) {
-                        ok(after === 1 && before == 2 && completed, 'second utterance finished second');
+                        ok(after === 1 && before === 2 && completed, 'second utterance finished second');
                         start();
                     });
-                }, 50)
+                }, 50);
             }).callAfter(function(completed) {
                 ok(after === 0 && !completed, 'first utterance finished first');
                 after += 1;
@@ -147,10 +148,10 @@ dojo.provide('uow.audio.tests.interrupt');
                         ok(before === 1 && after === 1, 'sound started second');
                         before += 1;
                     }).callAfter(function(completed) {
-                        ok(after === 1 && before == 2 && completed, 'sound finished second');
+                        ok(after === 1 && before === 2 && completed, 'sound finished second');
                         start();
                     });
-                }, 50)
+                }, 50);
             }).callAfter(function(completed) {
                 ok(after === 0 && !completed, 'utterance finished first');
                 after += 1;
@@ -172,10 +173,10 @@ dojo.provide('uow.audio.tests.interrupt');
                         ok(before === 1 && after === 1, 'utterance started second');
                         before += 1;
                     }).callAfter(function(completed) {
-                        ok(after === 1 && before == 2 && completed, 'utterance finished second');
+                        ok(after === 1 && before === 2 && completed, 'utterance finished second');
                         start();
                     });
-                }, 50)
+                }, 50);
             }).callAfter(function(completed) {
                 ok(after === 0 && !completed, 'sound finished first');
                 after += 1;
@@ -197,10 +198,10 @@ dojo.provide('uow.audio.tests.interrupt');
                         ok(before === 1 && after === 1, 'second sound started second');
                         before += 1;
                     }).callAfter(function(completed) {
-                        ok(after === 1 && before == 2 && completed, 'second sound finished second');
+                        ok(after === 1 && before === 2 && completed, 'second sound finished second');
                         start();
                     });
-                }, 50)
+                }, 50);
             }).callAfter(function(completed) {
                 ok(after === 0 && !completed, 'first sound finished first');
                 after += 1;
@@ -222,10 +223,10 @@ dojo.provide('uow.audio.tests.interrupt');
                         ok(before === 1 && after === 1, 'second sound started second');
                         before += 1;
                     }).callAfter(function(completed) {
-                        ok(after === 1 && before == 2 && completed, 'second sound finished second');
+                        ok(after === 1 && before === 2 && completed, 'second sound finished second');
                         start();
                     });
-                }, 50)
+                }, 50);
             }).callAfter(function(completed) {
                 ok(after === 0 && !completed, 'first sound finished first');
                 after += 1;

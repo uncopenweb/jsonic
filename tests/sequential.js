@@ -1,3 +1,4 @@
+/*global dojo TO UT1 UT2 ok getModOpts module test stop start SND1 SND2*/
 dojo.provide('uow.audio.tests.sequential');
 
 (function() {
@@ -238,6 +239,6 @@ dojo.provide('uow.audio.tests.sequential');
                 ok(after === 2 && completed, 'second sound finished third');
                 start();
             });
-        });   
+        });
     });
-})();
+}());
