@@ -143,6 +143,69 @@ dojo.provide('uow.audio.tests.simple');
                 start();
             });
         });
+        test('pause / unpause', 4, function () {
+            stop(TO);
+            var js = this.js;
+            var def = this.js.say({text : UT1});
+            def.callBefore(function() {
+                ok(true, 'before deferred invoked');
+                setTimeout(function() {
+                    js.pause().callBefore(function() {
+                        ok(true, 'before pause deferred invoked');
+                    }).callAfter(function(paused) {
+                        ok(paused, 'after pause deferred invoked');
+                        setTimeout(function() { js.unpause(); }, 1000);
+                    });
+                }, 250);
+            }).callAfter(function(completed) {
+                ok(completed, 'after deferred invoked on complete');
+                start();
+            });
+        });
+        test('unpause w/o pause', 4, function () {
+            stop(TO);
+            var js = this.js;
+            var def = this.js.say({text : UT1});
+            def.callBefore(function() {
+                ok(true, 'before deferred invoked');
+                setTimeout(function() {
+                    js.unpause().callBefore(function() {
+                        ok(true, 'before unpause deferred invoked');
+                    }).callAfter(function(paused) {
+                        ok(!paused, 'after unpause deferred invoked');
+                    });
+                }, 500);
+            }).callAfter(function(completed) {
+                ok(completed, 'after deferred invoked on complete');
+                start();
+            });
+        });
+        test('double pause', 6, function () {
+            stop(TO);
+            var js = this.js;
+            var def = this.js.say({text : UT1});
+            def.callBefore(function() {
+                ok(true, 'before deferred invoked');
+                setTimeout(function() {
+                    js.pause().callBefore(function() {
+                        ok(true, 'before delayed pause deferred invoked');
+                    }).callAfter(function(paused) {
+                        ok(!paused, 'after delayed pause deferred invoked');
+                        js.unpause();
+                    });
+                }, 500);
+                
+                def = js.pause();
+                def.callBefore(function() {
+                    ok(true, 'before pause deferred invoked');
+                }).callAfter(function(paused) {
+                    ok(paused, 'after pause deferred invoked');
+                });
+            }).callAfter(function(completed) {
+                ok(completed, 'after deferred invoked on complete');
+                start();
+            });            
+        });
     });
 })();
 

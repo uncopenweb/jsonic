@@ -880,6 +880,11 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
     
     _pause: function(args) {
         args.defs.before.callback();
+        if(this._paused) {
+            // can't pause if paused
+            args.defs.after.callback(false);
+            return;
+        }
         // set flag so event handler knows it's not a stop, just a pause
         // @todo: what happens if the audio actually ends before our pause
         //   method callback is invoked? timing problem?
@@ -888,16 +893,21 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
             this._audioNode.pause();
         }
         // @todo: also need to pause a wait
-        args.defs.after.callback();
+        args.defs.after.callback(true);
     },
     
     _unpause: function(args) {
         args.defs.before.callback();
+        if(!this._paused) {
+            // can't unpause if not paused
+            args.defs.after.callback(false);
+            return;
+        }
         if(this._audioNode) {
             this._audioNode.play();
         }
         // @todo: also need to unpause a wait
-        args.defs.after.callback();        
+        args.defs.after.callback(true);
     },
     
     _stop: function(args) {
