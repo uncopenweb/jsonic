@@ -874,6 +874,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         this._args = args;
         this._kind = 'wait';
         this._onStartWait();
+        this._args.date = new Date();
         var tok = setTimeout(dojo.hitch(this, '_onEndWait'), args.duration);
         this._args.timeout = tok;
     },
@@ -891,8 +892,15 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         this._paused = true;
         if(this._audioNode) {
             this._audioNode.pause();
+        } else if(this._args.timeout) {
+            // stop wait timer
+            clearTimeout(this._args.timeout);
+            // compute elapsed
+            var el = (new Date()) - this._args.date;
+            var dur = this._args.duration;
+            // compute remaining duration or 0 as safeguard
+            this._args.duration = Math.max(0, dur-el);
         }
-        // @todo: also need to pause a wait
         args.defs.after.callback(true);
     },
     
@@ -905,8 +913,14 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         }
         if(this._audioNode) {
             this._audioNode.play();
+        } else if(this._args.timeout) {
+            // begin waiting again, even if 0 duration
+            var tok = setTimeout(dojo.hitch(this, '_onEndWait'), 
+                this._args.duration);
+            // store new weight and timer
+            this._args.date = new Date();
+            this._args.timeout = tok;            
         }
-        // @todo: also need to unpause a wait
         args.defs.after.callback(true);
     },
     
