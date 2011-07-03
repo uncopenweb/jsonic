@@ -914,6 +914,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
             args.defs.after.callback(false);
             return;
         }
+        this._paused = false;
         if(this._audioNode) {
             this._audioNode.play();
         } else if(this._args.timeout) {
@@ -1116,15 +1117,10 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         // ignore late events, looping restart events, or explicit unpause
         if(!this._args || 
             event.target.src !== this._args.origSrc ||
-            this._args.inloop) { 
+            this._args.inloop ||
+            this._args.started) { 
             return; 
         } 
-        // assumes we're always unpausing if we get this callback
-        this._paused = false;
-        if(this._args.started) {
-            // if already started, no need to notify again, resuming
-            return;
-        }
 
         var notice = {
             url : event.target.src,
