@@ -538,6 +538,54 @@ dojo.provide('uow.audio.tests.interrupt');
                 });
             }, 1000);            
         });
-        // test('wait, pause, stop, unpause, wait', 1, function {});
+        test('wait, pause, stop, unpause, wait', 13, function() {
+            stop(TO*2);
+            var js = this.js;
+            var seq = [
+                'wait1_before',
+                'pause_before', 
+                'pause_after', 
+                'stop_before',
+                'stop_after',
+                'unpause_before',
+                'unpause_after',
+                'wait1_after',
+                'wait2_before',
+                'wait2_after'
+            ];
+            js.wait({duration : 1000}).callBefore(function() {
+                equal(seq.shift(), 'wait1_before');
+            }).callAfter(function(completed) {
+                equal(seq.shift(), 'wait1_after');
+                ok(!completed, 'wait1 interrupted');
+            });
+            setTimeout(function() {
+                js.pause().callBefore(function() {
+                    equal(seq.shift(), 'pause_before');
+                }).callAfter(function(completed) {
+                    equal(seq.shift(), 'pause_after');
+                });  
+                setTimeout(function() {
+                    js.stop().callBefore(function() {
+                        equal(seq.shift(), 'stop_before');
+                    }).callAfter(function() {
+                        equal(seq.shift(), 'stop_after');
+                    });
+                    js.unpause().callBefore(function() {
+                        equal(seq.shift(), 'unpause_before');
+                    }).callAfter(function(success) {
+                        equal(seq.shift(), 'unpause_after');
+                        ok(!success, 'unpause disallowed');
+                    });
+                    js.wait({duration : 1000}).callBefore(function() {
+                        equal(seq.shift(), 'wait2_before');
+                    }).callAfter(function(completed) {
+                        equal(seq.shift(), 'wait2_after');
+                        ok(completed, 'wait2 completed');
+                        start();
+                    });
+                }, 1000);
+            }, 500);       
+        });
     });
 }());
