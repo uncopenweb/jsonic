@@ -1,4 +1,4 @@
-/*global dojo TO UT1 UT2 ok getModOpts module test stop start SND1 SND2*/
+/*global dojo TO UT1 UT2 ok equal getModOpts module test stop start SND1 SND2*/
 dojo.provide('uow.audio.tests.interrupt');
 
 (function() {
@@ -301,7 +301,6 @@ dojo.provide('uow.audio.tests.interrupt');
                 ok(before === 0, 'first utterance started first');
                 before = 1;
             }).callAfter(function(completed) {
-                console.log(completed);
                 ok(after === 0 && completed, 'first utterance finished first');
                 after = 1;
             });
@@ -330,7 +329,6 @@ dojo.provide('uow.audio.tests.interrupt');
                 ok(before === 0, 'first utterance started first');
                 before = 1;
             }).callAfter(function(completed) {
-                console.log(completed);
                 ok(after === 0 && completed, 'first utterance finished first');
                 after = 1;
             });
@@ -399,33 +397,147 @@ dojo.provide('uow.audio.tests.interrupt');
                 js.pause().callBefore(function() {
                     equal(seq.shift(), 'pause_before');
                 }).callAfter(function(completed) {
-                    equal(seq.shift(), 'pause_after')
+                    equal(seq.shift(), 'pause_after');
                 });  
                 setTimeout(function() {
                     js.stop().callBefore(function() {
-                        equal(seq.shift(), 'stop_before')
+                        equal(seq.shift(), 'stop_before');
                     }).callAfter(function() {
-                        equal(seq.shift(), 'stop_after')
+                        equal(seq.shift(), 'stop_after');
                     });
                     js.unpause().callBefore(function() {
-                        equal(seq.shift(), 'unpause_before')
+                        equal(seq.shift(), 'unpause_before');
                     }).callAfter(function(success) {
-                        equal(seq.shift(), 'unpause_after')
+                        equal(seq.shift(), 'unpause_after');
                         ok(!success, 'unpause disallowed');
                     });
                     js.say({text : UT2}).callBefore(function() {
-                        equal(seq.shift(), 'say2_before')
+                        equal(seq.shift(), 'say2_before');
                     }).callAfter(function(completed) {
-                        equal(seq.shift(), 'say2_after')
+                        equal(seq.shift(), 'say2_after');
                         ok(completed, 'say2 completed');
                         start();
                     });
                 }, 1000);
             }, 1000);
         });
-        // test('wait, wait, pause, unpause', 1, function {});
-        // test('wait, pause, wait, unpause', 1, function {});
-        // test('pause, wait, wait, unpause', 1, function {});
+        test('wait, wait, pause, unpause', 10, function() {
+            stop(TO*2);
+            var js = this.js;
+            var seq = [
+                'pause_before', 
+                'pause_after', 
+                'unpause_before',
+                'unpause_after',
+                'wait1_before', 
+                'wait1_after',
+                'wait2_before',
+                'wait2_after'
+            ];
+            this.js.wait({duration : 1000}).callBefore(function() {
+                equal(seq.shift(), 'wait1_before');
+            }).callAfter(function(completed) {
+                equal(seq.shift(), 'wait1_after');
+                ok(completed, 'say1 completed');
+            });
+            this.js.wait({duration : 1000}).callBefore(function() {
+                equal(seq.shift(), 'wait2_before');
+            }).callAfter(function(completed) {
+                equal(seq.shift(), 'wait2_after');
+                ok(completed, 'wait2 completed');
+                start();
+            });
+            this.js.pause().callBefore(function() {
+                equal(seq.shift(), 'pause_before');
+            }).callAfter(function(completed) {
+                equal(seq.shift(), 'pause_after');
+            });  
+            setTimeout(function() {
+                js.unpause().callBefore(function() {
+                    equal(seq.shift(), 'unpause_before');
+                }).callAfter(function() {
+                    equal(seq.shift(), 'unpause_after');
+                });
+            }, 1000);
+        });
+        test('wait, pause, wait, unpause', 10, function() {
+            stop(TO*2);
+            var js = this.js;
+            var seq = [
+                'pause_before', 
+                'pause_after', 
+                'unpause_before',
+                'unpause_after',
+                'wait1_before',
+                'wait1_after',
+                'wait2_before',
+                'wait2_after'
+            ];
+            this.js.wait({duration : 1000}).callBefore(function() {
+                equal(seq.shift(), 'wait1_before');
+            }).callAfter(function(completed) {
+                equal(seq.shift(), 'wait1_after');
+                ok(completed, 'say1 completed');
+            });
+            this.js.pause().callBefore(function() {
+                equal(seq.shift(), 'pause_before');
+            }).callAfter(function(completed) {
+                equal(seq.shift(), 'pause_after');
+            });  
+            this.js.wait({duration : 1000}).callBefore(function() {
+                equal(seq.shift(), 'wait2_before');
+            }).callAfter(function(completed) {
+                equal(seq.shift(), 'wait2_after');
+                ok(completed, 'wait2 completed');
+                start();
+            });
+            setTimeout(function() {
+                js.unpause().callBefore(function() {
+                    equal(seq.shift(), 'unpause_before');
+                }).callAfter(function() {
+                    equal(seq.shift(), 'unpause_after');
+                });
+            }, 1000);
+        });
+        test('pause, wait, wait, unpause', 10, function() {
+            stop(TO*2);
+            var js = this.js;
+            var seq = [
+                'pause_before', 
+                'pause_after', 
+                'unpause_before',
+                'unpause_after',
+                'wait1_before', 
+                'wait1_after',
+                'wait2_before',
+                'wait2_after'
+            ];
+            this.js.pause().callBefore(function() {
+                equal(seq.shift(), 'pause_before');
+            }).callAfter(function(completed) {
+                equal(seq.shift(), 'pause_after');
+            });  
+            this.js.wait({duration : 1000}).callBefore(function() {
+                equal(seq.shift(), 'wait1_before');
+            }).callAfter(function(completed) {
+                equal(seq.shift(), 'wait1_after');
+                ok(completed, 'say1 completed');
+            });
+            this.js.wait({duration : 1000}).callBefore(function() {
+                equal(seq.shift(), 'wait2_before');
+            }).callAfter(function(completed) {
+                equal(seq.shift(), 'wait2_after');
+                ok(completed, 'wait2 completed');
+                start();
+            });
+            setTimeout(function() {
+                js.unpause().callBefore(function() {
+                    equal(seq.shift(), 'unpause_before');
+                }).callAfter(function() {
+                    equal(seq.shift(), 'unpause_after');
+                });
+            }, 1000);            
+        });
         // test('wait, pause, stop, unpause, wait', 1, function {});
     });
 }());

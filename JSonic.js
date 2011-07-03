@@ -876,10 +876,12 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         this._busy = true;
         this._args = args;
         this._kind = 'wait';
-        this._onStartWait();
-        this._args.date = new Date();
-        var tok = setTimeout(dojo.hitch(this, '_onEndWait'), args.duration);
-        this._args.timeout = tok;
+        if(!this._paused) {
+            setTimeout(dojo.hitch(this, '_onStartWait'), 0);
+            this._args.date = new Date();
+            var tok = setTimeout(dojo.hitch(this, '_onEndWait'), args.duration);
+            this._args.timeout = tok;
+        }
     },
     
     _pause: function(args) {
@@ -899,7 +901,10 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
             // stop wait timer
             clearTimeout(this._args.timeout);
             // compute elapsed
-            var el = (new Date()) - this._args.date;
+            var el = 0;
+            if(this._args.date) {
+                el = (new Date()) - this._args.date;
+            }
             var dur = this._args.duration;
             // compute remaining duration or 0 as safeguard
             this._args.duration = Math.max(0, dur-el);
@@ -917,13 +922,15 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         this._paused = false;
         if(this._audioNode) {
             this._audioNode.play();
-        } else if(this._args.timeout) {
+        } else if(this._kind === 'wait') {
+            if(!this._args.started) {
+                setTimeout(dojo.hitch(this, '_onStartWait'), 0);
+            }
+            this._args.date = new Date();
             // begin waiting again, even if 0 duration
             var tok = setTimeout(dojo.hitch(this, '_onEndWait'), 
                 this._args.duration);
-            // store new weight and timer
-            this._args.date = new Date();
-            this._args.timeout = tok;            
+            this._args.timeout = tok;
         }
         args.defs.after.callback(true);
     },
@@ -1138,6 +1145,9 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
     },
     
     _onStartWait: function() {
+        if(this._paused) {
+            return;
+        }
         var notice = {
             action : 'started-wait', 
             channel : this.id,
