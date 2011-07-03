@@ -940,7 +940,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         args.defs.after.callback();
         if(!didPause && this._busy) {
             // never playing, simulate the async pause event
-            setTimeout(dojo.hitch(this, '_onPause'), 0);
+            setTimeout(dojo.hitch(this, '_onPause', undefined), 0);
         }
     },
     
