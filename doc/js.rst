@@ -106,6 +106,30 @@ The JSonic interface
    
       :return: A deferred callback with an object matching the :ref:`/version schema <version-schema>` or an errback with an :class:`Error` object
       :rtype: `dojo.Deferred`_
+
+   .. method:: pause(args)
+   
+      Immediately pauses all output and commands on a channel. Fails when the channel is already paused.
+
+      :param args: Object with the following properties:
+         
+         channel (optional)
+            String name of the channel. Defaults to :const:`default` if not specified.
+      
+      :type args: object
+      :return: A deferred callback with a invoked with no parameters when the pause command is processed (before) and invoked with a complete flag when the pause is processed successfully (true) or not (false)
+      :rtype: :class:`JSonicDeferred`
+      
+      .. versionadded:: 0.5
+
+   .. method:: pauseAll()
+   
+      Immediately pauses all output and commands on all channels.
+
+      :return: An array of deferred callbacks with no parameters invoked before the pause is processed (before) and after the pause is processed (after)
+      :rtype: array of :class:`JSonicDeferred`
+      
+      .. versionadded:: 0.5
       
    .. method:: play(args)
    
@@ -213,6 +237,30 @@ The JSonic interface
       Immediately stops all output on all channels and clear all queued commands on all channels.
 
       :return: An array of deferred callbacks with no parameters invoked before the stop is processed (before) and after the stop is processed (after)
+      :rtype: array of :class:`JSonicDeferred`
+      
+      .. versionadded:: 0.5
+
+   .. method:: unpause(args)
+   
+      Immediately unpauses all output and commands on a channel. Fails when the channel is not paused.
+
+      :param args: Object with the following properties:
+         
+         channel (optional)
+            String name of the channel. Defaults to :const:`default` if not specified.
+      
+      :type args: object
+      :return: A deferred callback with a invoked with no parameters when the unpause command is processed (before) and invoked with a complete flag when the unpause is processed successfully (true) or not (false)
+      :rtype: :class:`JSonicDeferred`
+      
+      .. versionadded:: 0.5
+
+   .. method:: pauseAll()
+   
+      Immediately unpauses all output and commands on all channels.
+
+      :return: An array of deferred callbacks with no parameters invoked before the unpause is processed (before) and after the unpause is processed (after)
       :rtype: array of :class:`JSonicDeferred`
       
       .. versionadded:: 0.5
