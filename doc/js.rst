@@ -51,7 +51,7 @@ The JSonic interface
    
    .. method:: addObserver(func, channel, actions)
    
-      Adds a listener for speech and sound :ref:`notifications <notification>`.
+      Adds a listener for :ref:`notifications <notification>`.
    
       :param func: Callback function
       :type func: :func:`function(notice)`
@@ -147,7 +147,7 @@ The JSonic interface
             String name of the channel. Defaults to :const:`default` if not specified.
       
       :type args: object
-      :return: A deferred callback with a :ref:`play notification <started-play-notice>` when the sound command is processed (before) and a :ref:`play notification <finished-play-notice>` when the sound finishes playing (after)
+      :return: A deferred callback with a invoked with no parameters when the play command is processed (before) and invoked with a completion flag (after) when the sound finishes playing (true) or is interrupted (false)
       :rtype: :class:`JSonicDeferred`
    
    .. method:: removeObserver(token)
@@ -194,7 +194,7 @@ The JSonic interface
             String name of the channel. Defaults to :const:`default` if not specified.
       
       :type args: object
-      :return: A deferred callback with a :ref:`say notification <started-say-notice>` when the speech command is processed (before) and a :ref:`say notification <finished-say-notice>` when the speech utterance finishes (after)
+      :return: A deferred callback with a invoked with no parameters when the say command is processed (before) and invoked with a completion flag (after) when the utterance finishes playing (true) or is interrupted (false)
       :rtype: :class:`JSonicDeferred`
 
    .. method:: setProperty(args)
@@ -251,7 +251,7 @@ The JSonic interface
             String name of the channel. Defaults to :const:`default` if not specified.
       
       :type args: object
-      :return: A deferred callback with a invoked with no parameters when the unpause command is processed (before) and invoked with a complete flag when the unpause is processed successfully (true) or not (false)
+      :return: A deferred callback with a invoked with no parameters when the unpause command is processed (before) and invoked with a completion flag when the unpause is processed successfully (true) or not (false)
       :rtype: :class:`JSonicDeferred`
       
       .. versionadded:: 0.5
@@ -278,7 +278,7 @@ The JSonic interface
             String name of the channel. Defaults to :const:`default` if not specified.
 
       :type args: object
-      :return: A deferred callback with a invoked with no parameters when the wait command is processed (before) and invoked with a complete flag (true/false) when the wait duration elapses (after)
+      :return: A deferred callback invoked with no parameters when the wait command is processed (before) and invoked with a completion flag (after) when the wait duration elapses (true) or is interrupted (false)
       :rtype: :class:`JSonicDeferred`
       
       .. versionadded:: 0.5
@@ -406,6 +406,30 @@ The type of a channel notification is determined by the value of its `action` pr
    :type name: string
    :param completed: True if the sound finished in its entirety, false if it was interrupted before it could finish
    :type completed: boolean
+
+.. describe:: action : started-wait
+
+   Occurs when a channel starts processing a :meth:`JSonic.wait` command.
+
+   :param channel: Name of the channel
+   :type channel: string
+   :param name: Application name assigned to the sound
+   :type name: string
+   
+   .. versionadded:: 0.5
+
+.. describe:: action : finished-play
+
+   Occurs when a channel finishes processing a :meth:`JSonic.wait` command (i.e., when the wait duration elapses).
+
+   :param channel: Name of the channel
+   :type channel: string
+   :param name: Application name assigned to the sound
+   :type name: string
+   :param completed: True if the wait finished in its entirety, false if it was interrupted before it could finish
+   :type completed: boolean
+
+   .. versionadded:: 0.5
 
 .. _error-notice:
 
@@ -583,7 +607,7 @@ To unregister the callback on the default channel only, do the following:
 Taking action before / after a command
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Say you have the :func:`onEvent` function described above. You want it to execute in response to certain commands.
+Say you have the :func:`onEvent` function described above. You want it to execute in response to certain commands without monitoring all commands.
 
 To execute the callback as the :const:`default` channel finishes speaking an utterance completely, do the following:
 

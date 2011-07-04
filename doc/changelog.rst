@@ -4,6 +4,7 @@ Changelog
 Version 0.5
 -----------
 
+* Fixed :meth:`uow.audio.JSonicDeferred` callback argument documentation for say and play commands (completion booleans, not notice objects).
 * Added the :meth:`uow.audio.JSonic.stopAll` method.
 * Added the :meth:`uow.audio.JSonic.wait` method.
 * Added the :meth:`uow.audio.JSonic.pause`,  :meth:`uow.audio.JSonic.unpause`, :meth:`uow.audio.JSonic.pauseAll`, and :meth:`uow.audio.JSonic.unpauseAll` methods.
