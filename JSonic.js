@@ -178,13 +178,35 @@ dojo.declare('uow.audio.JSonic', dijit._Widget, {
         return args.defs;
     },
     
+    /**
+     * Immediately pauses a channel. The args parameter supports the following
+     * name / value pairs.
+     *
+     * :param channel: Channel name to pause. Defaults to 'default'.
+     * :type channel: string
+     * :return: Object with 'before' and 'after' deferreds invoked just before
+     *   pause starts and when it is in effect (true) or if it fails because
+     *   the channel is already paused (false).
+     * :rtype: object
+     */
     pause: function(args) {
         args = args || {};
         args.method = '_pause';
         args = this._getChannel(args.channel).push(args);
         return args.defs;
     },
-    
+
+    /**
+     * Immediately unpauses a channel. The args parameter supports the following
+     * name / value pairs.
+     *
+     * :param channel: Channel name to pause. Defaults to 'default'.
+     * :type channel: string
+     * :return: Object with 'before' and 'after' deferreds invoked just before
+     *   unpause starts and when takes effect (true) or if it fails because
+     *   the channel is already unpaused (false).
+     * :rtype: object
+     */
     unpause: function(args) {
         args = args || {};
         args.method = '_unpause';
@@ -192,6 +214,13 @@ dojo.declare('uow.audio.JSonic', dijit._Widget, {
         return args.defs;        
     },
     
+    /**
+     * Immediately pauses all channels.
+     *
+     * :return: Objects with 'before' and 'after' deferreds invoked just before
+     *   audio stops and right after.
+     * :rtype: array of object
+     */
     pauseAll: function() {
         var rv = [];
         for(var channel in this._channels) {
@@ -201,7 +230,14 @@ dojo.declare('uow.audio.JSonic', dijit._Widget, {
         }
         return rv;        
     },
-    
+
+    /**
+     * Immediately unpauses all channels.
+     *
+     * :return: Objects with 'before' and 'after' deferreds invoked just before
+     *   audio stops and right after.
+     * :rtype: array of object
+     */    
     unpauseAll: function() {
         var rv = [];
         for(var channel in this._channels) {
