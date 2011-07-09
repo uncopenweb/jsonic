@@ -522,12 +522,7 @@ dojo.declare('uow.audio.JSonicDeferred', null, {
 });
 
 /**
- * Private. Shared cache implementation for JSonic. The cache maintains three 
- * pieces of information to reduce speech/sound output latency:
- *
- * 1. <audio> nodes pointing to speech/sound URLs cloned for reuse by channels 
- * 2. Filenames of speech utterances already synthesized on the server
- * 3. Utterance / sound frequency tracking for cache warming
+ * Private. Shared cache implementation for JSonic.
  */
 dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
     jsonicURI: null,
