@@ -204,7 +204,17 @@ dojo.provide('uow.audio.tests.simple');
             }).callAfter(function(completed) {
                 ok(completed, 'after deferred invoked on complete');
                 start();
-            });            
+            });
+        });
+        test('synth speech', 2, function() {
+            stop(TO);
+            var def = this.js.synth({text : UT1});
+            def.callBefore(function() {
+                ok(true, 'called before synth');
+            }).callAfter(function() {
+                ok(true, 'called after synth');
+                start();
+            });
         });
     });
 })();

@@ -240,5 +240,63 @@ dojo.provide('uow.audio.tests.sequential');
                 start();
             });
         });
+        test('synth, say', 4, function() {
+            stop(TO);
+            var seq = [
+                'synth_before',
+                'synth_after',
+                'say_before',
+                'say_after'
+            ];
+            this.js.synth({text : UT1}).callBefore(function() {
+                ok(seq.shift(), 'called before synth');
+            }).callAfter(function() {
+                ok(seq.shift(), 'called after synth');
+            });
+            this.js.say({text : UT1}).callBefore(function() {
+                ok(seq.shift(), 'called before say');
+            }).callAfter(function(completed) {
+                ok(seq.shift(), 'called after say');  
+                start();
+            });
+        });
+        test('say, synth', 4, function() {
+            stop(TO);
+            var seq = [
+                'say_before',
+                'say_after',
+                'synth_before',
+                'synth_after'
+            ];
+            this.js.say({text : UT1}).callBefore(function() {
+                ok(seq.shift(), 'called before say');
+            }).callAfter(function(completed) {
+                ok(seq.shift(), 'called after say');
+                start();               
+            });
+            this.js.synth({text : UT1}).callBefore(function() {
+                ok(seq.shift(), 'called before synth');
+            }).callAfter(function() {
+                ok(seq.shift(), 'called after synth');
+            });
+        });
+        test('synth, synth', 4, function() {
+            stop(TO);
+            var synths = 4;
+            this.js.synth({text : UT1}).callBefore(function() {
+                ok(synths--, 'called before synth 1');
+                if(!synths) { start(); }
+            }).callAfter(function() {
+                ok(synths--, 'called after synth 1');
+                if(!synths) { start(); }
+            });
+            this.js.synth({text : UT2}).callBefore(function() {
+                ok(synths--, 'called before synth 2');
+                if(!synths) { start(); }
+            }).callAfter(function() {
+                ok(synths--, 'called after synth 2');
+                if(!synths) { start(); }
+            });
+        });
     });
 }());

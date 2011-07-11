@@ -120,31 +120,29 @@ dojo.declare('uow.audio.JSonic', dijit._Widget, {
     },
 
     /**
-     * Forces the server to synthesizes an utterance and return the URL to it
-     * but does not queue the audio for output. Useful for reducing latency
-     * when doing a later say if the utterance is known beforehand. 
+     * Forces the server to synthesizes an utterance and return the URL to it.
+     * Useful for reducing latency when doing a later say if the utterance is 
+     * known beforehand. 
      *
      * The utterance adopts the properties of the channel as if it was queued
-     * behind all other commands on the channel.
-     * :param text: Text to speak.
+     * behind all other commands on the channel. The synthesis starts 
+     * immediately and does not block the next command queued on the channel.
+     * The resulting speech is not queued on the channel but is always cached.
+     *
+     * :param text: Text to synthesize as speech.
      * :type text: string
-     * :param channel: Channel name on which to queue the speech. Defaults to
+     * :param channel: Channel name on which to synth the speech. Defaults to
      *   'default'.
      * :type channel: string
-     * :param cache: True to cache the utterance locally and track its 
-     *   frequency. False to avoid caching for privacy or other reasons.
-     *   Defaults to the instance variable defaultCaching.
-     * :type cache: boolean
      * :return: Object with 'before' and 'after' deferreds invoked just before
-     *   speech starts and when it finishes (parameter: true) or is stopped 
-     *   (parameter: false).
+     *   synth starts and when it finishes.
      * :rtype: object
      */    
     synth: function(args) {
         if(!args || !args.text) {
             throw new Error('args.text required');
         }
-        args.cache = (args.cache === undefined) ? this.defaultCaching : args.cache;
+        args.cache = true;
         args.method = '_synth';
         args = this._getChannel(args.channel).push(args);
         return args.defs;        
