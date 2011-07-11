@@ -8,6 +8,7 @@ Version 0.5
 * Added the :meth:`uow.audio.JSonic.stopAll` method.
 * Added the :meth:`uow.audio.JSonic.wait` method.
 * Added the :meth:`uow.audio.JSonic.pause`,  :meth:`uow.audio.JSonic.unpause`, :meth:`uow.audio.JSonic.pauseAll`, and :meth:`uow.audio.JSonic.unpauseAll` methods.
+* Added the :meth:`uow.audio.JSonic.synth` method.
 
 Version 0.4
 -----------

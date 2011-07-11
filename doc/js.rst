@@ -241,6 +241,24 @@ The JSonic interface
       
       .. versionadded:: 0.5
 
+   .. method:: synth(args)
+
+      Immediately synthesizes an utterance on the server and caches its URL for later playback. The utterance adopts the properties of the channel as if it was queued behind all other commands on the channel. The synthesis startsimmediately and does not block the next command queued on the channel. The resulting speech is not queued on the channel but is always cached.
+
+      :param args: Object with the following properties:
+      
+         text (required)
+            String text to speak.
+         
+         channel (optional)
+            String name of the channel. Defaults to :const:`default` if not specified.
+      
+      :type args: object
+      :return: A deferred callback with a invoked with no parameters when the synth command is processed (before) and when it completes (after)
+      :rtype: :class:`JSonicDeferred`
+
+      .. versionadded:: 0.5
+
    .. method:: unpause(args)
    
       Immediately unpauses all output and commands on a channel. Fails when the channel is not paused.
@@ -256,7 +274,7 @@ The JSonic interface
       
       .. versionadded:: 0.5
 
-   .. method:: pauseAll()
+   .. method:: unpauseAll()
    
       Immediately unpauses all output and commands on all channels.
 
