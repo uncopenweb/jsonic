@@ -2,7 +2,7 @@
  * JSonic client-side API implemented using Dojo.
  *
  * :requires: Dojo 1.4.x, JSonic REST API on server
- * :copyright: Peter Parente 2010
+ * :copyright: Peter Parente 2010, 2011 All Rights Reserved.
  * :license: BSD
 **/
 /*global dojo dijit localStorage uow*/
