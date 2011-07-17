@@ -550,6 +550,87 @@ dojo.declare('uow.audio.JSonicDeferred', null, {
     }
 });
 
+dojo.declare('uow.audio.LRUCache', null, {
+    constructor: function(args) {
+        this.maxSize = args.maxSize;
+        this.size = 0;
+        this._head = null;
+        this._tail = null;
+        this._index = {};
+    },
+
+    toArray: function() {
+        var curr = this._head;
+        var arr = [];
+        while(curr) {
+            arr.push([curr.key, curr.value]);
+            curr = curr.next;
+        }
+        return arr;
+    },
+
+    fromArray: function(arr) {
+        for(var i=0, l=arr.length; i < l; i++) {
+            var node = arr[i];
+            this.push(node[0], node[1]);
+        }
+    },
+
+    push: function(key, value) {
+        // see if the key is already in the cache
+        var curr = this._index[key];
+        if(curr) {
+            // if so, remove it from the list
+            if(curr === this._head) {
+                this._head = curr.next;
+            }
+            if(curr === this._tail) {
+                this._tail = curr.prev;
+            }
+            if(curr.next) {
+                curr.next.prev = curr.prev;
+                delete curr.next;
+            }
+            if(curr.prev) {
+                curr.prev.next = curr.next;
+                delete curr.prev;
+            }
+            // update value
+            curr.value = value;
+        } else {
+            // if not, create a node for it
+            curr = {
+                key : key, 
+                value : value
+            };
+            this._index[key] = curr;
+            this.size++;
+        }
+        if(!this._head) {
+            // set the first node as the head and tail
+            this._head = curr;
+            this._tail = curr;
+        } else {
+            // put it at the tail
+            this._tail.next = curr;
+            curr.prev = this._tail;
+            this._tail = curr;
+        }
+        // check if the cache is bigger than the max
+        if(this.size > this.maxSize) {
+            // pop the head
+            curr = this._head;
+            this._head = curr.next;
+            if(this._tail === curr) {
+                this._tail = null;
+            }
+            this.size--;
+            return curr;
+        }
+        return null;
+    }
+});
+
 /**
  * Private. Shared cache implementation for JSonic.
  */
