@@ -38,16 +38,16 @@
       }
     };
     QUnit.moduleDone = function(name) {
-        if(uow.audio.initJSonic) {
+        if(uow.audio._jsonicInstance) {
             // cleanup JSonic singleton before next module runs
-            var js = uow.audio.initJSonic();
-            js.destroyRecursive();
+            uow.audio._jsonicInstance.destroyRecursive();
         }
     };
     
     dojo.require('uow.audio.JSonic');
     dojo.require('uow.audio.tests.lru');
     dojo.require('uow.audio.tests.creation');
+    dojo.require('uow.audio.tests.persist');
     dojo.require('uow.audio.tests.simple');
     dojo.require('uow.audio.tests.interrupt');
     dojo.require('uow.audio.tests.sequential');
