@@ -562,19 +562,9 @@ dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
         this._speechCache = {};
         // cache of speech filenames
         if(localStorage) {
-            // clear the cache if versions don't match
-            if(localStorage['jsonic.version'] !== uow.audio._jsonicVersion) {
-                // reset the cache
-                this.resetCache();
-            }
-            // warm the cache from localStorage
-            try {
-                this._speechFiles = dojo.fromJson(localStorage['jsonic.cache']) || {};
-            } catch(e) {
-                this._speechFiles = {};
-            }
+            this._speechFiles = this._unserialize();
             // register to persist on page unload
-            dojo.addOnUnload(this, '_persist');
+            dojo.addOnUnload(this, '_serialize');
         } else {
             this._speechFiles = {};
         }
@@ -593,8 +583,22 @@ dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
         }
     },
     
-    _persist: function() {
+    _serialize: function() {
         localStorage['jsonic.cache'] = dojo.toJson(this._speechFiles);
+    },
+
+    _unserialize: function() {
+        // clear the cache if versions don't match
+        if(localStorage['jsonic.version'] !== uow.audio._jsonicVersion) {
+            // reset the cache
+            this.resetCache();
+        }
+        // warm the cache from localStorage
+        try {
+            return dojo.fromJson(localStorage['jsonic.cache']) || {};
+        } catch(e) {
+            return {};
+        }
     },
 
     resetCache: function(args) {
