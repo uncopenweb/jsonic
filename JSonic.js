@@ -28,8 +28,10 @@ uow.audio.initJSonic = function(args) {
 dojo.declare('uow.audio.JSonic', dijit._Widget, {
     // root of the JSonic server REST API, defaults to / (read-only)
     jsonicURI: '/',
-    // cache speech / sounds by default or not? defaults to false for privacy
+    // cache speech by default or not? defaults to false for privacy
     defaultCaching: false,
+    // maximum size of the speech cache, defaults to 50 most recently used
+    cacheSize: 50,
     constructor: function() {
         if(uow.audio._jsonicInstance) {
             throw new Error('JSonic instance already exists');
@@ -42,7 +44,8 @@ dojo.declare('uow.audio.JSonic', dijit._Widget, {
         this._channels = {};
         // channel-shared cache of sounds and speech
         this._cache = new uow.audio.JSonicCache({
-            jsonicURI : this.jsonicURI
+            jsonicURI : this.jsonicURI,
+            cacheSize: this.cacheSize
         });
     },
     
@@ -550,36 +553,112 @@ dojo.declare('uow.audio.JSonicDeferred', null, {
     }
 });
 
+dojo.declare('uow.audio.LRUCache', null, {
+    constructor: function(args) {
+        this.maxSize = args.maxSize;
+        this.size = 0;
+        this._head = null;
+        this._tail = null;
+        this._index = {};
+    },
+
+    toArray: function() {
+        var curr = this._head;
+        var arr = [];
+        while(curr) {
+            arr.push([curr.key, curr.value]);
+            curr = curr.next;
+        }
+        return arr;
+    },
+
+    fromArray: function(arr) {
+        for(var i=0, l=arr.length; i < l; i++) {
+            var node = arr[i];
+            this.push(node[0], node[1]);
+        }
+    },
+
+    get: function(key) {
+        var node = this._index[key];  
+        if(node) {
+            return node.value;
+        }
+    },
+
+    push: function(key, value) {
+        console.log('pushing', key);
+        // see if the key is already in the cache
+        var curr = this._index[key];
+        if(curr) {
+            // if so, remove it from the list
+            if(curr === this._head) {
+                this._head = curr.next;
+            }
+            if(curr === this._tail) {
+                this._tail = curr.prev;
+            }
+            if(curr.next) {
+                curr.next.prev = curr.prev;
+                delete curr.next;
+            }
+            if(curr.prev) {
+                curr.prev.next = curr.next;
+                delete curr.prev;
+            }
+            // update value
+            curr.value = value;
+        } else {
+            // if not, create a node for it
+            curr = {
+                key : key, 
+                value : value
+            };
+            this._index[key] = curr;
+            this.size++;
+        }
+        if(!this._head) {
+            // set the first node as the head and tail
+            this._head = curr;
+            this._tail = curr;
+        } else {
+            // put it at the tail
+            this._tail.next = curr;
+            curr.prev = this._tail;
+            this._tail = curr;
+        }
+        // check if the cache is bigger than the max
+        if(this.size > this.maxSize) {
+            // pop the head
+            curr = this._head;
+            this._head = curr.next;
+            if(this._tail === curr) {
+                this._tail = null;
+            }
+            this.size--;
+            return curr;
+        }
+        return null;
+    }
+});
+
 /**
  * Private. Shared cache implementation for JSonic.
  */
 dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
     jsonicURI: null,
+    cacheSize: 50,
     postMixInProperties: function() {
         // speech engines and their details
         this._engineCache = null;
-        // cache of speech utterances
-        this._speechCache = {};
         // cache of speech filenames
+        this._speechCache = new uow.audio.LRUCache({maxSize : this.cacheSize});
         if(localStorage) {
-            // clear the cache if versions don't match
-            if(localStorage['jsonic.version'] !== uow.audio._jsonicVersion) {
-                // reset the cache
-                this.resetCache();
-            }
-            // warm the cache from localStorage
-            try {
-                this._speechFiles = dojo.fromJson(localStorage['jsonic.cache']) || {};
-            } catch(e) {
-                this._speechFiles = {};
-            }
+            var arr = this._unserialize();
+            this._speechCache.fromArray(arr);
             // register to persist on page unload
-            dojo.addOnUnload(this, '_persist');
-        } else {
-            this._speechFiles = {};
+            dojo.addOnUnload(this, '_serialize');
         }
-        // cache of sound files
-        this._soundCache = {};
         // cache of requests for speech rendering in progress
         this._speechRenderings = {};
         // determine extension to use
@@ -592,22 +671,43 @@ dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
             throw new Error('no known media supported');
         }
     },
+
+    uninitialize: function() {
+        // persist cache before cleanup
+        this._serialize();
+        this._destroyed = true;
+    },
     
-    _persist: function() {
-        localStorage['jsonic.cache'] = dojo.toJson(this._speechFiles);
+    _serialize: function() {
+        if(this._destroyed) {
+            // don't persist if instance is destroyed
+            return;
+        }
+        localStorage['jsonic.cache'] = dojo.toJson(this._speechCache.toArray());
     },
 
-    resetCache: function(args) {
+    _unserialize: function() {
+        // clear the cache if versions don't match
+        if(localStorage['jsonic.version'] !== uow.audio._jsonicVersion) {
+            // reset the cache
+            this.resetCache();
+        }
+        // warm the cache from localStorage
+        try {
+            return dojo.fromJson(localStorage['jsonic.cache']) || [];
+        } catch(e) {
+            return [];
+        }
+    },
+
+    resetCache: function() {
         if(localStorage) {
             // clear out the cache
             delete localStorage['jsonic.cache'];
             // update the version number
             localStorage['jsonic.version'] = uow.audio._jsonicVersion;
         }
-        this._speechFiles = {};
-        if(args) {
-            delete this._speechCache[args.key];
-        }
+        this._speechCache = new uow.audio.LRUCache({maxSize : this.maxSize});
     },
     
     getEngines: function() {
@@ -659,20 +759,11 @@ dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
     
     getSound: function(args) {
         var resultDef = new dojo.Deferred();
-        var node = this._soundCache[args.url];
-        if(node) {
-            resultDef.callback(node);
-            return resultDef;
-        } else {
-            node = {}; //dojo.create('audio');
-            node.autobuffer = true;
-            node.src = args.url+this._ext;
-            if(args.cache) {
-                this._soundCache[args.url] = node;
-            }
-            resultDef.callback(node);
-            return resultDef;
-        }
+        node = {}; //dojo.create('audio');
+        node.autobuffer = true;
+        node.src = args.url+this._ext;
+        resultDef.callback(node);
+        return resultDef;
     },
 
     _getSpeechCacheKey: function(text, props) {
@@ -693,38 +784,38 @@ dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
     
     getSpeech: function(args, props) {
         // get the client cache key
-        var key = this._getSpeechCacheKey(args.text, props);
+        var key = this._getSpeechCacheKey(args.text, props),
+            resultDef, audioNode, fileName, speechParams, request;
         args.key = key;
-        var resultDef;
+
+        // @todo: because we don't update lru upon each result, it's not 
+        // truly lru; to meet strict definition, need to update stats 
+        // when audio is actually used, not just when it's returned from
+        // the server; trying the simple way first, probably good enough
         
-        var audioNode = this._speechCache[key];
-        if(audioNode) {
-            resultDef = new dojo.Deferred();
-            resultDef.callback(audioNode);
-            return resultDef;
-        }
         resultDef = this._speechRenderings[key];
         if(resultDef) {
             // return deferred result for synth already in progress on server
             return resultDef;
         }
-        var response = this._speechFiles[key];
-        if(response) {
-            response = dojo.fromJson(response);
-            // build a new audio node for a known speech file url
-            audioNode = this._onSpeechSynthed(null, args, response);
+        fileName = this._speechCache.get(key);
+        if(fileName) {
+            console.log('known key', key);
+            // known key
+            this._speechCache.push(key, fileName);
+            audioNode = this._buildNode(fileName);
             resultDef = new dojo.Deferred();
             resultDef.callback(audioNode);
             return resultDef;
         }
         // synth on server
-        var speechParams = {
+        speechParams = {
             format : this._ext,
             utterances : {text : args.text},
             properties: props
         };
         resultDef = new dojo.Deferred();
-        var request = {
+        request = {
             url : this.jsonicURI+'synth',
             handleAs: 'json',
             postData : dojo.toJson(speechParams),
@@ -755,19 +846,21 @@ dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
 
     _onSpeechSynthed: function(resultDef, args, response) {
         delete this._speechRenderings[args.key];
+        var fileName = response.result.text;
+        var node = this._buildNode(fileName);
+        if(args.cache) {
+            // cache the speech file url and properties
+            this._speechCache.push(args.key, fileName);
+        }
+        resultDef.callback(node);
+        return node;
+    },
+
+    _buildNode: function(fileName) {
         var node = {}; //dojo.create('audio');
         node.autobuffer = true;
         node.preload = 'auto';
-        node.src = this.jsonicURI+'files/'+response.result.text+this._ext;
-        // @todo: don't let caches grow unbounded
-        // @todo: distinguish levels of caching
-        if(args.cache) {
-            // cache the audio node
-            this._speechCache[args.key] = node;
-            // cache the speech file url and properties for server caching
-            this._speechFiles[args.key] = dojo.toJson(response);
-        }
-        if(resultDef) {resultDef.callback(node);}
+        node.src = this.jsonicURI+'files/'+fileName+this._ext;
         return node;
     }
 });
@@ -1082,7 +1175,7 @@ dojo.declare('uow.audio.JSonicChannel', dijit._Widget, {
         if(this._kind === 'say') {
             // if speech, dump the entire local cache assuming we need a
             // resynth of everything
-            this.cache.resetCache(this._args);
+            this.cache.resetCache();
         }
         // clear everything before the callback
         var cargs = this._args;

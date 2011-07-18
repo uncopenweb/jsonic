@@ -21,6 +21,10 @@ The JSonic factory
    Initializes the client API.
    
    :param args: Object with the following properties:
+
+      cacheSize (optional)
+
+         Integer stating the maximum number of speech utterance URLs to keep in memory and localStorage on page unload. Defaults to 50.
    
       defaultCaching (optional)
 
@@ -30,7 +34,10 @@ The JSonic factory
       
          String URI pointing to the root of the JSonic REST API. Defaults to `/`.     
  
-   :type args: object   
+   :type args: object
+
+   .. versionchanged:: 0.5
+      Added `cacheSize` parameter.
 
 The JSonic interface
 --------------------
