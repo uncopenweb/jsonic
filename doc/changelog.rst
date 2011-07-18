@@ -4,6 +4,8 @@ Changelog
 Version 0.5
 -----------
 
+* Implemeted a least-recently used cache invalidation strategy to keep the cached speech utterance store from growing without bound.
+* Added a `cacheSize` parameter for :meth:`uow.audio.initJsonic`.
 * Fixed :meth:`uow.audio.JSonicDeferred` callback argument documentation for say and play commands (completion booleans, not notice objects).
 * Added the :meth:`uow.audio.JSonic.stopAll` method.
 * Added the :meth:`uow.audio.JSonic.wait` method.

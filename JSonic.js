@@ -28,8 +28,10 @@ uow.audio.initJSonic = function(args) {
 dojo.declare('uow.audio.JSonic', dijit._Widget, {
     // root of the JSonic server REST API, defaults to / (read-only)
     jsonicURI: '/',
-    // cache speech / sounds by default or not? defaults to false for privacy
+    // cache speech by default or not? defaults to false for privacy
     defaultCaching: false,
+    // maximum size of the speech cache, defaults to 50 most recently used
+    cacheSize: 50,
     constructor: function() {
         if(uow.audio._jsonicInstance) {
             throw new Error('JSonic instance already exists');
@@ -42,7 +44,8 @@ dojo.declare('uow.audio.JSonic', dijit._Widget, {
         this._channels = {};
         // channel-shared cache of sounds and speech
         this._cache = new uow.audio.JSonicCache({
-            jsonicURI : this.jsonicURI
+            jsonicURI : this.jsonicURI,
+            cacheSize: this.cacheSize
         });
     },
     
@@ -644,12 +647,12 @@ dojo.declare('uow.audio.LRUCache', null, {
  */
 dojo.declare('uow.audio.JSonicCache', dijit._Widget, {
     jsonicURI: null,
-    maxSize: 50,
+    cacheSize: 50,
     postMixInProperties: function() {
         // speech engines and their details
         this._engineCache = null;
         // cache of speech filenames
-        this._speechCache = new uow.audio.LRUCache({maxSize : this.maxSize});
+        this._speechCache = new uow.audio.LRUCache({maxSize : this.cacheSize});
         if(localStorage) {
             var arr = this._unserialize();
             this._speechCache.fromArray(arr);
