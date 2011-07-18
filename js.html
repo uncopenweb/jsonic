@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>The JavaScript API &mdash; JSonic v0.3 documentation</title>
+    <title>The JavaScript API &mdash; JSonic v0.5 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.3',
+        VERSION:     '0.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="JSonic v0.3 documentation" href="index.html" />
+    <link rel="top" title="JSonic v0.5 documentation" href="index.html" />
     <link rel="next" title="About caching" href="cache.html" />
     <link rel="prev" title="Getting Started" href="start.html" /> 
   </head>
@@ -42,7 +42,7 @@
         <li class="right" >
           <a href="start.html" title="Getting Started"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">JSonic v0.3 documentation</a> &raquo;</li> 
+        <li><a href="index.html">JSonic v0.5 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -69,20 +69,22 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
+<p>cacheSize (optional)</p>
+<blockquote>
+<div>Integer stating the maximum number of speech utterance URLs to keep in memory and localStorage on page unload. Defaults to 50.</div></blockquote>
 <p>defaultCaching (optional)</p>
 <blockquote>
-True to enable all levels of caching as the default for calls to <tt class="xref py py-meth docutils literal"><span class="pre">say</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">play</span></tt>. False to disable all caching except browser caching as the default for those methods. Defaults to false.</blockquote>
+<div>True to enable all levels of caching as the default for calls to <tt class="xref py py-meth docutils literal"><span class="pre">say</span></tt> and <tt class="xref py py-meth docutils literal"><span class="pre">play</span></tt>. False to disable all caching except browser caching as the default for those methods. Defaults to false.</div></blockquote>
 <p>jsonicURI (optional)</p>
 <blockquote>
-String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cite>.</blockquote>
-</li>
-</ul>
+<div>String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cite>.</div></blockquote>
 </td>
 </tr>
 </tbody>
 </table>
+<p class="versionchanged">
+<span class="versionmodified">Changed in version 0.5: </span>Added <cite>cacheSize</cite> parameter.</p>
 </dd></dl>
 
 </div>
@@ -109,7 +111,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <dl class="method">
 <dt id="uow.audio.JSonic.addObserver">
 <tt class="descname">addObserver</tt><big>(</big><em>func</em>, <em>channel</em>, <em>actions</em><big>)</big><a class="headerlink" href="#uow.audio.JSonic.addObserver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds a listener for speech and sound <a class="reference internal" href="#notification"><em>notifications</em></a>.</p>
+<dd><p>Adds a listener for <a class="reference internal" href="#notification"><em>notifications</em></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -169,16 +171,11 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>id</strong> (<em>string</em>) &#8211; Identifier associated with the engine as returned by <a class="reference internal" href="#uow.audio.JSonic.getEngines" title="uow.audio.JSonic.getEngines"><tt class="xref py py-meth docutils literal"><span class="pre">getEngines</span></tt></a>.</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>id</strong> (<em>string</em>) &#8211; Identifier associated with the engine as returned by <a class="reference internal" href="#uow.audio.JSonic.getEngines" title="uow.audio.JSonic.getEngines"><tt class="xref py py-meth docutils literal"><span class="pre">getEngines</span></tt></a>.</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A deferred callback with an object matching the <a class="reference internal" href="rest.html#engine-info-schema"><em>/engine/[id] schema</em></a> or an errback with an <tt class="xref py py-class docutils literal"><span class="pre">Error</span></tt> object</p>
-</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with an object matching the <a class="reference internal" href="rest.html#engine-info-schema"><em>/engine/[id] schema</em></a> or an errback with an <tt class="xref py py-class docutils literal"><span class="pre">Error</span></tt> object</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://dojotoolkit.org/reference-guide/dojo/Deferred.html#dojo-deferred">dojo.Deferred</a></p>
-</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://dojotoolkit.org/reference-guide/dojo/Deferred.html#dojo-deferred">dojo.Deferred</a></td>
 </tr>
 </tbody>
 </table>
@@ -192,23 +189,18 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
 <dl class="docutils">
 <dt>name (required)</dt>
 <dd>String name of the <a class="reference internal" href="#property"><em>property</em></a> to get</dd>
 <dt>channel (optional)</dt>
 <dd>String name of the channel. Defaults to <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
 </dl>
-</li>
-</ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A deferred callback with the property value at the time this command is received (before) and when the command is processed in the queue (after)</p>
-</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with the property value at the time this command is received (before) and when the command is processed in the queue (after)</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
-</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -231,6 +223,49 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 </dd></dl>
 
 <dl class="method">
+<dt id="uow.audio.JSonic.pause">
+<tt class="descname">pause</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#uow.audio.JSonic.pause" title="Permalink to this definition">¶</a></dt>
+<dd><p>Immediately pauses all output and commands on a channel. Fails when the channel is already paused.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
+<dl class="docutils">
+<dt>channel (optional)</dt>
+<dd>String name of the channel. Defaults to <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with a invoked with no parameters when the pause command is processed (before) and invoked with a complete flag when the pause is processed successfully (true) or not (false)</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.5.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="uow.audio.JSonic.pauseAll">
+<tt class="descname">pauseAll</tt><big>(</big><big>)</big><a class="headerlink" href="#uow.audio.JSonic.pauseAll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Immediately pauses all output and commands on all channels.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">An array of deferred callbacks with no parameters invoked before the pause is processed (before) and after the pause is processed (after)</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">array of <a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.5.</span></p>
+</dd></dl>
+
+<dl class="method">
 <dt id="uow.audio.JSonic.play">
 <tt class="descname">play</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#uow.audio.JSonic.play" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plays a sound.</p>
@@ -238,8 +273,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
 <dl class="docutils">
 <dt>url (required)</dt>
 <dd>String URL of the sound to play. Either <tt class="xref py py-const docutils literal"><span class="pre">ogg</span></tt> or <tt class="xref py py-const docutils literal"><span class="pre">mp3</span></tt> will be appended to the end of the URL depending on which format the browser supports.</dd>
@@ -248,15 +282,11 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <dt>channel (optional)</dt>
 <dd>String name of the channel. Defaults to <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
 </dl>
-</li>
-</ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A deferred callback with a <a class="reference internal" href="#started-play-notice"><em>play notification</em></a> when the sound command is processed (before) and a <a class="reference internal" href="#finished-play-notice"><em>play notification</em></a> when the sound finishes playing (after)</p>
-</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with a invoked with no parameters when the play command is processed (before) and invoked with a completion flag (after) when the sound finishes playing (true) or is interrupted (false)</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
-</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -270,13 +300,9 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>token</strong> (<em>object</em>) &#8211; Token returned when registering the observer with <a class="reference internal" href="#uow.audio.JSonic.addObserver" title="uow.audio.JSonic.addObserver"><tt class="xref py py-meth docutils literal"><span class="pre">addObserver</span></tt></a></li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>token</strong> (<em>object</em>) &#8211; Token returned when registering the observer with <a class="reference internal" href="#uow.audio.JSonic.addObserver" title="uow.audio.JSonic.addObserver"><tt class="xref py py-meth docutils literal"><span class="pre">addObserver</span></tt></a></td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><tt class="xref py py-const docutils literal"><span class="pre">undefined</span></tt></p>
-</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><tt class="xref py py-const docutils literal"><span class="pre">undefined</span></tt></td>
 </tr>
 </tbody>
 </table>
@@ -290,18 +316,14 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
 <dl class="docutils">
 <dt>channel (optional)</dt>
 <dd>String name of the channel. Defaults to <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
 </dl>
-</li>
-</ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
-</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -331,8 +353,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
 <dl class="docutils">
 <dt>text (required)</dt>
 <dd>String text to speak.</dd>
@@ -341,15 +362,11 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <dt>channel (optional)</dt>
 <dd>String name of the channel. Defaults to <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
 </dl>
-</li>
-</ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A deferred callback with a <a class="reference internal" href="#started-say-notice"><em>say notification</em></a> when the speech command is processed (before) and a <a class="reference internal" href="#finished-say-notice"><em>say notification</em></a> when the speech utterance finishes (after)</p>
-</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with a invoked with no parameters when the say command is processed (before) and invoked with a completion flag (after) when the utterance finishes playing (true) or is interrupted (false)</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
-</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -363,8 +380,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
 <dl class="docutils">
 <dt>name (required)</dt>
 <dd>String name of the <a class="reference internal" href="#property"><em>property</em></a> to set</dd>
@@ -375,15 +391,11 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <dt>channel (optional)</dt>
 <dd>String name of the channel. Defaults to <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
 </dl>
-</li>
-</ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A deferred callback with the value of the property before it is processed (before) and the value of the property after the change is made (after)</p>
-</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with the value of the property before it is processed (before) and the value of the property after the change is made (after)</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
-</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -397,24 +409,134 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
 <dl class="docutils">
 <dt>channel (optional)</dt>
 <dd>String name of the channel. Defaults to <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
 </dl>
-</li>
-</ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A deferred callback with no parameters invoked before the stop is processed (before) and after the stop is processed (after)</p>
-</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with no parameters invoked before the stop is processed (before) and after the stop is processed (after)</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
-</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="uow.audio.JSonic.stopAll">
+<tt class="descname">stopAll</tt><big>(</big><big>)</big><a class="headerlink" href="#uow.audio.JSonic.stopAll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Immediately stops all output on all channels and clear all queued commands on all channels.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">An array of deferred callbacks with no parameters invoked before the stop is processed (before) and after the stop is processed (after)</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">array of <a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.5.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="uow.audio.JSonic.synth">
+<tt class="descname">synth</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#uow.audio.JSonic.synth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Immediately synthesizes an utterance on the server and caches its URL for later playback. The utterance adopts the properties of the channel as if it was queued behind all other commands on the channel. The synthesis startsimmediately and does not block the next command queued on the channel. The resulting speech is not queued on the channel but is always cached.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
+<dl class="docutils">
+<dt>text (required)</dt>
+<dd>String text to speak.</dd>
+<dt>channel (optional)</dt>
+<dd>String name of the channel. Defaults to <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with a invoked with no parameters when the synth command is processed (before) and when it completes (after)</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.5.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="uow.audio.JSonic.unpause">
+<tt class="descname">unpause</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#uow.audio.JSonic.unpause" title="Permalink to this definition">¶</a></dt>
+<dd><p>Immediately unpauses all output and commands on a channel. Fails when the channel is not paused.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
+<dl class="docutils">
+<dt>channel (optional)</dt>
+<dd>String name of the channel. Defaults to <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback with a invoked with no parameters when the unpause command is processed (before) and invoked with a completion flag when the unpause is processed successfully (true) or not (false)</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.5.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="uow.audio.JSonic.unpauseAll">
+<tt class="descname">unpauseAll</tt><big>(</big><big>)</big><a class="headerlink" href="#uow.audio.JSonic.unpauseAll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Immediately unpauses all output and commands on all channels.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">An array of deferred callbacks with no parameters invoked before the unpause is processed (before) and after the unpause is processed (after)</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">array of <a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.5.</span></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="uow.audio.JSonic.wait">
+<tt class="descname">wait</tt><big>(</big><em>args</em><big>)</big><a class="headerlink" href="#uow.audio.JSonic.wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Queues silence on a channel.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<em>object</em>) &#8211; <p>Object with the following properties:</p>
+<dl class="docutils">
+<dt>duration (required)</dt>
+<dd>Integer duration of the silence in milliseconds</dd>
+<dt>channel (optional)</dt>
+<dd>String name of the channel. Defaults to <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> if not specified.</dd>
+</dl>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">A deferred callback invoked with no parameters when the wait command is processed (before) and invoked with a completion flag (after) when the wait duration elapses (true) or is interrupted (false)</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.5.</span></p>
 </dd></dl>
 
 </dd></dl>
@@ -434,16 +556,11 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>func</strong> (<tt class="xref py py-func docutils literal"><span class="pre">function(notice)</span></tt>) &#8211; Callback function</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>func</strong> (<tt class="xref py py-func docutils literal"><span class="pre">function(notice)</span></tt>) &#8211; Callback function</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">This instance for call chaining</p>
-</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
-</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -457,16 +574,11 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>func</strong> (<tt class="xref py py-func docutils literal"><span class="pre">function(notice)</span></tt>) &#8211; Callback function</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>func</strong> (<tt class="xref py py-func docutils literal"><span class="pre">function(notice)</span></tt>) &#8211; Callback function</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">This instance for call chaining</p>
-</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
-</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -480,16 +592,11 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>func</strong> (<tt class="xref py py-func docutils literal"><span class="pre">function(noticeOrError)</span></tt>) &#8211; Callback function</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>func</strong> (<tt class="xref py py-func docutils literal"><span class="pre">function(noticeOrError)</span></tt>) &#8211; Callback function</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">This instance for call chaining</p>
-</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
-</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -503,16 +610,11 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>func</strong> (<tt class="xref py py-func docutils literal"><span class="pre">function(noticeOrError)</span></tt>) &#8211; Callback function</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>func</strong> (<tt class="xref py py-func docutils literal"><span class="pre">function(noticeOrError)</span></tt>) &#8211; Callback function</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">This instance for call chaining</p>
-</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
-</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -526,16 +628,11 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>func</strong> (<tt class="xref py py-func docutils literal"><span class="pre">function(error)</span></tt>) &#8211; Callback function</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>func</strong> (<tt class="xref py py-func docutils literal"><span class="pre">function(error)</span></tt>) &#8211; Callback function</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">This instance for call chaining</p>
-</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
-</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -549,16 +646,11 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>func</strong> (<tt class="xref py py-func docutils literal"><span class="pre">function(error)</span></tt>) &#8211; Callback function</li>
-</ul>
-</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>func</strong> (<tt class="xref py py-func docutils literal"><span class="pre">function(error)</span></tt>) &#8211; Callback function</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">This instance for call chaining</p>
-</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">This instance for call chaining</td>
 </tr>
-<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></p>
-</td>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#uow.audio.JSonicDeferred" title="uow.audio.JSonicDeferred"><tt class="xref py py-class docutils literal"><span class="pre">JSonicDeferred</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -674,6 +766,55 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<tt class="descname">action : started-wait</tt></dt>
+<dd><p>Occurs when a channel starts processing a <a class="reference internal" href="#uow.audio.JSonic.wait" title="uow.audio.JSonic.wait"><tt class="xref py py-meth docutils literal"><span class="pre">JSonic.wait</span></tt></a> command.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Param channel:</th><td class="field-body">Name of the channel</td>
+</tr>
+<tr class="field"><th class="field-name">Type channel:</th><td class="field-body">string</td>
+</tr>
+<tr class="field"><th class="field-name">Param name:</th><td class="field-body">Application name assigned to the sound</td>
+</tr>
+<tr class="field"><th class="field-name">Type name:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.5.</span></p>
+</dd></dl>
+
+<dl class="describe">
+<dt>
+<tt class="descname">action : finished-play</tt></dt>
+<dd><p>Occurs when a channel finishes processing a <a class="reference internal" href="#uow.audio.JSonic.wait" title="uow.audio.JSonic.wait"><tt class="xref py py-meth docutils literal"><span class="pre">JSonic.wait</span></tt></a> command (i.e., when the wait duration elapses).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Param channel:</th><td class="field-body">Name of the channel</td>
+</tr>
+<tr class="field"><th class="field-name">Type channel:</th><td class="field-body">string</td>
+</tr>
+<tr class="field"><th class="field-name">Param name:</th><td class="field-body">Application name assigned to the sound</td>
+</tr>
+<tr class="field"><th class="field-name">Type name:</th><td class="field-body">string</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Param completed:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">True if the wait finished in its entirety, false if it was interrupted before it could finish</td>
+</tr>
+<tr class="field"><th class="field-name">Type completed:</th><td class="field-body">boolean</td>
+</tr>
+</tbody>
+</table>
+<p class="versionadded">
+<span class="versionmodified">New in version 0.5.</span></p>
 </dd></dl>
 
 <span class="target" id="error-notice"></span><dl class="describe">
@@ -823,7 +964,7 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
 </div>
 <div class="section" id="taking-action-before-after-a-command">
 <h3>Taking action before / after a command<a class="headerlink" href="#taking-action-before-after-a-command" title="Permalink to this headline">¶</a></h3>
-<p>Say you have the <tt class="xref py py-func docutils literal"><span class="pre">onEvent</span></tt> function described above. You want it to execute in response to certain commands.</p>
+<p>Say you have the <tt class="xref py py-func docutils literal"><span class="pre">onEvent</span></tt> function described above. You want it to execute in response to certain commands without monitoring all commands.</p>
 <p>To execute the callback as the <tt class="xref py py-const docutils literal"><span class="pre">default</span></tt> channel finishes speaking an utterance completely, do the following:</p>
 <div class="highlight-javascript"><div class="highlight"><pre><span class="nx">js</span><span class="p">.</span><span class="nx">say</span><span class="p">({</span><span class="nx">text</span> <span class="o">:</span> <span class="s1">&#39;I am a banana.&#39;</span><span class="p">}).</span><span class="nx">addAfter</span><span class="p">(</span><span class="nx">onEvent</span><span class="p">);</span>
 </pre></div>
@@ -913,12 +1054,12 @@ String URI pointing to the root of the JSonic REST API. Defaults to <cite>/</cit
         <li class="right" >
           <a href="start.html" title="Getting Started"
              >previous</a> |</li>
-        <li><a href="index.html">JSonic v0.3 documentation</a> &raquo;</li> 
+        <li><a href="index.html">JSonic v0.5 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2010, Peter Parente.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+        &copy; Copyright 2010, 2011 Peter Parente.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>

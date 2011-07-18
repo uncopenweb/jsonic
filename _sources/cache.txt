@@ -1,21 +1,17 @@
 About caching
 =============
 
-The JSonic client makes use of various levels of caching to lower the time delay between a call to :meth:`uow.audio.JSonic.say` and actual audio output.
+Speech URL caching
+------------------
 
-URL caching
------------
+The JSonic client caches string URLs of synthesized speech files in memory the first time they are spoken by an application instance. If the user's browser supports HTML5 local storage, JSonic also stores the utterance text and its file URL in the persistent store to eliminate the synthesis request to the server the next time the application loads.
 
-The JSonic client caches string URLs of synthesized speech files in memory the first time they are spoken by an application instance. If the user's browser supports HTML5 local storage, JSonic also stores the utterance text and its file URL in the persistent store to eliminate the synthesis request to the server the next time the application loads. 
-
-As of version |version|, the client does not attempt to flush cached URLs from memory or local storage. A future version of JSonic will support a configurable maximum URL cache size and invalidation algorithm.
+As of version 0.5, the client flushes the least-recently used information from the cache whenever it grows beyond the configured maximum size. See :meth:`uow.audio.initJsonic` for info about this setting.
 
 Node caching
 ------------
 
-The JSonic client caches HTML5 audio elements for synthesized speech and sound playback in memory the first time they are output. JSonic clones these elements when the speech utterances or sounds are output again in the same application instance.
-
-As of version |version|, the client does not attempt to flush audio nodes from memory. A future version of JSonic will support a configurable maximum node cache size and invalidation algorithm.
+As of version 0.5, the client no longer caches audio nodes as it causes audio output failures over time in certain browsers and OSes.
 
 Browser caching
 ---------------

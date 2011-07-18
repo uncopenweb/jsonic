@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>About caching &mdash; JSonic v0.3 documentation</title>
+    <title>About caching &mdash; JSonic v0.5 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.3',
+        VERSION:     '0.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="JSonic v0.3 documentation" href="index.html" />
+    <link rel="top" title="JSonic v0.5 documentation" href="index.html" />
     <link rel="next" title="The REST API" href="rest.html" />
     <link rel="prev" title="The JavaScript API" href="js.html" /> 
   </head>
@@ -42,7 +42,7 @@
         <li class="right" >
           <a href="js.html" title="The JavaScript API"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">JSonic v0.3 documentation</a> &raquo;</li> 
+        <li><a href="index.html">JSonic v0.5 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -53,16 +53,14 @@
             
   <div class="section" id="about-caching">
 <h1>About caching<a class="headerlink" href="#about-caching" title="Permalink to this headline">¶</a></h1>
-<p>The JSonic client makes use of various levels of caching to lower the time delay between a call to <a class="reference internal" href="js.html#uow.audio.JSonic.say" title="uow.audio.JSonic.say"><tt class="xref py py-meth docutils literal"><span class="pre">uow.audio.JSonic.say</span></tt></a> and actual audio output.</p>
-<div class="section" id="url-caching">
-<h2>URL caching<a class="headerlink" href="#url-caching" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="speech-url-caching">
+<h2>Speech URL caching<a class="headerlink" href="#speech-url-caching" title="Permalink to this headline">¶</a></h2>
 <p>The JSonic client caches string URLs of synthesized speech files in memory the first time they are spoken by an application instance. If the user&#8217;s browser supports HTML5 local storage, JSonic also stores the utterance text and its file URL in the persistent store to eliminate the synthesis request to the server the next time the application loads.</p>
-<p>As of version 0.3, the client does not attempt to flush cached URLs from memory or local storage. A future version of JSonic will support a configurable maximum URL cache size and invalidation algorithm.</p>
+<p>As of version 0.5, the client flushes the least-recently used information from the cache whenever it grows beyond the configured maximum size. See <tt class="xref py py-meth docutils literal"><span class="pre">uow.audio.initJsonic</span></tt> for info about this setting.</p>
 </div>
 <div class="section" id="node-caching">
 <h2>Node caching<a class="headerlink" href="#node-caching" title="Permalink to this headline">¶</a></h2>
-<p>The JSonic client caches HTML5 audio elements for synthesized speech and sound playback in memory the first time they are output. JSonic clones these elements when the speech utterances or sounds are output again in the same application instance.</p>
-<p>As of version 0.3, the client does not attempt to flush audio nodes from memory. A future version of JSonic will support a configurable maximum node cache size and invalidation algorithm.</p>
+<p>As of version 0.5, the client no longer caches audio nodes as it causes audio output failures over time in certain browsers and OSes.</p>
 </div>
 <div class="section" id="browser-caching">
 <h2>Browser caching<a class="headerlink" href="#browser-caching" title="Permalink to this headline">¶</a></h2>
@@ -79,7 +77,7 @@
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">About caching</a><ul>
-<li><a class="reference internal" href="#url-caching">URL caching</a></li>
+<li><a class="reference internal" href="#speech-url-caching">Speech URL caching</a></li>
 <li><a class="reference internal" href="#node-caching">Node caching</a></li>
 <li><a class="reference internal" href="#browser-caching">Browser caching</a></li>
 </ul>
@@ -129,12 +127,12 @@
         <li class="right" >
           <a href="js.html" title="The JavaScript API"
              >previous</a> |</li>
-        <li><a href="index.html">JSonic v0.3 documentation</a> &raquo;</li> 
+        <li><a href="index.html">JSonic v0.5 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2010, Peter Parente.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+        &copy; Copyright 2010, 2011 Peter Parente.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
     </div>
   </body>
 </html>
